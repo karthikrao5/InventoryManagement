@@ -11,4 +11,5 @@ sudo apt install composer
 
 # install slim framework
 cd ..
-composer require slim/slim "^3.0"
+#composer require slim/slim "^3.0"  # This is for initial install. No need to run this more than once since repo contains composer.lock
+composer install
