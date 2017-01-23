@@ -36,6 +36,7 @@ sudo systemctl enable mongodb
 
 # to remove remove startup warnings (optional)
 # https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/#transparent-huge-pages-thp-settings
+# reboot system to apply changes
 sudo cp disable-transparent-hugepages /etc/init.d/disable-transparent-hugepages
 sudo chmod 755 /etc/init.d/disable-transparent-hugepages
 sudo update-rc.d disable-transparent-hugepages defaults
