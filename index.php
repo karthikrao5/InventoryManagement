@@ -18,6 +18,6 @@ $app->get
 	}
 );
 
-require 'Public/core/add-equipment.php';
+require 'public/core/add-equipment.php';
 
 $app->run();
