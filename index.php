@@ -5,6 +5,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 require 'vendor/autoload.php';
 
 $app = new \Slim\App;
+
 $app->get
 (
 	'/hello/{name}',
@@ -16,5 +17,7 @@ $app->get
 		return $response;
 	}
 );
+
+require 'Public/core/add-equipment.php';
 
 $app->run();
