@@ -46,3 +46,6 @@ sudo systemctl enable mongodb
 sudo cp disable-transparent-hugepages /etc/init.d/disable-transparent-hugepages
 sudo chmod 755 /etc/init.d/disable-transparent-hugepages
 sudo update-rc.d disable-transparent-hugepages defaults
+
+# install php-mongodb driver
+sudo apt -y install php-mongodb
