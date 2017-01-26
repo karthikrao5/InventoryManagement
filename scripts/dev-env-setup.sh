@@ -10,7 +10,13 @@ sudo apt -y upgrade
 sudo apt -y install apache2
 
 # install php
-sudo apt -y install php libapache2-mod-php php-mcrypt
+sudo apt -y install php7.0 libapache2-mod-php7.0
+
+# enable rewrite module
+sudo a2enmod rewrite
+
+# change apache config to allow override to all by replacing config file
+sudo mv apache2.conf /etc/apache2/
 
 # install composer (for slim framework)
 sudo apt -y install composer
