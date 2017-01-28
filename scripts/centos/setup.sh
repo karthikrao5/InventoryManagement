@@ -23,9 +23,6 @@ sudo make prefix=/usr/local/git install
 # install apache2
 sudo yum install httpd
 
-# replace welcome.conf
-sudo cp apache2/welcome.conf /etc/httpd/conf.d/
-
 # start apache2 
 sudo service httpd start
 
@@ -64,3 +61,14 @@ cd scripts/centos
 
 # install mongoDB driver for php
 sudo yum -y install php-pecl-mongo
+
+# replace welcome.conf
+sudo cp apache2/welcome.conf /etc/httpd/conf.d/
+
+# allow http connections to iptables
+sudo iptables -I INPUT 4 -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+sudo /etc/init.d/iptables save
+
+# enable mod rewrite
+sudo cp apache2/httpd.conf /etc/httpd/conf/
+sudo service httpd restart
