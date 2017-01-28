@@ -1,2 +1,4 @@
-#exclude vendor directory
+# ignore temp files
+**/*~
+# ignore vendor directory
 vendor/*
