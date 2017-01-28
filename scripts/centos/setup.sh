@@ -72,3 +72,7 @@ sudo /etc/init.d/iptables save
 # enable mod rewrite
 sudo cp apache2/httpd.conf /etc/httpd/conf/
 sudo service httpd restart
+
+# enable httpd auto start at boot
+sudo chkconfig --add httpd
+sudo chkconfig httpd on
