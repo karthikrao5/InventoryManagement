@@ -23,6 +23,9 @@ sudo make prefix=/usr/local/git install
 # install apache2
 sudo yum install httpd
 
+# replace welcome.conf
+sudo cp apache2/welcome.conf /etc/httpd/conf.d/
+
 # start apache2 
 sudo service httpd start
 
