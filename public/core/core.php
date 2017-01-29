@@ -1,4 +1,6 @@
 <?php
+require 'db.php';
+
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -6,10 +8,17 @@ use \Psr\Http\Message\ResponseInterface as Response;
 $route_add_equipment = '/core/add-equipment';
 
 # API callback function
-function add_equipment (Request $request, Response $response)
+function addEquipment (Request $request, Response $response)
 {
+    if (is_null($request->getParsedBody())) // if parsed body is empty or null
+    {
+        return $response->withStatus(400); // return with error code
+    }
+    
 	print_r($request->getParsedBody());
+	$result = db_addEquipment($request->getParsedBody());
+	print_r($result);
 }
 
 # Register REST API
-$app->post($route_add_equipment, 'add_equipment');
+$app->post($route_add_equipment, 'addEquipment');

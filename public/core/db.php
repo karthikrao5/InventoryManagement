@@ -1,29 +1,13 @@
 <?php
-// connect
-// no constructor parameter connects to localhost with default port
-$mongo = new MongoClient();
-
-// select a database
-$db = $mongo->inventorytracking;
-
-// select a collection (table)
-$collection = $db->equipments;
-
-// add a record
-$document = array
-(
-	"type" => "laptop",
-	"cost" => "1234.56",
-	"timestamp" => new MongoDate()
-);
-$collection->insert($document);
-
-// find everything in the collection
-$cursor = $collection->find();
-
-// iterate through the results
-foreach ($cursor as $document)
+// This function inserts given document to the equipments collection and returns result array.
+// Result array contains n, ok, err, errmsg.
+function db_addEquipment($document)
 {
-	print_r($document);
+	$mongo = new MongoClient(); // Connect to localhost with default port.
+	$db = $mongo->inventorytracking; // Select database inventorytracking.
+	$collection = $db->equipments; // Select collection equipments.
+	$result = $collection->insert($document); // Insert given document to collection and get result array.
+	$mongo->close(); // Close open connection.
+	return $result;		
 }
 ?>

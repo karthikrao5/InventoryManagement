@@ -76,3 +76,7 @@ sudo service httpd restart
 # enable httpd auto start at boot
 sudo chkconfig --add httpd
 sudo chkconfig httpd on
+
+# enable httpd (apache2) to make network connection
+# this command hangs in my vm, so I had to ctrl+c but it works. 
+sudo /usr/sbin/setsebool -P httpd_can_network_connect 1 
