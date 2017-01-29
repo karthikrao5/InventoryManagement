@@ -1,0 +1,27 @@
+{
+	"_id" : ObjectId("588d85207f8b9aeb0e44d557"), # this is database generated id. Internal use only.
+	"department_tag" : "<DEPTCODE>-<10 DIGIT HEX>", # this is required field. department code can be MATH, PHYS, BIO, etc. 10 digit hex number can be assigned by IT admins manually or system can generate it automatically. If this code is different, equipments are considered as different one even if all field values are equal (except "_id").
+	"gt_tag" : null or some string, this is required field.
+	"equipment_type" : <EquipmentType>. Cannot be null. Equipment type must be defined prior to add new equipment. Documents in equipmenttype contains its fields and types. This field is used to parse the data correctly. If this document is updated (delete field, add new field, change data type, etc.) then all equipments with this type will be updated and the change will be logged. IT admins can do this.
+	"equipment_name" : null or some string, this is required field.
+	"status" : <"INVENTORY, LOANED, SURPLUSSED, TRASHED"> one of the following state. State can be added by System admin via web or api. this is requried field.
+	"loaned_to" : null or gt username, such as bkang61. This is required field.
+	
+	/*
+	    attributes (fields) defined in equipmenttype document. What ever is added here will be checked
+	    
+	    ex.
+	    
+	    in equipment type document "LAPTOP" : 
+	        "serialnumber" : ["required", "notnull", "string", "Do not put a dummy serial."] // field "serialnumber" is required, cannot be null, data type is string, and suggestion or help string is "Do not put a dummy serial."
+	        
+	    Then in actual equipments document :
+	        "serialnumber" : "DF58E9-88E5F99E5"
+	*/
+	
+	"logs" :
+	[
+	    To be defined in sprint 2
+	]
+}
+
