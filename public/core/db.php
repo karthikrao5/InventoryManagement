@@ -10,4 +10,6 @@ function db_addEquipment($document)
 	$mongo->close(); // Close open connection.
 	return $result;		
 }
+
+function db_check
 ?>

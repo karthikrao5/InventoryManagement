@@ -10,9 +10,11 @@ $route_add_equipment = '/core/add-equipment';
 # API callback function
 function addEquipment (Request $request, Response $response)
 {
-    if (is_null($request->getParsedBody())) // if parsed body is empty or null
+    if (is_null($request->getParsedBody()))
     {
-        return $response->withStatus(400); // return with error code
+        $response->getBody()->write("Invalid JSON document.");
+        $response->withStatus(400);
+        return $response;
     }
     
 	print_r($request->getParsedBody());
