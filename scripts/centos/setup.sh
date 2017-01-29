@@ -3,6 +3,10 @@
 # update system
 sudo yum -y update
 
+# install development packages
+sudo yum install -y curl-devel expat-devel gettext-devel openssl-devel zlib-devel
+sudo yum install -y gcc perl-ExtUtils-MakeMaker
+
 # install apache2
 sudo yum install httpd
 
@@ -65,18 +69,16 @@ sudo chkconfig httpd on
 sudo /usr/sbin/setsebool -P httpd_can_network_connect 1 
 
 # upgrade git to 2.5.3
-sudo yum install -y curl-devel expat-devel gettext-devel openssl-devel zlib-devel
-sudo yum install -y gcc perl-ExtUtils-MakeMaker
-sudo yum remove -y git
-cd /usr/src
-sudo wget https://www.kernel.org/pub/software/scm/git/git-2.5.3.tar.gz
-sudo tar xzf git-2.5.3.tar.gz
-cd git-2.5.3
-sudo make prefix=/usr/local/git all
-sudo make prefix=/usr/local/git install
-# sudo echo "export PATH=$PATH:/usr/local/git/bin" >> /etc/bashrc
+#sudo yum remove -y git
+#cd /usr/src
+#sudo wget https://www.kernel.org/pub/software/scm/git/git-2.5.3.tar.gz
+#sudo tar xzf git-2.5.3.tar.gz
+#cd git-2.5.3
+#sudo make prefix=/usr/local/git all
+#sudo make prefix=/usr/local/git install
+#sudo echo "export PATH=$PATH:/usr/local/git/bin" >> /etc/bashrc
 # command above must run by root (not sudo)
 # run sudo -s to switch to root and run the command
-# sudo source /etc/bashrc
-# source /etc/bashrc
+#sudo source /etc/bashrc
+#source /etc/bashrc
 # run above two commands after echoing the export path to /etc/bashrc
