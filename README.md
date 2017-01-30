@@ -5,14 +5,30 @@ Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 ----
 Getting started with this project
 
-1. Install Ubuntu 16.04 LTS (Desktop is preferred unless you know what you are doing) on VirtualBox.
+1. Install CentOS 6.8 on VirtualBox.
 
 2. Clone this repo on the Desktop directory or anywhere you like.
 
-3. Run `./dev-env-setup.sh` in Scripts directory. Make sure that the script has execute permission.
+3. Run `./setup.sh` in scripts/centos/ directory. Make sure that the script has execute permission `chmod 777 setup.sh`.
 
 4. Reboot the virtual machine.
 
-5. Run `php -S localhost:8080` from root directory of the repo (where index.php is at)
+5. Install VirtualBox Guest Additions for better development environment.
 
-6. Open brower from the virtual machine and type `localhost:8080/hello/{whatever name you want}` to the address bar to see the hello world example. 
+6. Run `./move.sh' in the repo to copy files to /var/www/html
+
+To upgrade git version to 2.5.3 (required to push to repo)
+
+```
+sudo yum remove -y git
+cd /usr/src
+sudo wget https://www.kernel.org/pub/software/scm/git-2.5.3.tar.gz
+sudo tar xzf git-2.5.3.tar.gz
+cd git-2.5.3
+sudo make prefix=/usr/local/git all
+sudo make prefix=/usr/local/git install
+sudo echo "export PATH=$PATH:/usr/local/git/bin" >> /etc/bashrc
+sudo source /etc/bashrc
+sudo -s # to switch to root (required)
+source /etc/bashrc
+```
