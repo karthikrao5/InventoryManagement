@@ -14,7 +14,7 @@ sudo yum install httpd
 sudo service httpd start
 
 # add mongoDB repo to yum
-sudo cp mongoDB/mongodb-org-3.4.repo /etc/yum.repos.d/
+sudo cp mongodb/mongodb-org-3.4.repo /etc/yum.repos.d/
 sudo yum -y update
 
 # install mongoDB
