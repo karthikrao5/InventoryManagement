@@ -3,30 +3,12 @@ require 'db.php';
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-// $app->response->headers->set('Content-Type', 'application/json');
-
 # Register REST API
 $app->get('/add', 'getInventoryItems');
 $app->post('/add', 'addInventory');
 
 
 
-# REST API route
-$route_add_equipment = '/core/add-equipment';
-# API callback function
-function addEquipment (Request $request, Response $response)
-{
-    if (is_null($request->getParsedBody()))
-    {
-        $response->getBody()->write("Invalid JSON document.");
-        $response->withStatus(400);
-        return $response;
-    }
-    
-    print_r($request->getParsedBody());
-    $result = db_addEquipment($request->getParsedBody());
-    print_r($result);
-}
 
 
 // GET all inventory objects
@@ -58,5 +40,26 @@ function addInventory(Request $request, Response $response) {
     $result = db_addEquipment($request->getParsedBody());
     print_r($result);
 }
+
+// ====================== archives below this line================
+
+// this is byung's original code. Keeping it
+// for records.
 # Register REST API
-$app->post($route_add_equipment, 'addEquipment');
+// $app->post($route_add_equipment, 'addEquipment');
+// # REST API route
+// $route_add_equipment = '/core/add-equipment';
+// # API callback function
+// function addEquipment (Request $request, Response $response)
+// {
+//     if (is_null($request->getParsedBody()))
+//     {
+//         $response->getBody()->write("Invalid JSON document.");
+//         $response->withStatus(400);
+//         return $response;
+//     }
+    
+//     print_r($request->getParsedBody());
+//     $result = db_addEquipment($request->getParsedBody());
+//     print_r($result);
+// }
