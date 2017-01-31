@@ -7,10 +7,6 @@ use \Psr\Http\Message\ResponseInterface as Response;
 $app->get('/add', 'getInventoryItems');
 $app->post('/add', 'addInventory');
 
-
-
-
-
 // GET all inventory objects
 function getInventoryItems(Request $request, Response $response) {
     // query DB for all objects
@@ -25,7 +21,6 @@ function getInventoryItems(Request $request, Response $response) {
         throw new PDOException("No records found.");
     }
 }
-
 
 // POST new inventory fields from clientside into db
 function addInventory(Request $request, Response $response) {
