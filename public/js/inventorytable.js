@@ -6,6 +6,24 @@ getFirstKey = function(dict) {
     }
 }
 
+toDate = function(sec) {
+
+    var date = new Date(sec * 1000);
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", 
+        "Sep", "Oct", "Nov", "Dec"];
+
+    var result = months[date.getMonth()] + "-";
+    result += date.getDate() + "-";
+    result += date.getFullYear() + " ";
+    result += date.getHours() + ":";
+    result += date.getMinutes() + ":";
+    result += date.getSeconds();
+    return result;
+
+
+
+}
+
 $(document).ready(function() {
 
     //get inventory data
@@ -33,8 +51,16 @@ $(document).ready(function() {
 
                 //if the element is an object index one level deeper
                 if (typeof(inventory[key][key2]) === 'object') {
-                    tab += "<td>" + inventory[key][key2]
-                    [getFirstKey(inventory[key][key2])]+ "</td>";
+                    if (key2 == "timestamp") {
+                        var time = toDate(inventory[key][key2]
+                        [getFirstKey(inventory[key][key2])]);
+                        tab += "<td>" + time + "</td>";
+                    }
+
+                    else {
+                        tab += "<td>" + inventory[key][key2]
+                        [getFirstKey(inventory[key][key2])]+ "</td>";
+                    }
                 }
                 else {
                     tab += "<td>" + (inventory[key][key2])+ "</td>";
