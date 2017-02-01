@@ -37,3 +37,4 @@ API routes:
 1. GET all inventory items "/inventory/add"
 2. POST item to add to db "/inventory/add" with JSON body of what you want to add
 3. GET query item by ObjectID "/inventory?id=someIntObjectId"
+ex "http://localhost/inventory?id=5890001e1502bdf19873571a"
