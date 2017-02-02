@@ -2,24 +2,39 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-# import necessary packages from composer
 require '../vendor/autoload.php';
 
+$app = new \Slim\App([
+    'settings' => [
+        'displayErrorDetails' => true
+    ]
+]);
 
-# instantiate appplication object
-$app = new \Slim\App;
+require './core/core.php';
 
-$app->get('/hello/{name}', function (Request $request, Response $response) {
-	
-    $name = $request->getAttribute('name');
-    $data = array('name' => $name, 'message' => 'hello there.');
-	$newResponse = $response->withJson($data);
+//twig container
+$container = $app->getContainer();
+$container['view'] = function($container) {
+	$view = new \Slim\Views\Twig('templates', [
+		'cache' => false //idk how to cache
+	]);
+	$basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
+    $view->addExtension(new Slim\Views\TwigExtension($container['router'], $basePath));
 
-    return $newResponse;
-});
+    return $view;
+};
 
-# import REST APIs
-require 'core/core.php';
+//with Twig:
+// $this->view invoked inside the route callback is a reference to the \Slim\Views\Twig instance returned by the view container service. The \Slim\Views\Twig instance’s render() method accepts a PSR 7 Response object as its first argument, the Twig template path as its second argument, and an array of template variables as its final argument. The render() method returns a new PSR 7 Response object whose body is the rendered Twig template.
+$app->get('/test/{param}', function ($request, $response, $args) {
 
-# start application
+	$inv = json_decode(db_getInventory(), true);
+    return $this->view->render($response, 'template_child.html', [
+        'param' => $args['param'],
+        'data' => $inv
+    ]);
+})->setName('url?');
+
+
+
 $app->run();
