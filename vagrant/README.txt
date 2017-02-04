@@ -39,7 +39,7 @@ Getting started with Vagrant
    
 9. Easy file sharing.
 
-   By default, "InventoryManagement/vagrant/" (on host) is mapped to "/vagrant/" (on VM).
+   By default, "InventoryManagement/vagrant/" (on host) is mapped to "/vagrant" (on VM).
    For our project, "InventoryManagement/vagrant/vm/" (on host) is mapped to "/home/vagrant/InventoryManagement" (on VM).
    
    You can modify files on the host and change will be reflected right away.
