@@ -1,32 +1,33 @@
 #!/bin/bash
 
-# update system
+# This script is to provision development and production servers.
+# It is being used by Vagrant during provisioning stage of a VM.
+
+# Add MongoDB repository to yum by copying mongodb-org-3.4.repo to /etc/yum.repos.d/
+sudo cp mongodb/mongodb-org-3.4.repo /etc/yum.repos.d
+
+# Update system.
 sudo yum -y update
 
-# install development packages
-sudo yum install -y curl-devel expat-devel gettext-devel openssl-devel zlib-devel
-sudo yum install -y gcc perl-ExtUtils-MakeMaker
+# Install development packages.
+sudo yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc perl-ExtUtils-MakeMaker
 
-# install apache2
-sudo yum install httpd
+# Install apache2.
+sudo yum -y install httpd
 
-# start apache2 
+# Start apache2.
 sudo service httpd start
 
-# add mongoDB repo to yum
-sudo cp mongodb/mongodb-org-3.4.repo /etc/yum.repos.d/
-sudo yum -y update
+# Install MongoDB.
+sudo yum -y install mongodb-org
 
-# install mongoDB
-sudo yum install -y mongodb-org
-
-# start mongoDB
+# Start MongoDB.
 sudo service mongod start
 
-# install php 5.3
-sudo yum install php
+# Install php 5.3.
+sudo yum -y install php
 
-# upgrade php 5.3 to 5.6
+# Upgrade php 5.3 to 5.6.
 sudo wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
 sudo rpm -Uvh epel-release-latest-6.noarch.rpm
 sudo wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
@@ -35,50 +36,48 @@ sudo rm epel-release-latest-6.noarch.rpm remi-release-6*.rpm
 sudo cp php/remi.repo /etc/yum.repos.d/
 sudo yum -y upgrade php*
 
-# install composer
+# Install Composer (php package manager).
 sudo curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/bin/composer
 sudo chmod +x /usr/bin/composer
 
-# install slim framework
-# uses composer.lock file
-cd ../..
-composer install
-cd scripts/centos
-
-# install mongoDB driver for php
+# Install MongoDB driver for php.
 sudo yum -y install php-pecl-mongo
 
-# replace welcome.conf
+# Replace welcome.conf in apache2 config folder.
 sudo cp apache2/welcome.conf /etc/httpd/conf.d/
 
-# allow http connections to iptables
+# Allow http connections to iptables.
 sudo iptables -I INPUT 4 -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
 sudo /etc/init.d/iptables save
 
-# enable mod rewrite
+# Enable mod rewrite for apache2.
 sudo cp apache2/httpd.conf /etc/httpd/conf/
 sudo service httpd restart
 
-# enable httpd auto start at boot
+# Enable httpd auto start at boot.
 sudo chkconfig --add httpd
 sudo chkconfig httpd on
 
-# enable httpd (apache2) to make network connection
-# this command hangs in my vm, so I had to ctrl+c but it works. 
-sudo /usr/sbin/setsebool -P httpd_can_network_connect 1 
+# Enable apache2 to make network connection.
+sudo /usr/sbin/setsebool -P httpd_can_network_connect 1
 
-# upgrade git to 2.5.3
-#sudo yum remove -y git
-#cd /usr/src
-#sudo wget https://www.kernel.org/pub/software/scm/git/git-2.5.3.tar.gz
-#sudo tar xzf git-2.5.3.tar.gz
-#cd git-2.5.3
-#sudo make prefix=/usr/local/git all
-#sudo make prefix=/usr/local/git install
-#sudo echo "export PATH=$PATH:/usr/local/git/bin" >> /etc/bashrc
-# command above must run by root (not sudo)
-# run sudo -s to switch to root and run the command
-#sudo source /etc/bashrc
-#source /etc/bashrc
-# run above two commands after echoing the export path to /etc/bashrc
+# Upgrade git to 2.11.1
+sudo yum -y remove git
+cd /usr/src
+sudo wget https://www.kernel.org/pub/software/scm/git/git-2.11.1.tar.gz
+sudo tar xzf git-2.11.1.tar.gz
+cd git-2.11.1
+sudo make prefix=/usr/local/git all
+sudo make prefix=/usr/local/git install
+sudo echo 'export PATH=$PATH:/usr/local/git/bin' >> /etc/bashrc
+sudo ln -s /usr/local/git/bin/git /usr/bin/git
+sudo source /etc/bashrc
+
+# Clone git repository in home directory
+cd ~/
+git clone https://github.com/karthikrao5/InventoryManagement.git
+
+# Install Slim framework by using composer.lock file in repo.
+cd InventoryManagement/
+composer install
