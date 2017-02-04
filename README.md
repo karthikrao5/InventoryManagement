@@ -32,3 +32,5 @@ sudo source /etc/bashrc
 sudo -s # to switch to root (required)
 source /etc/bashrc
 ```
+
+Or alternatively, use Vagrant to setup development virtual machine automatically and use it.
