@@ -68,14 +68,22 @@ Vagrant.configure("2") do |config|
   #   apt-get update
   #   apt-get install -y apache2
   # SHELL
+  config.vm.synced_folder ".", "/home/vagrant/shared"
+  
   config.vm.provision "file", source: "../scripts", destination: "/tmp"
-  config.vm.provision "shell", inline: "cd /tmp/scripts/centos/; /bin/bash setup.sh"
-  config.vm.provision "shell", inline: "mv /root/InventoryManagement /home/vagrant"
-  config.vm.provision "shell", inline: "chown -R vagrant /home/vagrant/InventoryManagement"
-  config.vm.provision "shell", inline: "cd /home/vagrant/InventoryManagement/; /bin/bash move.sh"
+  config.vm.provision "shell", inline: "cd /tmp/scripts/centos; /bin/bash setup.sh"
+  config.vm.provision "shell", inline: "mv /root/InventoryManagement /home/vagrant/shared"
+  config.vm.provision "shell", inline: "chown -R vagrant /home/vagrant"
+  config.vm.provision "shell", inline: "cd /home/vagrant/shared/InventoryManagement; /bin/bash move.sh"
   config.vm.provision "shell", inline: "rm -rf /tmp/scripts"
   
-  config.vm.synced_folder "vm", "/home/vagrant/InventoryManagement"
+  config.vm.provision "shell", inline: "git config --global core.autocrlf input"
+  
+  require 'fileutils'
+  
+  if ARGV[0] == "destroy"
+	FileUtils.remove_dir('InventoryManagement')
+  end
 end
 
 

@@ -1,4 +1,3 @@
 # ignore .Vagrant directory
 .Vagrant/
-vm/*
-!vm/.gitkeep
+InventoryManagement
