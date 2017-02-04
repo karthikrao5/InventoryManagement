@@ -75,7 +75,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: "cd /home/vagrant/InventoryManagement/; /bin/bash move.sh"
   config.vm.provision "shell", inline: "rm -rf /tmp/scripts"
   
-  config.vm.synced_folder "vm/", "/home/vagrant/"
+  config.vm.synced_folder "vm/", "/home/vagrant/InventoryManagement"
 end
 
 
