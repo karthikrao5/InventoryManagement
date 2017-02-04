@@ -4,7 +4,14 @@ Getting started with Vagrant
 
 	https://www.vagrantup.com/downloads.html
 	
-2. Clone the git repository to host (not in virtual machine).
+2. Clone the git repository to host (not in virtual machine). 
+   It is very important to checkout git repository as-is, meaning EOL should be in Unix type (LF).
+   If you see some weird errors during the provisioning step, probably your repo is checked out in DOS type EOL (CRLF).
+   Vagrant copies "scripts/centos/setup.sh" into the VM and try to read the file. Since the VM (Linux) cannot read
+   the file correctly, Vagrant provisioning will spit out weird erros and fail.
+   Take a look at this link to avoid/fix the issue.
+   
+	http://stackoverflow.com/questions/2517190/how-do-i-force-git-to-use-lf-instead-of-crlf-under-windows
 
 3. Download Vagrant box "centos-6.8-x86_64.box" from the team Google Drive.
    It's under /JD Group 154/Vagrant Box/
