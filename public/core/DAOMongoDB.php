@@ -24,24 +24,24 @@ class DAOMongoDB implements iDAO
         $this->mongo = new MongoClient($connectionString);
     }
     
-    public function createEquipment ($collection, $document)
+    public function createDocument ($databaseStr, $collectionStr, $document)
     {
-        $equipments = $this->mongo->inventorytracking->equipments;
-        $result = $equipments->insert($equipment);
-        return $equipment['_id']->{'$id'};
+        $collection = $this->mongo->$databaseStr->$collectionStr;
+        $result = $collection->insert($document);
+        return $document['_id']->{'$id'};
     }
     
-    public function retrieveDocument ($collection, $query)
-    {
-        return null;
-    }
-    
-    public function updateDocument ($collection, $filter, $keyvaluepairs)
+    public function retrieveDocument ($databaseStr, $collectionStr, $query)
     {
         return null;
     }
     
-    public function deleteDocument ($id)
+    public function updateDocument ($databaseStr, $collectionStr, $filter, $keyvaluepairs)
+    {
+        return null;
+    }
+    
+    public function deleteDocument ($databaseStr, $collectionStr, $id)
     {
         return null;
     }

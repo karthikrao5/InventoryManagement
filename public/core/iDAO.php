@@ -6,10 +6,10 @@
     interface iDAO
     {
         public static function getInstance(); // Returns singleton instance of the DAO.
-        public function createDocument ($collection, $document); // Returns id of the document.
-        public function retrieveDocument ($collection, $query); // Returns array of documents.
-        public function updateDocument ($collection, $filter, $keyvaluepairs); // Returns update result.
-        public function deleteDocument ($id); // Returns delete result. This function actually deletes equipment document from the DB.
+        public function createDocument ($databaseStr, $collectionStr, $document); // Returns id of the document.
+        public function retrieveDocument ($databaseStr, $collectionStr, $query); // Returns array of documents.
+        public function updateDocument ($databaseStr, $collectionStr, $filter, $keyvaluepairs); // Returns update result.
+        public function deleteDocument ($databaseStr, $collectionStr, $id); // Returns delete result. This function actually deletes equipment document from the DB.
                                                // Use updateEquipment function to mark the equipment as surplussed or trashed.
     }
 ?>

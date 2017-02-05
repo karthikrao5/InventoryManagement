@@ -7,7 +7,7 @@
         "test" => "Created in DBTest.php"
     );
     
-    $result = $db->createEquipment($equipment);
+    $result = $db->createDocument("inventorytracking", "equipments", $equipment);
     
     print_r($result);
 ?>
