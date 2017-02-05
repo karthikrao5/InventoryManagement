@@ -1,0 +1,3 @@
+# ignore .Vagrant directory
+.Vagrant/
+InventoryManagement
