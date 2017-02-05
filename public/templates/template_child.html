@@ -1,0 +1,36 @@
+{% extends "template.html" %}
+
+        {% block content %}
+
+         <h1>{{ param }}</h1>
+         <div class="table-responsive">
+	      <table class="table table-striped">
+	        <thead>
+	          <tr>
+	            <th>ID</th>
+	            <th>Header</th>
+	            <th>Header</th>
+	            <th>Header</th>
+	            <th>Header</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+
+		         {% for item in data %}
+		         	<tr>
+		         	{% for col in item %}
+		         		{% if col is iterable %}
+		         			<td>{{ col | first }}</td>
+		         		{% else %}
+		         			<td>{{ col }}</td>
+		         		{% endif %}
+
+		         		
+		         	{% endfor %}
+		         	</tr>
+		         {% endfor %}
+		    </tbody>
+          </table>
+
+        {% endblock %}
+
