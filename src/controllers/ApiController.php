@@ -29,7 +29,25 @@ public class ApiController
     /**
      * @return JSON document with all items
      */
-    public function getAll() {
+    public function getAll(Request $request, Response $response) {
+        try {
+            // query DB for all objects
+            $result = db_getInventory();
+            if($result) {
+                $logger->info("getAll request successful");
+               // construct json with collection
+                return $response->withStatus(200)
+                                ->withHeader("Content-Type", "application/json")
+                                ->write($result); 
+            } else {
+                $logger->info("getAll request unsuccessful, no records found.");
+                throw new PDOException("No records found.");
+            }
+        } catch(PDOException $e) {
+            $logger->info("getAll request unsuccessful, 404 error");
+            $response->withStatus(404)
+                     ->write('{"error":{"text":'. $e->getMessage() .'}}');
+        }
 
     }
 
