@@ -6,9 +6,9 @@ return [
         'displayErrorDetails' => false,
         // View settings
         'view' => [
-            'template_path' => __DIR__ . '/../templates',
+            'template_path' => __DIR__ . '/../src/templates',
             'twig' => [
-                'cache' => __DIR__ . '/../cache/twig',
+                'cache' => __DIR__ . '/../src/cache/twig',
                 'debug' => true,
                 'auto_reload' => true,
             ],
@@ -16,7 +16,7 @@ return [
         // monolog settings
         'logger' => [
             'name' => 'app',
-            'path' => __DIR__ . '/../log/app.log',
+            'path' => __DIR__ . '/../src/log/app.log',
         ],
     ],
 ];
