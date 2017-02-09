@@ -32,7 +32,6 @@ sudo source /etc/bashrc
 sudo -s # to switch to root (required)
 source /etc/bashrc
 ```
-<<<<<<< HEAD
 
 Or alternatively, use Vagrant to setup development virtual machine automatically and use it.
 =======
@@ -42,6 +41,3 @@ API routes:
 2. POST item to add to db "/inventory/add" with JSON body of what you want to add
 3. GET query item by ObjectID "/inventory?id=someIntObjectId"
 ex "http://localhost/inventory?id=5890001e1502bdf19873571a"
-
-testing slack integration. disregard this line.
->>>>>>> d66862c5e82a992643ae4db61caf0b51e96d6e31

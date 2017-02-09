@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  {% block head %}
+    {{ include('components/head.html') }}
+  {% endblock %}
+
+  <body>
+
+    {% block nav %}
+      {{ include('components/nav.html') }}
+    {% endblock %}
+
+    <div class="container-fluid">
+      <div class="row">
+
+        {% block sidebar %}
+          {{ include('components/sidebar.html') }}
+        {% endblock %}
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+          {% block content %}
+            {{ include('components/dummy_content.html') }}
+          {% endblock %}
+        </main>
+
+      </div>
+    </div>
+
+    {% block footer %}
+      {{ include('components/footer.html') }}
+    {% endblock %}
+
+  </body>
+</html>
