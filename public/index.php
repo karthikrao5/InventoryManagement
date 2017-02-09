@@ -1,21 +1,24 @@
 <?php
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+
+session_start();
+
 # import necessary packages from composer
-require '../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 
 // get settings from settings file
-$settings = require '../src/settings/php';
+$settings = require __DIR__ . '/../src/settings.php';
 
-# instantiate appplication object
+// instantiate appplication object
 $app = new \Slim\App($settings);
 
 // set dependencies
-require '../src/dependencies.php';
+require __DIR__ . '/../src/dependencies.php';
 
 // set routes
-require '../src/routes/php';
+require __DIR__ . '/../src/routes.php';
 
 // test route to check if app is running
 $app->get('/hello/{name}', function (Request $request, Response $response) {
