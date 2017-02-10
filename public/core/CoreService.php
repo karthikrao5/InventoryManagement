@@ -1,12 +1,13 @@
 <?php
-	require 'Interfaces.php';
-	require 'DAOMongoDB.php';
+	require_once 'Interfaces.php';
+	require_once 'DAOMongoDB.php';
+	require_once 'Validator.php';
 	
-	public class CoreService implements IService
+	class CoreService implements IService
 	{
-		private static IService instance;
+		private static $instance;
 		
-		public static IService getInstance()
+		public static function getInstance()
 		{
 			if(CoreService::$instance == null)
 			{
@@ -16,17 +17,35 @@
 			return CoreService::$instance;
 		}
 		
-		private IDAO $dao;
+		private $dao;
+		private $validator;
 		
 		private function __construct()
 		{
 			$this->dao = DAOMongoDB::getInstance();
+			$this->validator = new Validator($this->dao);
 		}
 		
 		// Returns an array that contains id (on success), result, and message.
 		public function addEquipment($document)
 		{
+			$result = 
+			[
+				"id" => null,
+				"result" => false,
+				"message" => null,
+			];
 			// Validator not functioning yet.
+			if($this->validator->validateCreateEquipment($document))
+			{
+				$result["id"] = $this->dao->createEquipment($document);
+				$result["result"] = true;
+				$result["message"] = "Equipment " . $document["department_tag"] . " created successfully.";
+				return $result;
+			}
+			
+			$result["message"] = "Failed to create equipment with department_tag " . $document["department_tag"];
+			return $result;
 		}
 		
 		// Returns an array that contains id (on success), result, and message.

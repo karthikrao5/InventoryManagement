@@ -1,17 +1,10 @@
 <?php
 	// This file contains all interfaces used in core.
 	
-	// This is DAO (Data Access Object) interface.
-    // It interfaces actual database module and service module.
-    // Service module can use this interface to access database.
-    interface IDAO
-    {
-        public function createEquipment($document); // Returns id of equipment document.
-		public function updateEquipment($document); // Returns id of equipment document.
-		public function getEquipmentById($id); // Returns equipment document.
-		public function removeEquipment($id); // Returns result array.
-    }
-	
+	// This is Service object interface.
+	// This should be the only functions that non-core scripts should use.
+	// More functions will be added as project progresses and function signatures will rarely modified/removed.
+	// Using objects other than implementing this inteface can break your code easily and it is your responsibility to fix them.
 	interface IService
 	{	
 		// Returns an array that contains id (on success), result, and message.
@@ -44,6 +37,22 @@
 		public function removeEquipmentType($id);
 	}
 	
+	// This is DAO (Data Access Object) interface.
+    // It interfaces actual database module and service module.
+    // Service module can use this interface to access database.
+	// These functions should not be called directly by non-core modules.
+	// Functions defined in this interface will often be removed and modified. It is your responsibility to fix if anything breaks.
+    interface IDAO
+    {
+        public function createEquipment($document); // Returns id of equipment document.
+		public function updateEquipment($document); // Returns id of equipment document.
+		public function getEquipmentById($id); // Returns equipment document.
+		public function removeEquipment($id); // Returns result array.
+    }
+	
+	// This is Validator interface.
+	// These functions should not be called directly by non-core modules.
+	// Functions defined in this interface will often be removed and modified. It is your responsibility to fix if anything breaks.
 	interface IValidator
 	{
 		public function validateCreateEquipment($document);
