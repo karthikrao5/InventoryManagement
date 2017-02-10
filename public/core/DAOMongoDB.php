@@ -1,6 +1,6 @@
 <?php
 
-require 'IDAO.php';
+require 'Interfaces.php';
 
 class DAOMongoDB implements IDAO
 {
