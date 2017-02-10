@@ -1,8 +1,8 @@
 <?php
 
-require 'iDAO.php';
+require 'IDAO.php';
 
-class DAOMongoDB implements iDAO
+class DAOMongoDB implements IDAO
 {
     private static $dao = null;
     private static $connectionString = null; // Null is equivalent to "mongodb://localhost:27017".
@@ -24,26 +24,26 @@ class DAOMongoDB implements iDAO
         $this->mongo = new MongoClient($connectionString);
     }
     
-    public function createDocument ($databaseStr, $collectionStr, $document)
+    public function createEquipment($document)
     {
-        $collection = $this->mongo->$databaseStr->$collectionStr;
-        $result = $collection->insert($document);
-        return $document['_id']->{'$id'};
+		$equipments = $this->mongo->inventorytracking->equipments;
+		$result = $equipments->insert($document);
+		return $document['_id']->{'$id'};
     }
-    
-    public function retrieveDocument ($databaseStr, $collectionStr, $query)
-    {
-        return null;
-    }
-    
-    public function updateDocument ($databaseStr, $collectionStr, $filter, $keyvaluepairs)
-    {
-        return null;
-    }
-    
-    public function deleteDocument ($databaseStr, $collectionStr, $id)
-    {
-        return null;
-    }
+	
+	public function updateEquipment($document)
+	{
+		throw new BadMethodCallException('Not implemented.');
+	}
+	
+	public function getEquipmentById($id)
+	{
+		throw new BadMethodCallException('Not implemented.');
+	}
+	
+	public function removeEquipment($id)
+	{
+		throw new BadMethodCallException('Not implemented.');
+	}
 }
 ?>
