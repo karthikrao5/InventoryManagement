@@ -4,7 +4,7 @@ Ask Byung for any questions.
 
 This document will be updated as the project progresses.
 
-1. Equipment
+1. Equipment (in equipments collection)
 
 	Equipment document is in "equipments" collection (table) in the database.
 	This represents an equipment that is tracked in the system and consists of 3 parts,
@@ -127,7 +127,7 @@ This document will be updated as the project progresses.
 				}
 		}
 	
-2. Equipment Type
+2. Equipment Type (in equipmenttypes collection)
 
 	a. common fields
 	
@@ -175,7 +175,7 @@ This document will be updated as the project progresses.
 		"os" : ["optional", "not_unique", "string", "", ""]
 	}
 
-3. Log
+3. Log (in logs collection)
 
    It is mongoDB's best practice to have duplicate information rather than having references,
    so each log document will be present in both "logs" collection (table) and inside of equipment document.
