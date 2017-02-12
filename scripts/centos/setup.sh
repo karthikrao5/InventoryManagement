@@ -74,6 +74,10 @@ sudo echo 'export PATH=$PATH:/usr/local/git/bin' >> /etc/bashrc
 sudo ln -s /usr/local/git/bin/git /usr/bin/git
 sudo source /etc/bashrc
 
+# Fill the database
+cd /tmp/scripts/centos/mongodb/
+/bin/bash fillDB.sh
+
 # Clone git repository in home directory
 cd ~/
 git clone https://github.com/karthikrao5/InventoryManagement.git

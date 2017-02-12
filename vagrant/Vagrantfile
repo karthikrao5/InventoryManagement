@@ -71,6 +71,11 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/home/vagrant/shared"
   
   config.vm.provision "file", source: "../scripts", destination: "/tmp"
+  config.vm.provision "shell", inline: "yum install -y dos2unix"
+  config.vm.provision "shell", inline: "dos2unix /tmp/scripts/centos/*.*"
+  config.vm.provision "shell", inline: "dos2unix /tmp/scripts/centos/php/*.*"
+  config.vm.provision "shell", inline: "dos2unix /tmp/scripts/centos/mongodb/*.*"
+  config.vm.provision "shell", inline: "dos2unix /tmp/scripts/centos/apache2/*.*"
   config.vm.provision "shell", inline: "cd /tmp/scripts/centos; /bin/bash setup.sh"
   config.vm.provision "shell", inline: "mv /root/InventoryManagement /home/vagrant/shared"
   config.vm.provision "shell", inline: "chown -R vagrant /home/vagrant"
@@ -82,7 +87,7 @@ Vagrant.configure("2") do |config|
   require 'fileutils'
   
   if ARGV[0] == "destroy"
-	FileUtils.remove_dir('InventoryManagement')
+	FileUtils.rm_rf('InventoryManagement')
   end
 end
 
