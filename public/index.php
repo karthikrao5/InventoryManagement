@@ -2,39 +2,35 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-require '../vendor/autoload.php';
+session_start();
 
-$app = new \Slim\App([
-    'settings' => [
-        'displayErrorDetails' => true
-    ]
-]);
-
-require './core/core.php';
-
-//twig container
-$container = $app->getContainer();
-$container['view'] = function($container) {
-	$view = new \Slim\Views\Twig('templates', [
-		'cache' => false //idk how to cache
-	]);
-	$basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
-    $view->addExtension(new Slim\Views\TwigExtension($container['router'], $basePath));
-
-    return $view;
-};
-
-//with Twig:
-// $this->view invoked inside the route callback is a reference to the \Slim\Views\Twig instance returned by the view container service. The \Slim\Views\Twig instance’s render() method accepts a PSR 7 Response object as its first argument, the Twig template path as its second argument, and an array of template variables as its final argument. The render() method returns a new PSR 7 Response object whose body is the rendered Twig template.
-$app->get('/test/{param}', function ($request, $response, $args) {
-
-	$inv = json_decode(db_getInventory(), true);
-    return $this->view->render($response, 'template_child.html', [
-        'param' => $args['param'],
-        'data' => $inv
-    ]);
-})->setName('url?');
+# import necessary packages from composer
+require __DIR__ . '/../vendor/autoload.php';
 
 
+// get settings from settings file
+$settings = require __DIR__ . '/../src/settings.php';
 
+// instantiate appplication object
+$app = new \Slim\App($settings);
+
+// set dependencies
+require __DIR__ . '/../src/dependencies.php';
+
+// set routes
+require __DIR__ . '/../src/routes.php';
+
+// test route to check if app is running
+$app->get('/hello/{name}', function (Request $request, Response $response) {
+	
+    $name = $request->getAttribute('name');
+    $data = array('name' => $name, 'message' => 'hello there.');
+	$newResponse = $response->withJson($data);
+    return $newResponse;
+});
+// # import REST APIs
+// require 'core/core.php';
+
+
+# start application
 $app->run();
