@@ -81,3 +81,7 @@ git clone https://github.com/karthikrao5/InventoryManagement.git
 # Install Slim framework by using composer.lock file in repo.
 cd InventoryManagement/
 composer install
+
+# Fill the database
+cd mongodb/
+./fillDB.sh
