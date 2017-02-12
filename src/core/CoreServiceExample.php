@@ -1,6 +1,7 @@
 <?php
-    require_once 'Interfaces.php';
-	require_once 'CoreService.php';
+    namespace App\core;
+    
+    include "CoreService.php";
     
     $equipment = array(
         "test" => "Created in DBTest.php",
