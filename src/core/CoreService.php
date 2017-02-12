@@ -1,7 +1,9 @@
 <?php
-	require_once 'Interfaces.php';
-	require_once 'DAOMongoDB.php';
-	require_once 'Validator.php';
+    namespace App\core;
+
+	require_once "Interfaces.php";
+    require_once "DAOMongoDB.php";
+    require_once "Validator.php";
 	
 	class CoreService implements IService
 	{

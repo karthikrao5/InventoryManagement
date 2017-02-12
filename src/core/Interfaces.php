@@ -1,4 +1,5 @@
 <?php
+    namespace App\core;
 	// This file contains all interfaces used in core.
 	
 	// This is Service object interface.

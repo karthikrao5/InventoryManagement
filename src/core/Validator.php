@@ -1,5 +1,5 @@
 <?php
-	require_once 'Interfaces.php';
+    namespace App\core;
 	
 	class Validator implements IValidator
 	{
