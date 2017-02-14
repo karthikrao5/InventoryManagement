@@ -1,15 +1,14 @@
 <?php
 namespace App\Controller;
 
-use Psr\Log\LoggerInterface;
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
+// use \Psr\Http\Message\ServerRequestInterface as Request;
+// use \Psr\Http\Message\ResponseInterface as Response;
 
 
 public class ApiController {
 
-    public function __construct(LoggerInterface $logger) {
-        $this->logger = $logger;
+    public function __construct() {
+
     }
 
 
@@ -20,7 +19,7 @@ public class ApiController {
     /**
      * @return JSON document with all items
      */
-    public function getAll(Request $request, Response $response) {
+    public function getAll($request, $response) {
         // try {
         //     // query DB for all objects
         //     $result = $this->$db->getAll();
