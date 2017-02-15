@@ -5,10 +5,11 @@ namespace App\Controller;
 // use \Psr\Http\Message\ResponseInterface as Response;
 
 
-public class ApiController {
+class ApiController {
+
 
     public function __construct() {
-
+    
     }
 
 
@@ -38,9 +39,8 @@ public class ApiController {
         //     $response->withStatus(404)
         //              ->write('{"error":{"text":'. $e->getMessage() .'}}');
         // }
-        return $response->withStatus(200)
-                        ->withHeader("Content-Type", "application/json")
-                        ->write("Brah"); 
+        return $response->write("Brah"); 
+
 
     }
 
@@ -48,9 +48,9 @@ public class ApiController {
      * @param $item is a json with some fields
      * @return 
      */
-    public function addItem($item) {
+    // public function addItem($item) {
 
-    }
+    // }
 
 
 // -----------------------------------------------------------------
@@ -60,20 +60,20 @@ public class ApiController {
     /**
      * 
      */
-    public function addItem(Request $request, Response $response) {
-        if (is_null($request->getParsedBody()))
-        {
-            $response->getBody()->write("Invalid JSON document.");
-            $response->withStatus(400);
-            return $response;
-        }
-        try {
-            print_r($request->getParsedBody());
-            $result = db_addEquipment($request->getParsedBody());
-            print_r($result);
-        } catch(PDOException $e) {
-            $app->response()->setStatus(404);
-            echo '{"error":{"text":'. $e->getMessage() .'}}';
-        }
-    }
+    // public function addItem(Request $request, Response $response) {
+    //     if (is_null($request->getParsedBody()))
+    //     {
+    //         $response->getBody()->write("Invalid JSON document.");
+    //         $response->withStatus(400);
+    //         return $response;
+    //     }
+    //     try {
+    //         print_r($request->getParsedBody());
+    //         $result = db_addEquipment($request->getParsedBody());
+    //         print_r($result);
+    //     } catch(PDOException $e) {
+    //         $app->response()->setStatus(404);
+    //         echo '{"error":{"text":'. $e->getMessage() .'}}';
+    //     }
+    // }
 }

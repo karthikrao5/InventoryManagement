@@ -10,8 +10,6 @@ $app->group('/v1', function() {
 
 
 
-
-
 // Front-end routes
 
 

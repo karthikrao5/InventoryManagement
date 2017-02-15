@@ -43,14 +43,10 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
-// $container['db'] = function($c) {
-//     // get a db config file. rn dont need since
-//     // default mongo connection is to localhost
-//     // $config = $c->get('dbconfig');
-//     // $config = array();
-
-//     return new App\db\DatabaseService();
-// };
+$container['db'] = function($c) {
+    $db = new App\core\CoreService();
+    return $db;
+};
 
 
 // -----------------------------------------------------------------------------
@@ -63,5 +59,9 @@ $container['logger'] = function ($c) {
 
 $container['HomeController'] = function ($c) {
     return new \App\Controller\HomeController($c->get('view'), $c->get('logger'));
+};
+
+$container["ApiController"] = function($c) {
+    return new \App\Controller\ApiController();
 };
 
