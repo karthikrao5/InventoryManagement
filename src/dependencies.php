@@ -44,7 +44,7 @@ $container['logger'] = function ($c) {
 };
 
 $container['db'] = function($c) {
-    $db = new App\core\CoreService();
+    $db = new App\core\DummyDB();
     return $db;
 };
 
@@ -62,6 +62,10 @@ $container['HomeController'] = function ($c) {
 };
 
 $container["ApiController"] = function($c) {
-    return new \App\Controller\ApiController();
+    return new \App\Controller\ApiController($c->get('db'));
+};
+
+$container["DummyController"] = function($c) {
+    return new \App\Controller\DummyController($c->get('db'));
 };
 
