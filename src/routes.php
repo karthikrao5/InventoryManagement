@@ -89,8 +89,10 @@ function getAll() {
 	$collection = $db->equipments;
 	// MongoCursor aka iterator of all documents in collection
 	$cursor = $collection->find();
-	$mongo->close();
-	return iterator_to_array($cursor);
+	if ($cursor) {
+		return iterator_to_array($cursor);
+	}
+	return null;
 }
 
 // // this is how you use findItem in the controller: 
