@@ -60,9 +60,8 @@ $app->get('/', 'HomeController:index');
 
 $app->get('/home', function($request, $response) {
 	// $this->logger->info("reached /home");
-	return $this->view->render($response, 'home.twig');
+	return $this->view->render($response, 'template.html');
 });
-
 
 
 
@@ -123,3 +122,5 @@ function getAll() {
 // 		return ("Item removal unsuccessful.");
 // 	}
 // }
+
+
