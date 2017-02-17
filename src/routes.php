@@ -33,10 +33,12 @@ $app->post('/inventory', function($request, $response) {
     }
 
     try {
-    	foreach($request->getParsedBody() as $item) {
-    		addItem($item["item"], 'equipments');
-    		addItem($item['itemtype'], 'equipmenttypes');
-    	}
+    	addItem($request->getParsedBody());
+    	print_r($request->getParsedBody());
+    	// foreach($request->getParsedBody() as $item) {
+    	// 	addItem($item["item"], 'equipments');
+    	// 	addItem($item['itemtype'], 'equipmenttypes');
+    	// }
     } catch(PDOException $e) {
         $response()->setStatus(404);
         echo '{"error":{"text":'. $e->getMessage() .'}}';
@@ -65,11 +67,11 @@ $app->get('/home', function($request, $response) {
 
 
 
-function addItem($itemToAdd, $whichCol) {
+function addItem($itemToAdd) {
 	$mongo = new MongoClient();
 	$db = $mongo->inventorytracking;
+	$collection = $db->equipments;
 
-	$collection = $db->$whichCol;
 	$itemToAdd["created_on"] = new MongoDate(); // Add timestamp.
 	$itemToAdd["last_updated"] = new MongoDate();
 	$result = $collection->insert($itemToAdd, array('w' => 1)); // Insert given document to collection and get result array.
