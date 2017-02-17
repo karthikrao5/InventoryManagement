@@ -1,8 +1,9 @@
-curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 9b959211-053f-d8d5-5bf0-869124fcd19f" -d '{
-	"add1": {
+curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 22a673d1-d138-9b4c-5472-e4d479cdc35c" -d '{
+	"entry1": 
+	{
 		"item" : 
 		{
-			"department_tag" : "Dummy Dept",
+			"department_tag" : "College of Math",
 		    "gt_tag" : 90342342,
 		    "equipment_type" : "laptop",
 		    "status" : "loaned",
@@ -24,7 +25,7 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H
 		}
 	},
 	
-	"add2":
+	"entry2":
 	{
 		"item": 
 		{
@@ -46,7 +47,7 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H
 		}
 	},
 	
-	"add3":
+	"entry3":
 	{
 		"item":
 		{
@@ -72,7 +73,6 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H
 		    "os" : ["optional", "not_unique", "string", "", ""]
 		}
 	}
-	
 }
 
 ' "http://localhost:8080/inventory"
