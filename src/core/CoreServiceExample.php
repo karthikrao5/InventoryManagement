@@ -10,7 +10,9 @@
 	
 	$core = CoreService::getInstance();
     
-    $result = $core->addEquipment($equipment);
+    $id = "58a7c7c87f8b9abb1cab050e";
+    
+    $result = $core->getEquipmentById($id);
     
     print_r($result);
 ?>
