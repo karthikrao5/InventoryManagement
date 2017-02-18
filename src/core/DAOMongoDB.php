@@ -3,6 +3,7 @@
 
     use App\core\DAOMongoDB as DAOMongoDB;
     use \MongoClient;
+    use \MongoId;
 
     class DAOMongoDB implements IDAO
     {
@@ -40,7 +41,9 @@
 
         public function getEquipmentById($id)
         {
-            throw new BadMethodCallException('Not implemented.');
+            $equipments = $this->mongo->inventorytracking->equipments;
+            $result = $equipments->findOne(array('_id' => new MongoId($id)));
+            return $result;
         }
 
         public function removeEquipment($id)

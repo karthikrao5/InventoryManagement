@@ -56,10 +56,57 @@
 			throw new BadMethodCallException('Not implemented.');
 		}
 		
+        //public function getEquipment($document)
+        //{
+        //    $result = 
+		//	[
+		//		"equipment" => null,
+		//		"result" => false,
+		//		"message" => null,
+		//	];
+        //    
+        //    // Improve this code after sprint 2
+        //    if(isset($document['id']))
+        //    {
+        //        $
+        //    }
+        //    else if(isset($document['department_tag']))
+        //    {
+        //        
+        //    }
+        //    else
+        //    {
+        //        $result['message'] = "Missing identifiers. Please include either id or department_tag in JSON";
+        //    }
+        //    
+		//	//// Validator not functioning yet.
+		//	//if($this->validator->validateCreateEquipment($document))
+		//	//{
+		//	//	$result["id"] = $this->dao->createEquipment($document);
+		//	//	$result["result"] = true;
+		//	//	$result["message"] = "Equipment " . $document["department_tag"] . " created successfully.";
+		//	//	return $result;
+		//	//}
+		//	
+		//	return $result;
+        //}
+        
 		// Returns an array that contains equipment document (on success), result, and message.
 		public function getEquipmentById($id)
 		{
-			throw new BadMethodCallException('Not implemented.');
+			$result = 
+			[
+				"equipment" => null,
+				"result" => false,
+				"message" => null	
+            ];
+            
+            // Assuming validator says ok.
+            $result['equipment'] = $this->dao->getEquipmentById($id);
+            $result['result'] = true;
+            $result['message'] = "Get equipment successful with id : " . $id;
+            
+            return $result;
 		}
 		
 		// Returns an array that contains equipment document (on success), result, and message.
