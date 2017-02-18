@@ -65,9 +65,16 @@ $app->get('/home', function($request, $response) {
 	return $this->view->render($response, 'template.html');
 });
 
-$app->get('/all', function($request, $response) {
+$app->get('/equipment', function($request, $response) {
 	// $this->logger->info("reached /home");
 	return $this->view->render($response, 'hp.html', array(data => getAll()));
+});
+
+$app->get('/equipment/{id}', function($request, $response) {
+	// $this->logger->info("reached /home");
+	$id = $request->getAttribute('id');
+
+	return $this->view->render($response, 'equipmentpage.html', array(data => getAll(), id => $id));
 });
 
 
