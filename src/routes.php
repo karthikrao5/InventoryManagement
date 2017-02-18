@@ -133,3 +133,30 @@ function getAll() {
 // }
 
 
+// Back-end routes
+// Do not modify codes below.
+require_once 'core/CoreService.php';
+use \App\core\CoreService as CoreService;
+
+$app->post('/core/equipment/add', 'addEquipment');
+
+function addEquipment($request, $response)
+{
+    $json = $request->getParsedBody();
+    $core = CoreService::getInstance();
+    $result = $core->addEquipment($json);
+    
+    $json_response = $response->withJson($result);
+    
+    if($result['result'])
+    {
+        $json_response->withStatus(200);
+    }
+    else
+    {
+        $json_response->withStatus(400);
+    }
+    
+    return $json_response;
+}
+
