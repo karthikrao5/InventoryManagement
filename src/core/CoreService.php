@@ -55,23 +55,102 @@
 		{
 			throw new BadMethodCallException('Not implemented.');
 		}
-		
+        
 		// Returns an array that contains equipment document (on success), result, and message.
 		public function getEquipmentById($id)
 		{
-			throw new BadMethodCallException('Not implemented.');
+			$result = 
+			[
+				"equipment" => null,
+				"result" => false,
+				"message" => null	
+            ];
+            
+            if(!$this->validator->validateMongoIdString($id))
+            {
+                $result['message'] = $result['message'] = "ID : " . $id . " is in invalid MongoID format.";
+                return $result;
+            }
+            // Assuming validator says ok.
+            $result['equipment'] = $this->dao->getEquipmentById($id);
+            
+            if(is_null($result['equipment']))
+            {
+                $result['result'] = false;
+                $result['message'] = "ID : " . $id . " not found in equipments collection.";
+            }
+            else
+            {
+                $result['result'] = true;
+                $result['message'] = "Get equipment successful with id : " . $id;
+            }
+            
+            return $result;
 		}
 		
 		// Returns an array that contains equipment document (on success), result, and message.
 		public function getEquipmentByDepartmentTag($departmentTag)
 		{
-			throw new BadMethodCallException('Not implemented.');
+			$result = 
+			[
+				"equipment" => null,
+				"result" => false,
+				"message" => null	
+            ];
+            
+            // Assuming validator says ok.
+            $result['equipment'] = $this->dao->getEquipmentByDepartmentTag($departmentTag);
+            
+            if(is_null($result['equipment']))
+            {
+                $result['result'] = false;
+                $result['message'] = "Department Tag : " . $departmentTag . " not found in equipments collection.";
+            }
+            else
+            {
+                $result['result'] = true;
+                $result['message'] = "Get equipment successful with department tag : " . $departmentTag;
+            }
+            
+            return $result;
 		}
+        
+        // Returns all equipment documents.
+        public function getAllEquipments()
+        {
+            return $this->dao->getAllEquipments();
+        }
 		
-		// Returns an array that contains removed id (on success), result, and message.
+		// Returns an array that contains removed equipment document (on success), result, and message.
 		public function removeEquipment($id)
 		{
-			throw new BadMethodCallException('Not implemented.');
+			$result = 
+			[
+				"equipment" => null,
+				"result" => false,
+				"message" => null	
+            ];
+            
+            if(!$this->validator->validateMongoIdString($id))
+            {
+                $result['message'] = $result['message'] = "ID : " . $id . " is in invalid MongoID format.";
+                return $result;
+            }
+            
+            $result['equipment'] = $this->dao->removeEquipment($id);
+            
+            if(is_null($result['equipment']))
+            {
+                $result['result'] = false;
+                $result['message'] = "ID : " . $id . " not found in equipments collection.";
+            }
+            else
+            {
+                $result['result'] = true;
+                $result['message'] = "Remove equipment successful with id : " . $id;
+            }
+            
+            return $result;
 		}
 		
 		// Returns an array that contains id (on success), result, and message.

@@ -49,6 +49,7 @@
 		public function updateEquipment($document); // Returns id of equipment document.
 		public function getEquipmentById($id); // Returns equipment document.
 		public function removeEquipment($id); // Returns result array.
+        public function getEquipmentByDepartmentTag($departmentTag); // Returns equipment document.
     }
 	
 	// This is Validator interface.
@@ -58,5 +59,6 @@
 	{
 		public function validateCreateEquipment($document);
 		public function validateUpdateEquipment($document);
+        public function validateMongoIdString($id);
 	}
 ?>
