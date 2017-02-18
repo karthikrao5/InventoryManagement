@@ -63,6 +63,11 @@ $app->get('/home', function($request, $response) {
 	return $this->view->render($response, 'template.html');
 });
 
+$app->get('/all', function($request, $response) {
+	// $this->logger->info("reached /home");
+	return $this->view->render($response, 'hp.html', array(data => getAll()));
+});
+
 
 
 function addItem($itemToAdd, $whichCol) {
