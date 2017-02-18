@@ -1,7 +1,6 @@
 {% extends "template.html" %}
 
         {% block content %}
-
          <h1>{{ param }}</h1>
          <div class="table-responsive">
 	      <table class="table table-striped">
@@ -17,10 +16,11 @@
 
 		         {% for item in data %}
 		         	<tr>
-	         			<td>{{item.equipment_type}}</td>
-	         			<td>{{item.department_tag}}</td>
-	         			<td>{{item.status}}</td>
-	         			<td>{{item.loaned_to}}</td>
+
+	         			<td>{{item.item.equipment_type}}</td>
+	         			<td>{{item.item.department_tag}}</td>
+	         			<td>{{item.item.status}}</td>
+	         			<td>{{item.item.loaned_to}}</td>
 		         	</tr>
 		         {% endfor %}
 		    </tbody>
