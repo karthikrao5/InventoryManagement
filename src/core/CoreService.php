@@ -114,6 +114,12 @@
             
             return $result;
 		}
+        
+        // Returns all equipment documents.
+        public function getAllEquipments()
+        {
+            return $this->dao->getAllEquipments();
+        }
 		
 		// Returns an array that contains removed equipment document (on success), result, and message.
 		public function removeEquipment($id)

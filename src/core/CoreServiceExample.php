@@ -1,18 +1,12 @@
 <?php
     namespace App\core;
     
-    include "CoreService.php";
+    include_once "CoreService.php";
+    include_once "DAOMongoDB.php";
     
-    $equipment = array(
-        "test" => "Created in DBTest.php",
-		"department_tag" => "MATH-1234",
-    );
-	
-	$core = CoreService::getInstance();
+    $dao = DAOMongoDB::getInstance();
     
-    $id = "58a7c7c87f8b9abb1cab050e";
+    $docs = $dao->getAllEquipments();
     
-    $result = $core->getEquipmentById($id);
-    
-    print_r($result);
+    print_r($docs);
 ?>
