@@ -45,10 +45,27 @@
             $result = $equipments->findOne(array('_id' => new MongoId($id)));
             return $result;
         }
+        
+        public function getEquipmentByDepartmentTag($departmentTag)
+        {
+            $equipments = $this->mongo->inventorytracking->equipments;
+            $result = $equipments->findOne(array('department_tag' => $departmentTag));
+            return $result;
+        }
 
         public function removeEquipment($id)
         {
-            throw new BadMethodCallException('Not implemented.');
+            $equipment = $this->getEquipmentById($id);
+            $equipments = $this->mongo->inventorytracking->equipments;
+            
+            if($equipments->remove(array('_id' => new MongoId($id))))
+            {
+                return $equipment; // Remove success.
+            }
+            else
+            {
+                return null; // Remove failed.
+            }
         }
     }
 ?>

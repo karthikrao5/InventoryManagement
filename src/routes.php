@@ -140,29 +140,11 @@ use \App\core\CoreService as CoreService;
 
 // Route registrations
 $app->post('/core/equipment/add', 'addEquipment');
-$app->post('/core/equipment/update', 'updateEquipment');
+$app->get('/core/equipment/get/by-id/{id}', 'getEquipmentById');
+$app->get('/core/equipment/get/by-department-tag/{tag}', 'getEquipmentByDeptTag');
 $app->delete('/core/equipment/remove/{id}', 'removeEquipment');
-$app->get('/core/equipment/get/byid/{id}', 'getEquipmentById');
 
 // Functions used in each route
-function getEquipmentById($request, $response)
-{
-    $core = CoreService::getInstance();
-    $result = $core->getEquipmentById($request->getAttribute('id'));
-    $json_response = $response->withJson($result);
-    
-    if($result['result'])
-    {
-        $json_response->withStatus(200);
-    }
-    else
-    {
-        $json_response->withStatus(400);
-    }
-    
-    return $json_response;
-}
-
 function removeEquipment($request, $response)
 {
     $core = CoreService::getInstance();
@@ -181,12 +163,28 @@ function removeEquipment($request, $response)
     return $json_response;
 }
 
-function updateEquipment($request, $response)
+function getEquipmentByDeptTag($request, $response)
 {
-    $json = $request->getParsedBody();
     $core = CoreService::getInstance();
-    $result = $core->updateEquipment($json);
+    $result = $core->getEquipmentByDepartmentTag($request->getAttribute('tag'));
+    $json_response = $response->withJson($result);
     
+    if($result['result'])
+    {
+        $json_response->withStatus(200);
+    }
+    else
+    {
+        $json_response->withStatus(400);
+    }
+    
+    return $json_response;
+}
+
+function getEquipmentById($request, $response)
+{
+    $core = CoreService::getInstance();
+    $result = $core->getEquipmentById($request->getAttribute('id'));
     $json_response = $response->withJson($result);
     
     if($result['result'])
@@ -221,3 +219,25 @@ function addEquipment($request, $response)
     return $json_response;
 }
 
+// Not working yet
+function updateEquipment($request, $response)
+{
+    $json = $request->getParsedBody();
+    $core = CoreService::getInstance();
+    $result = $core->updateEquipment($json);
+    
+    $json_response = $response->withJson($result);
+    
+    if($result['result'])
+    {
+        $json_response->withStatus(200);
+    }
+    else
+    {
+        $json_response->withStatus(400);
+    }
+    
+    return $json_response;
+}
+
+$app->post('/core/equipment/update', 'updateEquipment');
