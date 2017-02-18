@@ -1,106 +1,117 @@
 <?php
 
+use App\Models\Equipment;
+
+$app->get('/', function($request, $response) {
+	$equipment = new Equipment();
+	$equipment->setLoaner("Karthik");
+	$dm = $this->get('dm');
+	$dm->persist($equipment);
+	$dm->flush();
+
+});
+
 // dummy routes for front-end testing
 // $app->group('/dummy', function() {
 	// $this->get('/inventory', 'DummyController:getAll');
 // });
 
-$app->get('/inventory', function($request, $response) {
-	try {
-        // query DB for all objects
-	    $result = getAll();
+// $app->get('/inventory', function($request, $response) {
+// 	try {
+//         // query DB for all objects
+// 	    $result = getAll();
 
 
-        if($result) {
-        	return $response->withJson($result);	
+//         if($result) {
+//         	return $response->withJson($result);	
 
-        } else {
-            throw new PDOException("No records found.");
-        }
+//         } else {
+//             throw new PDOException("No records found.");
+//         }
 
-    } catch(PDOException $e) {
-        $response->withStatus(404)
-                 ->write('{"error":{"text":'. $e->getMessage() .'}}');
-    }
-});
+//     } catch(PDOException $e) {
+//         $response->withStatus(404)
+//                  ->write('{"error":{"text":'. $e->getMessage() .'}}');
+//     }
+// });
 
-$app->post('/inventory', function($request, $response) {
-	if (is_null($request->getParsedBody()))
-    {
-        $response->getBody()->write("Invalid JSON document.");
-        $response->withStatus(400);
-        return $response;
-    }
+// $app->post('/inventory', function($request, $response) {
+// 	if (is_null($request->getParsedBody()))
+//     {
+//         $response->getBody()->write("Invalid JSON document.");
+//         $response->withStatus(400);
+//         return $response;
+//     }
 
-    try {
-    	addItem($request->getParsedBody());
-    	print_r($request->getParsedBody());
-    	// foreach($request->getParsedBody() as $item) {
-    	// 	addItem($item["item"], 'equipments');
-    	// 	addItem($item['itemtype'], 'equipmenttypes');
-    	// }
-    } catch(PDOException $e) {
-        $response()->setStatus(404);
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
+//     try {
+//     	addItem($request->getParsedBody());
+//     	print_r($request->getParsedBody());
+//     	// foreach($request->getParsedBody() as $item) {
+//     	// 	addItem($item["item"], 'equipments');
+//     	// 	addItem($item['itemtype'], 'equipmenttypes');
+//     	// }
+//     } catch(PDOException $e) {
+//         $response()->setStatus(404);
+//         echo '{"error":{"text":'. $e->getMessage() .'}}';
+//     }
 
-});
+// });
 
-// REST API routes
-// $app->group('/v1', function() {
-// 	$this->group('/inventory', function() {
-// 		$this->get('', 'ApiController:getAll');
-// 	});
+// // REST API routes
+// // $app->group('/v1', function() {
+// // 	$this->group('/inventory', function() {
+// // 		$this->get('', 'ApiController:getAll');
+// // 	});
+// // });
+
+
+// // Front-end routes
+
+
+// // test routes (ignore these)
+// $app->get('/', 'HomeController:index');
+
+// $app->get('/home', function($request, $response) {
+// 	// $this->logger->info("reached /home");
+// 	return $this->view->render($response, 'template.html');
+// });
+
+// $app->get('/all', function($request, $response) {
+// 	// $this->logger->info("reached /home");
+// 	return $this->view->render($response, 'hp.html', array(data => getAll()));
 // });
 
 
-// Front-end routes
 
+// function addItem($itemToAdd) {
+// 	$mongo = new MongoClient();
+// 	$db = $mongo->inventorytracking;
+// 	$collection = $db->equipments;
 
-// test routes (ignore these)
-$app->get('/', 'HomeController:index');
+// 	$itemToAdd["created_on"] = new MongoDate(); // Add timestamp.
+// 	$itemToAdd["last_updated"] = new MongoDate();
+// 	$result = $collection->insert($itemToAdd, array('w' => 1)); // Insert given document to collection and get result array.
 
-$app->get('/home', function($request, $response) {
-	// $this->logger->info("reached /home");
-	return $this->view->render($response, 'template.html');
-});
-
-$app->get('/all', function($request, $response) {
-	// $this->logger->info("reached /home");
-	return $this->view->render($response, 'hp.html', array(data => getAll()));
-});
-
-
-
-function addItem($itemToAdd) {
-	$mongo = new MongoClient();
-	$db = $mongo->inventorytracking;
-	$collection = $db->equipments;
-
-	$itemToAdd["created_on"] = new MongoDate(); // Add timestamp.
-	$itemToAdd["last_updated"] = new MongoDate();
-	$result = $collection->insert($itemToAdd, array('w' => 1)); // Insert given document to collection and get result array.
-
-	if ($result) {
-		return $result;	
-	} else {
-		return "Error inserting to db.";
-	}
+// 	if ($result) {
+// 		return $result;	
+// 	} else {
+// 		return "Error inserting to db.";
+// 	}
 	
-}
+// }
 
-// returns json object of all items
-function getAll() {
-	$mongo = new MongoClient();
-	$db = $mongo->inventorytracking;
-	$collection = $db->equipments;
-	// MongoCursor aka iterator of all documents in collection
-	$cursor = $collection->find();
-	if ($cursor) {
-		return iterator_to_array($cursor);
-	}
-	return null;
-}
+// // returns json object of all items
+// function getAll() {
+// 	$mongo = new MongoClient();
+// 	$db = $mongo->inventorytracking;
+// 	$collection = $db->equipments;
+// 	// MongoCursor aka iterator of all documents in collection
+// 	$cursor = $collection->find();
+// 	if ($cursor) {
+// 		return iterator_to_array($cursor);
+// 	}
+// 	return null;
+// }
 
 // // this is how you use findItem in the controller: 
 
