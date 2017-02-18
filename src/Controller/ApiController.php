@@ -41,4 +41,9 @@ class ApiController extends AbstractController{
     /**
      * 
      */
+    public function createEquipment(Request $request, Response $response)
+    {
+        $json = $request->getParsedBody();
+        
+    }
 }
