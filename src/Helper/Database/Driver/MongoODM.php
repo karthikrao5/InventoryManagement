@@ -52,6 +52,9 @@ class MongoODM {
         $config = new Configuration();
         $config->setDefaultDB($dbName);
 
+        $config->setAutoGenerateHydratorClasses(false);
+        $config->setAutoGenerateProxyClasses(false);
+
         $config->setProxyDir($this->connectionSettings['configuration']['ProxyDir']);
         $config->setProxyNamespace('Proxies');
         $config->setHydratorDir($this->connectionSettings['configuration']['HydratorsDir']);

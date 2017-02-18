@@ -1,17 +1,15 @@
 <?php
 namespace App\Controller;
 
-// use \Psr\Http\Message\ServerRequestInterface as Request;
-// use \Psr\Http\Message\ResponseInterface as Response;
-// use App\core\CoreService;
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
+use App\Models\Equipment;
+use Interop\Container\ContainerInterface;
 
+class ApiController extends AbstractController{
 
-class ApiController {
-
-    // protected $db;
-
-    public function __construct() {
-        // $this->db = $db;
+    public function __construct(ContainerInterface $c) {
+        parent::__construct($c);
     }
 
 
@@ -22,28 +20,9 @@ class ApiController {
     /**
      * @return JSON document with all items
      */
-    public function getAll($request, $response) {
-        // try {
-        //     // query DB for all objects
-        //     $result = $this->$db->getAll();
-        //     if($result) {
-        //         $logger->info("getAll request successful");
-        //        // construct json with collection
-        //         return $response->withStatus(200)
-        //                         ->withHeader("Content-Type", "application/json")
-        //                         ->write($result); 
-        //     } else {
-        //         $logger->info("getAll request unsuccessful, no records found.");
-        //         throw new PDOException("No records found.");
-        //     }
-        // } catch(PDOException $e) {
-        //     $logger->info("getAll request unsuccessful, 404 error");
-        //     $response->withStatus(404)
-        //              ->write('{"error":{"text":'. $e->getMessage() .'}}');
-        // }
-        return $response->write("Brah"); 
-
-
+    public function getAll(Request $request, Response $response) {
+        $var = $this->dm->getRepository(Equipment::class)->findAll();
+        return $response->withJson($var);
     }
 
     /**
@@ -62,20 +41,4 @@ class ApiController {
     /**
      * 
      */
-    // public function addItem(Request $request, Response $response) {
-    //     if (is_null($request->getParsedBody()))
-    //     {
-    //         $response->getBody()->write("Invalid JSON document.");
-    //         $response->withStatus(400);
-    //         return $response;
-    //     }
-    //     try {
-    //         print_r($request->getParsedBody());
-    //         $result = db_addEquipment($request->getParsedBody());
-    //         print_r($result);
-    //     } catch(PDOException $e) {
-    //         $app->response()->setStatus(404);
-    //         echo '{"error":{"text":'. $e->getMessage() .'}}';
-    //     }
-    // }
 }

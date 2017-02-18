@@ -39,9 +39,9 @@ $container['HomeController'] = function ($c) {
     return new \App\Controller\HomeController($c->get('view'));
 };
 
-// $container["ApiController"] = function($c) {
-//     return new \App\Controller\ApiController($c->get('db'));
-// };
+$container["ApiController"] = function($c) {
+    return new \App\Controller\ApiController(App\Helper\App\ContainerHelper::getContainer());
+};
 
 // $container["DummyController"] = function($c) {
 //     return new \App\Controller\DummyController($c->get('db'));

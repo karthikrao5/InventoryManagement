@@ -17,9 +17,6 @@ $app = new \Slim\App($settings);
 // set dependencies
 require __DIR__ . '/../src/dependencies.php';
 
-// set routes
-require __DIR__ . '/../src/routes.php';
-
 // add app instance to AppHelper
 App\Helper\App\ContainerHelper::setApplication($app);
 
@@ -34,6 +31,9 @@ if ($settingsDatabase['boot-database']) {
     \App\Helper\Database\DatabaseHelper::getConnection();
 }
 
+
+// set routes
+require __DIR__ . '/../src/routes.php';
 // test route to check if app is running
 $app->get('/hello/{name}', function (Request $request, Response $response) {
 	
