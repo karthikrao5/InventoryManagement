@@ -17,19 +17,13 @@
 
 		         {% for item in data %}
 		         	<tr>
-		         	{% for col in item %}
-		         		{% if col is iterable %}
-		         			<td>{{ col | first }}</td>
-		         		{% else %}
-		         			<td>{{ col }}</td>
-		         		{% endif %}
-
-		         		
-		         	{% endfor %}
+	         			<td>{{item.equipment_type}}</td>
+	         			<td>{{item.department_tag}}</td>
+	         			<td>{{item.status}}</td>
+	         			<td>{{item.loaned_to}}</td>
 		         	</tr>
 		         {% endfor %}
 		    </tbody>
           </table>
 
         {% endblock %}
-
