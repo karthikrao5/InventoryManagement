@@ -1,7 +1,3 @@
-#!/bin/bash
-
-mongo 127.0.0.1/inventorytracking mongo.js
-
 curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 22a673d1-d138-9b4c-5472-e4d479cdc35c" -d '{
 	"entry1": 
 	{

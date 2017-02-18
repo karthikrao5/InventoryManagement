@@ -1,15 +1,17 @@
 <?php
 namespace App\Controller;
 
-use Psr\Log\LoggerInterface;
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
+// use \Psr\Http\Message\ServerRequestInterface as Request;
+// use \Psr\Http\Message\ResponseInterface as Response;
+// use App\core\CoreService;
 
 
-public class ApiController {
+class ApiController {
 
-    public function __construct(LoggerInterface $logger) {
-        $this->logger = $logger;
+    // protected $db;
+
+    public function __construct() {
+        // $this->db = $db;
     }
 
 
@@ -20,7 +22,7 @@ public class ApiController {
     /**
      * @return JSON document with all items
      */
-    public function getAll(Request $request, Response $response) {
+    public function getAll($request, $response) {
         // try {
         //     // query DB for all objects
         //     $result = $this->$db->getAll();
@@ -39,9 +41,8 @@ public class ApiController {
         //     $response->withStatus(404)
         //              ->write('{"error":{"text":'. $e->getMessage() .'}}');
         // }
-        return $response->withStatus(200)
-                        ->withHeader("Content-Type", "application/json")
-                        ->write("Brah"); 
+        return $response->write("Brah"); 
+
 
     }
 
@@ -49,9 +50,9 @@ public class ApiController {
      * @param $item is a json with some fields
      * @return 
      */
-    public function addItem($item) {
+    // public function addItem($item) {
 
-    }
+    // }
 
 
 // -----------------------------------------------------------------
@@ -61,20 +62,20 @@ public class ApiController {
     /**
      * 
      */
-    public function addItem(Request $request, Response $response) {
-        if (is_null($request->getParsedBody()))
-        {
-            $response->getBody()->write("Invalid JSON document.");
-            $response->withStatus(400);
-            return $response;
-        }
-        try {
-            print_r($request->getParsedBody());
-            $result = db_addEquipment($request->getParsedBody());
-            print_r($result);
-        } catch(PDOException $e) {
-            $app->response()->setStatus(404);
-            echo '{"error":{"text":'. $e->getMessage() .'}}';
-        }
-    }
+    // public function addItem(Request $request, Response $response) {
+    //     if (is_null($request->getParsedBody()))
+    //     {
+    //         $response->getBody()->write("Invalid JSON document.");
+    //         $response->withStatus(400);
+    //         return $response;
+    //     }
+    //     try {
+    //         print_r($request->getParsedBody());
+    //         $result = db_addEquipment($request->getParsedBody());
+    //         print_r($result);
+    //     } catch(PDOException $e) {
+    //         $app->response()->setStatus(404);
+    //         echo '{"error":{"text":'. $e->getMessage() .'}}';
+    //     }
+    // }
 }

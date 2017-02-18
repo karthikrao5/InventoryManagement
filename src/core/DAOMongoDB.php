@@ -3,6 +3,7 @@
 
     use App\core\DAOMongoDB as DAOMongoDB;
     use \MongoClient;
+    use \MongoId;
 
     class DAOMongoDB implements IDAO
     {
@@ -40,12 +41,46 @@
 
         public function getEquipmentById($id)
         {
-            throw new BadMethodCallException('Not implemented.');
+            $equipments = $this->mongo->inventorytracking->equipments;
+            $result = $equipments->findOne(array('_id' => new MongoId($id)));
+            return $result;
+        }
+        
+        public function getEquipmentByDepartmentTag($departmentTag)
+        {
+            $equipments = $this->mongo->inventorytracking->equipments;
+            $result = $equipments->findOne(array('department_tag' => $departmentTag));
+            return $result;
+        }
+        
+        public function getAllEquipments()
+        {
+            $equipments = $this->mongo->inventorytracking->equipments;
+            $cursor = $equipments->find();
+            
+            $docs = array();
+            foreach ($cursor as $equipment)
+            {
+                $id = $equipment['_id'].id;
+                $docs[$id] = $equipment;
+            }
+            
+            return $docs;
         }
 
         public function removeEquipment($id)
         {
-            throw new BadMethodCallException('Not implemented.');
+            $equipment = $this->getEquipmentById($id);
+            $equipments = $this->mongo->inventorytracking->equipments;
+            
+            if($equipments->remove(array('_id' => new MongoId($id))))
+            {
+                return $equipment; // Remove success.
+            }
+            else
+            {
+                return null; // Remove failed.
+            }
         }
     }
 ?>

@@ -1,0 +1,17 @@
+{% extends "template.html" %}
+
+        {% block content %}
+
+         <h1>{{ param }}</h1>
+
+             {% for key, value in attribute(data, id) %}
+              
+                     <div class="form-group">
+                      <label for="{{key}}">{{key}}:</label>
+                      <input type="text" class="form-control" id="{{key}}" value="{{value}}">
+                    </div>
+
+             {% endfor %}
+
+
+        {% endblock %}

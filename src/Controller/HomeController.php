@@ -23,7 +23,7 @@ class HomeController {
 		
 		 // $this->logger->info("Home page action dispatched");
 
-		return $this->view->render($response, 'home.twig');
+		return $this->view->render($response, 'template.html');
 		// return "Home Controller Index";
 	}
 

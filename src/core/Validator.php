@@ -19,5 +19,11 @@
 		{
 			throw new BadMethodCallException('Not implemented.');
 		}
+        
+        // MongoId string must be 24 characters long.
+        public function validateMongoIdString($id)
+        {
+            return preg_match('/^[0-9a-zA-Z]{24}$/', $id) == 1;
+        }
 	}
 ?>
