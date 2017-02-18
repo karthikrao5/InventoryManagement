@@ -3,27 +3,31 @@
         {% block content %}
          <h1>{{ param }}</h1>
          <div class="table-responsive">
-	      <table class="table table-striped">
+	      <table class="table table-striped table-bordered ">
 	        <thead>
 	          <tr>
 	            <th>Equipment Type</th>
 	            <th>Dept. Tag</th>
 	            <th>Status</th>
 	            <th>Loaned To</th>
+	            <th>Edit</th>
 	          </tr>
 	        </thead>
 	        <tbody>
 
 		         {% for item in data %}
-		         	<tr>
-
-	         			<td>{{item.item.equipment_type}}</td>
-	         			<td>{{item.item.department_tag}}</td>
-	         			<td>{{item.item.status}}</td>
-	         			<td>{{item.item.loaned_to}}</td>
-		         	</tr>
+			         	<tr>
+		         			<td>{{item.equipment_type}}</td>
+		         			<td>{{item.department_tag}}</td>
+		         			<td>{{item.status}}</td>
+		         			<td>{{item.loaned_to}}</td>
+		         			<td><a class="btn btn-primary" href="equipment/{{item | first}}"" role="button">Edit</a></td>
+			         	</tr>
 		         {% endfor %}
 		    </tbody>
           </table>
+          </div>
+          <a class="btn btn-primary" href="http://127.0.0.1:8080/test" role="button">Add</a>
+
 
         {% endblock %}
