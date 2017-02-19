@@ -36,7 +36,13 @@
 
         public function updateEquipment($document)
         {
-            throw new BadMethodCallException('Not implemented.');
+            $equipments = $this->mongo->inventorytracking->equipments;
+            $idString = $document['_id'];
+            $mongoid = new MongoId($idString);
+            $filter = array('_id' => $mongoid);
+            $document['_id'] = $mongoid;
+            $result = $equipments->update($filter, $document);
+            return $result;
         }
 
         public function getEquipmentById($id)

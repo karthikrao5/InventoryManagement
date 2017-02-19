@@ -8,11 +8,13 @@ use App\Models\Equipment;
 use \App\core\CoreService as CoreService;
 
 // Route registrations
+// Just for sprint2. This will change in sprint 3 but the way these routes working will be the same.
 $app->post('/core/equipment/add', 'addEquipment');
 $app->get('/core/equipment/get/by-id/{id}', 'getEquipmentById');
 $app->get('/core/equipment/get/by-department-tag/{tag}', 'getEquipmentByDeptTag');
 $app->delete('/core/equipment/remove/{id}', 'removeEquipment');
 $app->get('/core/equipment/getall', 'getAllEquipments');
+$app->post('/core/equipment/update', 'updateEquipment');
 
 // Functions used in each route
 function getAllEquipments($request, $response)
@@ -107,7 +109,6 @@ function addEquipment($request, $response)
     return $json_response;
 }
 
-// Not working yet
 function updateEquipment($request, $response)
 {
     $json = $request->getParsedBody();
@@ -128,7 +129,7 @@ function updateEquipment($request, $response)
     return $json_response;
 }
 
-$app->post('/core/equipment/update', 'updateEquipment');
+
 
 
 
