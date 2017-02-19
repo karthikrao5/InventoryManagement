@@ -2,7 +2,7 @@
 
 namespace App\Helper\Database;
 
-use App\Helper\App\ContainerHelper;
+use App\Helper\Container\ContainerHelper;
 use Interop\Container\ContainerInterface;
 
 

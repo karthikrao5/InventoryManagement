@@ -1,10 +1,13 @@
 <?php
 namespace App\Controller;
 
+
+use App\Models\Equipment;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
-use App\Models\Equipment;
 use Interop\Container\ContainerInterface;
+use Doctrine\ODM\MongoDB\DocumentManager;
+
 
 class ApiController extends AbstractController{
 
@@ -25,13 +28,7 @@ class ApiController extends AbstractController{
         return $response->withJson($var);
     }
 
-    /**
-     * @param $item is a json with some fields
-     * @return 
-     */
-    // public function addItem($item) {
-
-    // }
+    
 
 
 // -----------------------------------------------------------------
@@ -46,21 +43,21 @@ class ApiController extends AbstractController{
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }
-        $dm = $this->get('dm');
 
         $json = $request->getParsedBody();
+
         $equipment = new Equipment();
-        $equipment.setDept($json['department_tag']);
-        $equipment.setGT($json['gt_tag']);
-        $equipment.setEquipmentType($json['equipment_type']);
-        $equipment.setStatus($json['status']);
-        $equipment.setLoaner($json['loaned_to']);
-        $equipment.comment($json['comment']);
+        $equipment->setDept($json['department_tag']);
+        $equipment->setGT($json['gt_tag']);
+        $equipment->setEquipmentType($json['equipment_type']);
+        $equipment->setStatus($json['status']);
+        $equipment->setLoaner($json['loaned_to']);
+        $equipment->setComment($json['comment']);
 
         if(!is_null($equipment)) {
-            $dm->persist($equipment);
-            $dm->flush();
-            return $response->write("Successfully entered.")->setStatus(200);
+            $this->dm->persist($equipment);
+            $this->dm->flush();
+            return $response->write("Successfully entered.")->withStatus(200);
         }
     }
 }

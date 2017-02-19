@@ -3,7 +3,7 @@
 namespace App\Helper\Database\Driver;
 
 // import helper class
-use App\Helper\App\ContainerHelper;
+use App\Helper\Container\ContainerHelper;
 
 
 // import doctrine ODM stuff from /vendor
@@ -52,8 +52,8 @@ class MongoODM {
         $config = new Configuration();
         $config->setDefaultDB($dbName);
 
-        $config->setAutoGenerateHydratorClasses(false);
-        $config->setAutoGenerateProxyClasses(false);
+        // $config->setAutoGenerateHydratorClasses(false);
+        // $config->setAutoGenerateProxyClasses(false);
 
         $config->setProxyDir($this->connectionSettings['configuration']['ProxyDir']);
         $config->setProxyNamespace('Proxies');
@@ -63,7 +63,7 @@ class MongoODM {
         $config->setMetadataDriverImpl(AnnotationDriver::create($this->connectionSettings['configuration']['Models']));
 
         // not sure what this does. ill come back to it
-        // $config->setRetryConnect(true);
+        $config->setRetryConnect(true);
 
         // gets the model classes and does something with those annotations
         AnnotationDriver::registerAnnotationClasses();

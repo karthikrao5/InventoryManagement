@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helper\App;
+namespace App\Helper\Container;
 
 use Slim\App;
 use Slim\Container;

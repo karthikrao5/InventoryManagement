@@ -40,7 +40,7 @@ $container['HomeController'] = function ($c) {
 };
 
 $container["ApiController"] = function($c) {
-    return new \App\Controller\ApiController(App\Helper\App\ContainerHelper::getContainer());
+    return new App\Controller\ApiController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
 // $container["DummyController"] = function($c) {

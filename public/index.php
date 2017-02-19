@@ -18,7 +18,7 @@ $app = new \Slim\App($settings);
 require __DIR__ . '/../src/dependencies.php';
 
 // add app instance to AppHelper
-App\Helper\App\ContainerHelper::setApplication($app);
+App\Helper\Container\ContainerHelper::setApplication($app);
 
 
 // slim collection provides a common interface for collections of data

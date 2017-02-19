@@ -17,8 +17,8 @@ return [
             'port' => '27017',
         ],
         'configuration' => [
-            'ProxyDir' =>  __DIR__ . '/../src/Helper/odmcache/Proxy/',
-            'HydratorsDir' => __DIR__ . '/../src/Helper/odmcache/Hydrators/',
+            'ProxyDir' =>  __DIR__ . '/../src/Helper/odmcache/Proxy',
+            'HydratorsDir' => __DIR__ . '/../src/Helper/odmcache/Hydrators',
             'Models' => __DIR__ . '/../src/Models/',
         ]
     ]
