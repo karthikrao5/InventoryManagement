@@ -53,7 +53,27 @@
 		// Returns an array that contains id (on success), result, and message.
 		public function updateEquipment($document)
 		{
-			throw new BadMethodCallException('Not implemented.');
+			$result = 
+			[
+				"equipment" => null,
+				"result" => false,
+				"message" => null	
+            ];
+            
+            $document['_id'] = $document['_id']->{'$id'};
+            
+            if($this->dao->updateEquipment($document))
+            {
+                $result['result'] = false;
+                $result['message'] = "Invalid Equipment JSON format. " . $document;
+            }
+            else
+            {
+                $result['result'] = true;
+                $result['message'] = "Successfully updated document. ID : " . $document['_id'];
+            }
+            
+            return $result;
 		}
         
 		// Returns an array that contains equipment document (on success), result, and message.
