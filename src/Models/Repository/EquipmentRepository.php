@@ -7,9 +7,9 @@ use App\Models\Equipment;
 
 class EquipmentRepository extends DocumentRepository 
 {
-    public function createEquipment($json)
-    {
-        $equipment = new Equipment();
+    // public function createEquipment($json)
+    // {
+    //     $equipment = new Equipment();
         
-    }
+    // }
 }

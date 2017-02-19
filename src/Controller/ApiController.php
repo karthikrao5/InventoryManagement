@@ -41,9 +41,26 @@ class ApiController extends AbstractController{
     /**
      * 
      */
-    public function createEquipment(Request $request, Response $response)
-    {
-        $json = $request->getParsedBody();
+    public function createEquipment(Request $request, Response $response) {
         
+        if(is_null($request)) {
+            return $response->write("Invalid request.")->withStatus(400);
+        }
+        $dm = $this->get('dm');
+
+        $json = $request->getParsedBody();
+        $equipment = new Equipment();
+        $equipment.setDept($json['department_tag']);
+        $equipment.setGT($json['gt_tag']);
+        $equipment.setEquipmentType($json['equipment_type']);
+        $equipment.setStatus($json['status']);
+        $equipment.setLoaner($json['loaned_to']);
+        $equipment.comment($json['comment']);
+
+        if(!is_null($equipment)) {
+            $dm->persist($equipment);
+            $dm->flush();
+            return $response->write("Successfully entered.")->setStatus(200);
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
- * @ODM\Document(db="inventorytracking", repositoryClass='App\Models\Repository\EquipmentRepository)
+ * @ODM\Document(db="inventorytracking")
  */
 class Equipment {
 
@@ -16,29 +16,43 @@ class Equipment {
 	private $id;
 
     /**
-	 * @ReferenceOne(targetDocument="EquipmentType")
+	 * ReferenceOne(targetDocument="EquipmentType")
+     * @ODM\Field(type="string")
 	 */
     private $department_tag;
+    public function setDept($string) {
+        $this->department_tag = $string;
+    }
     
     /**
 	 * @ODM\Field(type="string")
 	 */
     private $gt_tag;
+    public function setGT($string) {
+        $this->gt_tag = $string;
+    }
     
     /**
 	 * @ODM\Field(type="string")
 	 */
     private $equipment_type;
+    public function setEquipmentType($string) {
+        $this->equipment_type = $string;
+    }
     
     /**
 	 * @ODM\Field(type="string")
 	 */
     private $status;
+    public function setStatus($string) {
+        $this->status = $string;
+    }
     
 	/**
 	 * @ODM\Field(type="string")
 	 */
 	private $loaned_to;
+
     
     /**
 	 * @ODM\Field(type="timestamp")
@@ -54,49 +68,48 @@ class Equipment {
 	 * @ODM\Field(type="string")
 	 */
     private $comment;
+    public function setComment($string) {
+        $this->comment = $string;
+    }
     
-    /**
-	 * @ODM\Field(type="hash")
-     * Key as attribute name.
-     * Value as attribute value.
-     * Equipment type specific attributes.
-	 */
-    private $attributes;
+  //   *
+	 // * @ODM\Field(type="hash")
+  //    * Key as attribute name.
+  //    * Value as attribute value.
+  //    * Equipment type specific attributes.
+	 
+  //   private $attributes;
 
-    /**
-	 * @ReferenceMany(targetDocument="Log")
-	 */
-    private $logs = array();
+  //   *
+	 // * @ReferenceMany(targetDocument="Log")
+	 
+  //   private $logs = array();
     
-    // Setters
-    public function setDepartmentTag($tag)
-    {
-        $this->department_tag = $tag;
+    
+    // public function setEquipmentType($type)
+    // {
+    //     $this->equipment_type = $type;
+    // }
+    
+    // public function setAttribute($key, $value)
+    // {
+    //     $attribute[$key] = $value;
+    // }
+
+    public function setLoaner($string) {
+        $this->loaned_to = $string;
     }
     
-    public function setGTTag($tag)
-    {
-        $this->gt_tag = $tag;
-    }
-    
-    public function setEquipmentType($type)
-    {
-        $this->equipment_type = $type;
-    }
-    
-    public function setAttribute($key, $value)
-    {
-        $attribute[$key] = $value;
-    }
-    
-    public function appendLog($log)
-    {
-        $log_id = $log['id'];
-        $logs[$log_id] = $log;
-    }
+    // public function appendLog($log)
+    // {
+    //     $log_id = $log['id'];
+    //     $logs[$log_id] = $log;
+    // }
     
     // Getters
-    public 
+    public function getLoaner() {
+        return $this->loaned_to;
+    }
     
     
 }

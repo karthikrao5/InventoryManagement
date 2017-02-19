@@ -150,6 +150,8 @@ $app->get('/', function($request, $response) {
 $app->group('/v1', function() {
     $this->get('/equipments', 'ApiController:getAll');
 
+    $this->post('/equipments', 'ApiController:createEquipment');
+
     $this->get('/testget', function($request, $response) {
         $dm = $this->get('dm');
         $var = $this->dm->getRepository(Equipment::class)->findAll();
