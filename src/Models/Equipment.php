@@ -27,10 +27,10 @@ class Equipment {
         $this->gt_tag = $string;
     }
     
-    /** @ODM\Field(type="string") */
+    /** @ODM\ReferenceOne(targetDocument="EquipmentType", storeAs="id", cascade={"persist"}) */
     public $equipment_type;
-    public function setEquipmentType($string) {
-        $this->equipment_type = $string;
+    public function setEquipmentType(EquipmentType $type) {
+        $this->equipment_type = $type;
     }
     
     /** @ODM\Field(type="string") */
@@ -59,6 +59,10 @@ class Equipment {
     public $comment;
     public function setComment($string) {
         $this->comment = $string;
+    }
+
+    public function __construct() {
+
     }
     
 }

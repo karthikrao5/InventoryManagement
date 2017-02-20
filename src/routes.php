@@ -131,13 +131,7 @@ function updateEquipment($request, $response)
 
 
 
-
-
-
-
-
-
-
+// test route to see if DM is working
 $app->get('/', function($request, $response) {
     $equipment = new Equipment();
     $equipment->setLoaner("Karthik");
@@ -149,9 +143,22 @@ $app->get('/', function($request, $response) {
 
 // REST API routes
 $app->group('/v1', function() {
-    $this->get('/equipments', 'ApiController:getAll');
 
-    $this->post('/equipments', 'ApiController:createEquipment');
+    // equipment routes
+    $this->group('/equipments', function() {
+        $this->get('', 'ApiController:getAll');
+        $this->post('', 'ApiController:createEquipment');
+    });
+
+    // equipment types routes
+    $this->group('/equipmenttypes', function() {
+        $this->post('', 'ApiController:createEquipmentType');
+    });
+    
+
+
+
+
 
     $this->get('/testget', function($request, $response) {
         $dm = $this->get('dm');
