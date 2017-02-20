@@ -18,8 +18,14 @@ abstract class AbstractController {
 	 */
 	protected $ci;
 
+	/**
+	 * Monolog
+	 */
+	protected $logger;
+
 	public function __construct(ContainerInterface $c) {
 		$this->ci = $c;
 		$this->dm = $c->get('dm');
+		$this->logger = $c->get('logger');
 	}
 }

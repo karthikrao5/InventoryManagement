@@ -24,6 +24,7 @@ class ApiController extends AbstractController{
      * @return JSON document with all items
      */
     public function getAll(Request $request, Response $response) {
+        $this->logger->info('Requesting all equipments.');
         $var = $this->dm->getRepository(Equipment::class)->findAll();
         return $response->withJson($var);
     }
