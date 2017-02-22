@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use \DateTime;
 
 /**
  * @ODM\Document(db="inventorytracking")
@@ -46,23 +47,30 @@ class Equipment {
     }
     
     /**
-	 * @ODM\Field(type="timestamp")
+	 * @ODM\Field(type="date")
 	 */
     public $created_on;
     
     /**
-	 * @ODM\Field(type="timestamp")
+	 * @ODM\Field(type="date")
 	 */
     public $last_updated;
     
+     
     /** @ODM\Field(type="string") */
     public $comment;
     public function setComment($string) {
         $this->comment = $string;
     }
 
-    public function __construct() {
-
+    /** @ODM\ReferenceMany(targetDocument="Attribute", mappedBy="attribute") */
+    public $attributes = array();
+    public function addAttributeToEquipment($attr) {
+        $this->attributes[] = $attr;
     }
+
+    // public function __construct() {
+    //     $date = new DateTime(null, new DateTimeZone('Eastern/New_York'));
+    // }
     
 }

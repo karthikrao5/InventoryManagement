@@ -31,8 +31,20 @@ class ApiController extends AbstractController{
         return $response->withJson($var);
     }
 
-    public function clearCollection($request, $response) {
+    public function findById($request, $response, $args) {
+        if(is_null($request)) {
+            return $response->write("Invalid request.")->withStatus(400);
+        }
 
+        $searchID = $args['id'];
+
+        $returnValue = $this->dm->getRepository(Equipment::class)->findOneBy(array('id' => $searchID));
+
+        if ($returnValue) {
+            // 200 status
+            return $response->withJson($returnValue);
+        }
+        return $response->withStatus(404)->write("No equipment by that id.");
     }
 
     
@@ -53,6 +65,16 @@ class ApiController extends AbstractController{
 
         $json = $request->getParsedBody();
 
+        // check if item is in db already
+        $query = $this->dm->getRepository(Equipment::class)->findOneBy(array('department_tag' => $json['department_tag']));
+
+        // if something returned, item exists, send 409 conflict
+        if ($query) {
+            return $response->withStatus(409)->write("This item already exists.");
+        }
+
+        // $inputFields = json_decode($json);
+
         $equipment = new Equipment();
         $equipment->setDept($json['department_tag']);
         $equipment->setGT($json['gt_tag']);
@@ -65,6 +87,7 @@ class ApiController extends AbstractController{
             $this->dm->flush();
             return $response->write("Successfully entered new equipment.")->withStatus(200);
         }
+
     }
 
     public function createEquipmentType($request, $response) {
@@ -74,7 +97,10 @@ class ApiController extends AbstractController{
 
         $json = $request->getParsedBody();
 
-        $equipmentType = new EquipmentType($json["equipment_type"]);
+        $tempArray = json_decode($request->getParsedBody());
+
+        // $equipmentType = new EquipmentType($json["equipment_type"]);
+        $equipment_type = new EquipmentType($tempArray);
 
         // check if this already exists
         $find = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('name' => $json["equipment_type"]));
@@ -88,7 +114,14 @@ class ApiController extends AbstractController{
         }
 
         return $response->write("Something went wrong, should not reach here.")->withStatus(400);
-
-        
     }
+// -----------------------------------------------------------------
+// PUT functions
+// -----------------------------------------------------------------
+
+
+    public function updateEquipment($request, $response) {
+
+    }
+
 }

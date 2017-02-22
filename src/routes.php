@@ -141,23 +141,38 @@ $app->get('/', function($request, $response) {
 
 });
 
+// http://www.restapitutorial.com/lessons/httpmethods.html
 // REST API routes
 $app->group('/v1', function() {
 
     // equipment routes
     $this->group('/equipments', function() {
-        $this->get('', 'ApiController:getAll');
+        // CREATE
         $this->post('', 'ApiController:createEquipment');
+
+        // READ
+        // read single equipment
+        $this->get('/{id}', 'ApiController:findById');
+        // read all equipments
+        $this->get('', 'ApiController:getAll');
+
+        // UPDATE
+        $this->put('/{id}', 'ApiController:updateEquipment');
+
+        // DESTROY
+        // $this->delete('/remove/{id}', 'ApiController:removeEquipment');
     });
 
     // equipment types routes
     $this->group('/equipmenttypes', function() {
+
+        // input has to be json as {"name" : "someequipmenttype"}
+        // then add as many other fields. Validation will happen
+        // inside controller.
         $this->post('', 'ApiController:createEquipmentType');
+
+        // $this->get('/search/{id}', 'ApiController:searchId');
     });
-    
-
-
-
 
 
     $this->get('/testget', function($request, $response) {
