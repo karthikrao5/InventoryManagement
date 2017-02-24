@@ -155,12 +155,15 @@ $app->group('/v1', function() {
         // read all equipments
         $this->get('', 'ApiController:getAll');
 
-        // UPDATE
+        // UPDATE to update/replace item by ID
+        // body is json with keys being the fields to update
+        // and values being the values to update
         $this->put('/{id}', 'ApiController:updateEquipment');
+
+        $this->put('/', 'ApiController:updateCollection');
 
         // DESTROY
         $this->delete('/remove/{id}', 'ApiController:deleteEquipment');
-        // $this->get('/remove/{id}', 'ApiController:deleteEquipment');
     });
 
     // equipment types routes

@@ -65,6 +65,10 @@ class ApiController extends AbstractController{
             return $response->write("Invalid request.")->withStatus(400);
         }
 
+        if (is_null($request->getParsedBody())) {
+            return $response->write("No body recieved.")->withStatus(200);
+        }
+
         $json = $request->getParsedBody();
 
         // check if item is in db already
@@ -94,7 +98,11 @@ class ApiController extends AbstractController{
 
     public function createEquipmentType($request, $response) {
         if(is_null($request)) {
-            return $response->write("No body. Make sure you enter some json!")->withStatus(400);
+            return $response->write("Invalid request.")->withStatus(400);
+        }
+
+        if (is_null($request->getParsedBody())) {
+            return $response->write("No body recieved.")->withStatus(200);
         }
 
         $json = $request->getParsedBody();
@@ -121,13 +129,36 @@ class ApiController extends AbstractController{
 // PUT functions
 // -----------------------------------------------------------------
 
+//  update/replace item by ID
+    public function updateEquipment($request, $response, $args) {
+        if(is_null($request)) {
+            return $response->write("Invalid request.")->withStatus(400);
+        }
 
-    // public function updateEquipment($request, $response) {
+        if (is_null($request->getParsedBody())) {
+            return $response->write("No body recieved.")->withStatus(200);
+        }
 
-    // }
+        $json = $request->getParsedBody();
+
+
+        $qb = $this->dm->createQueryBuilder(Equipment::class)
+                                    ->findAndUpdate()
+                                    ->field('id')->equals($args['id']);
+
+        foreach ($json as $key => $value) {
+            $query = $qb->field($key)->set($value);
+        }
+
+        $qb->getQuery()->execute();
+
+        return $response->write("Successfully updated equipment.")->withStatus(200);
+
+
+    }
 
 // -----------------------------------------------------------------
-// PUT functions
+// DELETE functions
 // -----------------------------------------------------------------
 
     public function deleteEquipment($request, $response, $args) {
@@ -135,16 +166,20 @@ class ApiController extends AbstractController{
             return $response->write("Invalid request.")->withStatus(400);
         }
 
+        if (is_null($request->getParsedBody())) {
+            return $response->write("No body recieved.")->withStatus(200);
+        }
+
         $this->dm->createQueryBuilder(Equipment::class)
                                     ->remove()
                                     ->field('id')->equals($args['id'])
                                     ->getQuery()
                                     ->execute();
+
         if (!$this->dm->getRepository(Equipment::class)->findOneBy(array('id'=>$args['id']))) {
             return $response->write("Successfully removed equipment.")->withStatus(200);
         }
         
         return $response->write("Something happened with the remove function.")->withStatus(404);
     }
-
 }
