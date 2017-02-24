@@ -150,8 +150,7 @@ $app->group('/v1', function() {
         // CREATE
         $this->post('', 'ApiController:createEquipment');
 
-        // READ
-        // read single equipment
+        // READ ingle equipment
         $this->get('/{id}', 'ApiController:findById');
         // read all equipments
         $this->get('', 'ApiController:getAll');
@@ -160,7 +159,8 @@ $app->group('/v1', function() {
         $this->put('/{id}', 'ApiController:updateEquipment');
 
         // DESTROY
-        // $this->delete('/remove/{id}', 'ApiController:removeEquipment');
+        $this->delete('/remove/{id}', 'ApiController:deleteEquipment');
+        // $this->get('/remove/{id}', 'ApiController:deleteEquipment');
     });
 
     // equipment types routes

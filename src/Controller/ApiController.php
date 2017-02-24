@@ -40,6 +40,8 @@ class ApiController extends AbstractController{
 
         $returnValue = $this->dm->getRepository(Equipment::class)->findOneBy(array('id' => $searchID));
 
+
+
         if ($returnValue) {
             // 200 status
             return $response->withJson($returnValue);
@@ -120,8 +122,29 @@ class ApiController extends AbstractController{
 // -----------------------------------------------------------------
 
 
-    public function updateEquipment($request, $response) {
+    // public function updateEquipment($request, $response) {
 
+    // }
+
+// -----------------------------------------------------------------
+// PUT functions
+// -----------------------------------------------------------------
+
+    public function deleteEquipment($request, $response, $args) {
+        if(is_null($request)) {
+            return $response->write("Invalid request.")->withStatus(400);
+        }
+
+        $this->dm->createQueryBuilder(Equipment::class)
+                                    ->remove()
+                                    ->field('id')->equals($args['id'])
+                                    ->getQuery()
+                                    ->execute();
+        if (!$this->dm->getRepository(Equipment::class)->findOneBy(array('id'=>$args['id']))) {
+            return $response->write("Successfully removed equipment.")->withStatus(200);
+        }
+        
+        return $response->write("Something happened with the remove function.")->withStatus(404);
     }
 
 }
