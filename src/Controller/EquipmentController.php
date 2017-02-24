@@ -10,7 +10,7 @@ use Interop\Container\ContainerInterface;
 use Doctrine\ODM\MongoDB\DocumentManager;
 
 
-class ApiController extends AbstractController{
+class EquipmentController extends AbstractController{
 
     public function __construct(ContainerInterface $c) {
         parent::__construct($c);
@@ -59,7 +59,7 @@ class ApiController extends AbstractController{
     /**
      * 
      */
-    public function createEquipment(Request $request, Response $response) {
+    public function create(Request $request, Response $response) {
         
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
@@ -95,42 +95,12 @@ class ApiController extends AbstractController{
         }
 
     }
-
-    public function createEquipmentType($request, $response) {
-        if(is_null($request)) {
-            return $response->write("Invalid request.")->withStatus(400);
-        }
-
-        if (is_null($request->getParsedBody())) {
-            return $response->write("No body recieved.")->withStatus(200);
-        }
-
-        $json = $request->getParsedBody();
-
-        $tempArray = json_decode($request->getParsedBody());
-
-        // $equipmentType = new EquipmentType($json["equipment_type"]);
-        $equipment_type = new EquipmentType($tempArray);
-
-        // check if this already exists
-        $find = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('name' => $json["equipment_type"]));
-
-        if ($find) {
-            return $response->write("This equipment type is already in the system.")->withStatus(200);
-        } else {
-            $this->dm->persist($equipmentType);
-            $this->dm->flush();
-            return $response->write("Successfully entered new equipment type.")->withStatus(200);
-        }
-
-        return $response->write("Something went wrong, should not reach here.")->withStatus(400);
-    }
 // -----------------------------------------------------------------
 // PUT functions
 // -----------------------------------------------------------------
 
 //  update/replace item by ID
-    public function updateEquipment($request, $response, $args) {
+    public function updateOne($request, $response, $args) {
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }
@@ -154,14 +124,13 @@ class ApiController extends AbstractController{
 
         return $response->write("Successfully updated equipment.")->withStatus(200);
 
-
     }
 
 // -----------------------------------------------------------------
 // DELETE functions
 // -----------------------------------------------------------------
 
-    public function deleteEquipment($request, $response, $args) {
+    public function delete($request, $response, $args) {
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }

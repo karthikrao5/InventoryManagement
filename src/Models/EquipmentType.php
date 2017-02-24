@@ -16,6 +16,9 @@ class EquipmentType {
 
 	/** @ODM\Field(type="string") */
 	public $name;
+	public function setName($string) {
+		$this->name = $string;
+	}
 
 
 	public function __construct($name) {

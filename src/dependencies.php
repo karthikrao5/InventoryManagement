@@ -48,8 +48,12 @@ $container['HomeController'] = function ($c) {
     return new \App\Controller\HomeController($c->get('view'));
 };
 
-$container["ApiController"] = function($c) {
-    return new App\Controller\ApiController(App\Helper\Container\ContainerHelper::getContainer());
+$container["EquipmentController"] = function($c) {
+    return new App\Controller\EquipmentController(App\Helper\Container\ContainerHelper::getContainer());
+};
+
+$container['EquipmentTypeController'] = function($c) {
+    return new App\Controller\EquipmentTypeController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
 // $container["DummyController"] = function($c) {

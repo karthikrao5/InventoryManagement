@@ -148,31 +148,31 @@ $app->group('/v1', function() {
     // equipment routes
     $this->group('/equipments', function() {
         // CREATE
-        $this->post('', 'ApiController:createEquipment');
+        $this->post('', 'EquipmentController:create');
 
-        // READ ingle equipment
-        $this->get('/{id}', 'ApiController:findById');
+        // READ single equipment
+        $this->get('/{id}', 'EquipmentController:findById');
         // read all equipments
-        $this->get('', 'ApiController:getAll');
+        $this->get('', 'EquipmentController:getAll');
 
         // UPDATE to update/replace item by ID
         // body is json with keys being the fields to update
         // and values being the values to update
-        $this->put('/{id}', 'ApiController:updateEquipment');
-
-        $this->put('/', 'ApiController:updateCollection');
+        $this->put('/{id}', 'EquipmentController:updateOne');
+        // $this->put('/', 'EquipmentController:updateCollection');
 
         // DESTROY
-        $this->delete('/remove/{id}', 'ApiController:deleteEquipment');
+        $this->delete('/remove/{id}', 'EquipmentController:delete');
     });
 
     // equipment types routes
     $this->group('/equipmenttypes', function() {
 
+
         // input has to be json as {"name" : "someequipmenttype"}
         // then add as many other fields. Validation will happen
         // inside controller.
-        $this->post('', 'ApiController:createEquipmentType');
+        $this->post('', 'EquipmentTypeController:create');
 
         // $this->get('/search/{id}', 'ApiController:searchId');
     });
