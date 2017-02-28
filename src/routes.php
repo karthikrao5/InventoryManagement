@@ -7,6 +7,66 @@ use App\Models\Equipment;
 // require_once 'core/CoreService.php';
 use \App\core\CoreService as CoreService;
 
+// http://www.restapitutorial.com/lessons/httpmethods.html
+// REST API routes
+$app->group('/v1', function() {
+
+    // equipment routes
+    $this->group('/equipments', function() {
+        // CREATE
+        $this->post('', 'EquipmentController:create');
+
+        // READ single equipment
+        // for info about this route, check docs https://www.slimframework.com/docs/objects/router.html#route-placeholders
+        $this->get('[/{params:.*}]', 'EquipmentController:find');
+        // read all equipments
+        // $this->get('', 'EquipmentController:find');
+
+        // UPDATE to update/replace item by ID
+        // body is json with keys being the fields to update
+        // and values being the values to update
+        $this->put('/{id}', 'EquipmentController:updateOne');
+        // $this->put('/', 'EquipmentController:updateCollection');
+
+        // DESTROY
+        $this->delete('/{id}', 'EquipmentController:delete');
+
+
+        // add equipment type to equipment
+        $this->put('/addequipmenttype/{id}', 'EquipmentController:addEqType');
+
+    });
+
+    // equipment types routes
+    $this->group('/equipmenttypes', function() {
+
+
+        // input has to be json as {"name" : "someequipmenttype"}
+        // then add as many other fields. Validation will happen
+        // inside controller.
+        $this->post('', 'EquipmentTypeController:create');
+
+        // $this->get('/search/{id}', 'ApiController:searchId');
+    });
+
+
+    $this->get('/testget', function($request, $response) {
+        $dm = $this->get('dm');
+        $var = $this->dm->getRepository(Equipment::class)->findAll();
+        return $response->withJson($var);
+    });
+});
+
+// test route to see if DM is working
+$app->get('/', function($request, $response) {
+    $equipment = new Equipment();
+    $equipment->setLoaner("Karthik");
+    $dm = $this->get('dm');
+    $dm->persist($equipment);
+    $dm->flush();
+});
+
+
 // Route registrations
 // Just for sprint2. This will change in sprint 3 but the way these routes working will be the same.
 $app->post('/core/equipment/add', 'addEquipment');
@@ -128,59 +188,3 @@ function updateEquipment($request, $response)
     
     return $json_response;
 }
-
-
-
-// test route to see if DM is working
-$app->get('/', function($request, $response) {
-    $equipment = new Equipment();
-    $equipment->setLoaner("Karthik");
-    $dm = $this->get('dm');
-    $dm->persist($equipment);
-    $dm->flush();
-
-});
-
-// http://www.restapitutorial.com/lessons/httpmethods.html
-// REST API routes
-$app->group('/v1', function() {
-
-    // equipment routes
-    $this->group('/equipments', function() {
-        // CREATE
-        $this->post('', 'EquipmentController:create');
-
-        // READ single equipment
-        $this->get('/{id}', 'EquipmentController:findById');
-        // read all equipments
-        $this->get('', 'EquipmentController:getAll');
-
-        // UPDATE to update/replace item by ID
-        // body is json with keys being the fields to update
-        // and values being the values to update
-        $this->put('/{id}', 'EquipmentController:updateOne');
-        // $this->put('/', 'EquipmentController:updateCollection');
-
-        // DESTROY
-        $this->delete('/remove/{id}', 'EquipmentController:delete');
-    });
-
-    // equipment types routes
-    $this->group('/equipmenttypes', function() {
-
-
-        // input has to be json as {"name" : "someequipmenttype"}
-        // then add as many other fields. Validation will happen
-        // inside controller.
-        $this->post('', 'EquipmentTypeController:create');
-
-        // $this->get('/search/{id}', 'ApiController:searchId');
-    });
-
-
-    $this->get('/testget', function($request, $response) {
-        $dm = $this->get('dm');
-        $var = $this->dm->getRepository(Equipment::class)->findAll();
-        return $response->withJson($var);
-    });
-});

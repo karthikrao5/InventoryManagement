@@ -34,6 +34,14 @@ $container['dm'] = function($c) {
     return App\Helper\Database\DatabaseHelper::getConnection();
 };
 
+/**
+ *  This is the repository manager. you can set the repository with
+ *  setRepo() and query the collection.
+ */
+$container['rm'] = function($c) {
+    return new App\Models\RepositoryManager(App\Helper\Container\ContainerHelper::getContainer());
+};
+
 
 
 // -----------------------------------------------------------------------------
@@ -48,15 +56,24 @@ $container['HomeController'] = function ($c) {
     return new \App\Controller\HomeController($c->get('view'));
 };
 
-$container["EquipmentController"] = function($c) {
+$container["EquipmentController"] = function ($c) {
     return new App\Controller\EquipmentController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
-$container['EquipmentTypeController'] = function($c) {
+$container['EquipmentTypeController'] = function ($c) {
     return new App\Controller\EquipmentTypeController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
 // $container["DummyController"] = function($c) {
 //     return new \App\Controller\DummyController($c->get('db'));
 // };
+
+
+// -----------------------------------------------------------------------------
+// Validators factories
+// -----------------------------------------------------------------------------
+$container['EquipmentValidator'] = function ($c) {
+    return new App\Validators\EquipmentValidator(App\Helper\Container\ContainerHelper::getContainer());
+};
+
 

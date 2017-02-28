@@ -19,14 +19,4 @@ class EquipmentType {
 	public function setName($string) {
 		$this->name = $string;
 	}
-
-
-	public function __construct($name) {
-		$this->name = $name;
-	}
-
-
-
-
-
 }

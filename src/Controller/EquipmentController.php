@@ -12,8 +12,16 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 
 class EquipmentController extends AbstractController{
 
+    protected $validator;
+
+    private $rm;
+
     public function __construct(ContainerInterface $c) {
         parent::__construct($c);
+        $validator = $this->ci->get('EquipmentValidator');
+
+        $this->rm = $this->ci->get('rm');
+        $this->rm->setRepo(Equipment::class);
     }
 
 
@@ -22,31 +30,29 @@ class EquipmentController extends AbstractController{
 // -----------------------------------------------------------------
 
     /**
-     * @return JSON document with all items
+     * @param $args an array of key value pairs once parsed with getQueryParams()
+     * @return json of document entry or multiple entries
      */
-    public function getAll(Request $request, Response $response) {
-        $this->logger->info('Requesting all equipments.');
-        $var = $this->dm->getRepository(Equipment::class)->findAll();
-
-        return $response->withJson($var);
-    }
-
-    public function findById($request, $response, $args) {
+    public function find($request, $response, $args) {
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }
 
-        $searchID = $args['id'];
+        $params = $request->getQueryParams();
 
-        $returnValue = $this->dm->getRepository(Equipment::class)->findOneBy(array('id' => $searchID));
+        if (empty($params)) {
+            $returnValue = $this->rm->getAllInCollection();
+            return $response->withJson($returnValue);
+        }
 
-
+        $returnValue = $this->rm->findAllByCriteria($params);
 
         if ($returnValue) {
             // 200 status
             return $response->withJson($returnValue);
         }
-        return $response->withStatus(404)->write("No equipment by that id.");
+
+        return $response->withStatus(404)->write("No equipment by those params.");
     }
 
     
@@ -59,7 +65,7 @@ class EquipmentController extends AbstractController{
     /**
      * 
      */
-    public function create(Request $request, Response $response) {
+    public function create($request, $response) {
         
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
@@ -71,17 +77,18 @@ class EquipmentController extends AbstractController{
 
         $json = $request->getParsedBody();
 
-        // check if item is in db already
-        $query = $this->dm->getRepository(Equipment::class)->findOneBy(array('department_tag' => $json['department_tag']));
+        $findMe = $this->rm->findAllByCriteria($json);
 
         // if something returned, item exists, send 409 conflict
-        if ($query) {
-            return $response->withStatus(409)->write("This item already exists.");
+        if ($findMe) {
+            return $response->withStatus(409)->write("This item already exists.".json_encode($findMe));
         }
 
-        // $inputFields = json_decode($json);
+        // TODO Validate fields. 
+        // $this->ci->get("SomeValidator")->validateMe($json);
 
         $equipment = new Equipment();
+
         $equipment->setDept($json['department_tag']);
         $equipment->setGT($json['gt_tag']);
         $equipment->setStatus($json['status']);
@@ -94,6 +101,7 @@ class EquipmentController extends AbstractController{
             return $response->write("Successfully entered new equipment.")->withStatus(200);
         }
 
+        return $response->withStatus(404)->write("Something went wrong.");
     }
 // -----------------------------------------------------------------
 // PUT functions
@@ -107,6 +115,10 @@ class EquipmentController extends AbstractController{
 
         if (is_null($request->getParsedBody())) {
             return $response->write("No body recieved.")->withStatus(200);
+        }
+
+        if(!validateID($args['id'])) {
+            return $response->write("Invalid ID.")->withStatus(404);
         }
 
         $json = $request->getParsedBody();
@@ -150,5 +162,19 @@ class EquipmentController extends AbstractController{
         }
         
         return $response->write("Something happened with the remove function.")->withStatus(404);
+    }
+
+
+    public function addEqType($request, $response, $args) {
+        if(is_null($request)) {
+            return $response->write("Invalid request.")->withStatus(400);
+        }
+
+        if (is_null($request->getParsedBody())) {
+            return $response->write("No body recieved.")->withStatus(200);
+        }
+
+        // $this->dm-createQueryBuilder(Equipment::class)
+        //                             ->
     }
 }
