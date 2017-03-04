@@ -28,12 +28,10 @@ class EquipmentController extends AbstractController{
 // -----------------------------------------------------------------
 // GET functions
 // -----------------------------------------------------------------
-
     /**
-     * @param $args an array of key value pairs once parsed with getQueryParams()
      * @return json of document entry or multiple entries
      */
-    public function find($request, $response, $args) {
+    public function find($request, $response) {
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }

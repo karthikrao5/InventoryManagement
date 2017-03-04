@@ -19,42 +19,35 @@ class Equipment {
     /** @ODM\Field(type="string") */
     public $department_tag;
     
-    
     /** @ODM\Field(type="string") */
     public $gt_tag;
 
-    /** @ODM\ReferenceOne(targetDocument="EquipmentType", storeAs="id", cascade={"persist"}) */
+    // no cascade here because equipmentType will remain even if equipment mapping to it
+    // is removed or modified in any way.
+    /** @ODM\ReferenceOne(targetDocument="EquipmentType") */
     public $equipment_type;
-    
 
     /** @ODM\Field(type="string") */
     public $status;
     
-
 	/** @ODM\Field(type="string") */
 	public $loaned_to;
     
-    /**
-	 * @ODM\Field(type="date")
-	 */
+    /** @ODM\Field(type="date") */
     public $created_on;
     
-    /**
-	 * @ODM\Field(type="date")
-	 */
+    /** @ODM\Field(type="date") */
     public $last_updated;
     
-     
     /** @ODM\Field(type="string") */
     public $comment;
-    
 
     /** @ODM\ReferenceMany(targetDocument="Attribute", mappedBy="attribute") */
     public $attributes = array();
 
     /** #ODM\ReferenceMany(targetDocument="Log", mappedBy="log") */
     public $logs = array();
-    
+
 
     // setters
     public function setDept($string) {
