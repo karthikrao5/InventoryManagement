@@ -3,7 +3,7 @@ return [
     'settings' => [
         // Slim Settings
         'determineRouteBeforeAppMiddleware' => false,
-        'displayErrorDetails' => false,
+        'displayErrorDetails' => true,
         // View settings
         'view' => [
             'template_path' => __DIR__ . '/../src/templates',
@@ -13,11 +13,10 @@ return [
             //     'auto_reload' => true,
             // ],
         ],
-        // monolog settings
-        //'logger' => [
-        //    'name' => 'app',
-        //    'path' => __DIR__ . '/../src/log/app.log',
-        //    'level' => \Monolog\Logger::DEBUG,
-        //],
+        'logger' => [
+            'name' => 'slim-app',
+            'level' => Monolog\Logger::DEBUG,
+            'path' => __DIR__ . '/log/app.log',
+        ],
     ],
 ];

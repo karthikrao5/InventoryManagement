@@ -2,11 +2,11 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-session_start();
-
-# import necessary packages from composer
+// use above for autoloader for ODM since you use $loader for creating documents
 require __DIR__ . '/../vendor/autoload.php';
 
+
+session_start();
 
 // get settings from settings file
 $settings = require __DIR__ . '/../src/settings.php';
@@ -17,9 +17,23 @@ $app = new \Slim\App($settings);
 // set dependencies
 require __DIR__ . '/../src/dependencies.php';
 
+// add app instance to AppHelper
+App\Helper\Container\ContainerHelper::setApplication($app);
+
+
+// slim collection provides a common interface for collections of data
+$container['dbsettings'] = new \Slim\Collection(require __DIR__ . '/../src/dbconfig.php');
+
+$settingsDatabase = $app->getContainer()->get('dbsettings');
+
+// if db is not on, create connection
+if ($settingsDatabase['boot-database']) {
+    \App\Helper\Database\DatabaseHelper::getConnection();
+}
+
+
 // set routes
 require __DIR__ . '/../src/routes.php';
-
 // test route to check if app is running
 $app->get('/hello/{name}', function (Request $request, Response $response) {
 	

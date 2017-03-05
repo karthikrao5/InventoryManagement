@@ -1,156 +1,80 @@
 <?php
 
-// dummy routes for front-end testing
-// $app->group('/dummy', function() {
-	// $this->get('/inventory', 'DummyController:getAll');
-// });
-
-$app->get('/inventory', function($request, $response) {
-	try {
-        // query DB for all objects
-	    $result = getAll();
-
-
-        if($result) {
-        	return $response->withJson($result);	
-
-        } else {
-            throw new PDOException("No records found.");
-        }
-
-    } catch(PDOException $e) {
-        $response->withStatus(404)
-                 ->write('{"error":{"text":'. $e->getMessage() .'}}');
-    }
-});
-
-$app->post('/inventory', function($request, $response) {
-	if (is_null($request->getParsedBody()))
-    {
-        $response->getBody()->write("Invalid JSON document.");
-        $response->withStatus(400);
-        return $response;
-    }
-
-    try {
-    	addItem($request->getParsedBody());
-    	print_r($request->getParsedBody());
-    	// foreach($request->getParsedBody() as $item) {
-    	// 	addItem($item["item"], 'equipments');
-    	// 	addItem($item['itemtype'], 'equipmenttypes');
-    	// }
-    } catch(PDOException $e) {
-        $response()->setStatus(404);
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
-
-});
-
-// REST API routes
-// $app->group('/v1', function() {
-// 	$this->group('/inventory', function() {
-// 		$this->get('', 'ApiController:getAll');
-// 	});
-// });
-
-
-// Front-end routes
-
-
-// test routes (ignore these)
-$app->get('/', 'HomeController:index');
-
-$app->get('/home', function($request, $response) {
-	// $this->logger->info("reached /home");
-	return $this->view->render($response, 'template.html');
-});
-
-$app->get('/equipment', function($request, $response) {
-	// $this->logger->info("reached /home");
-	return $this->view->render($response, 'hp.html', array(data => getAll()));
-});
-
-$app->get('/equipment/{id}', function($request, $response) {
-	// $this->logger->info("reached /home");
-	$id = $request->getAttribute('id');
-
-	return $this->view->render($response, 'equipmentpage.html', array(data => getAll(), id => $id));
-});
-
-
-
-function addItem($itemToAdd) {
-	$mongo = new MongoClient();
-	$db = $mongo->inventorytracking;
-	$collection = $db->equipments;
-
-	$itemToAdd["created_on"] = new MongoDate(); // Add timestamp.
-	$itemToAdd["last_updated"] = new MongoDate();
-	$result = $collection->insert($itemToAdd, array('w' => 1)); // Insert given document to collection and get result array.
-
-	if ($result) {
-		return $result;	
-	} else {
-		return "Error inserting to db.";
-	}
-	
-}
-
-// returns json object of all items
-function getAll() {
-	$mongo = new MongoClient();
-	$db = $mongo->inventorytracking;
-	$collection = $db->equipments;
-	// MongoCursor aka iterator of all documents in collection
-	$cursor = $collection->find();
-	if ($cursor) {
-		return iterator_to_array($cursor);
-	}
-	return null;
-}
-
-// // this is how you use findItem in the controller: 
-
-// 	// $id = $request->getQueryParams();
-//     // search item with id
-//     // $result = findItem($id);
-
-// function findItem($query) {
-// 	$mongo = new MongoClient();
-// 	$db = $mongo->inventorytracking;
-// 	$collection->equipments;
-// 	$id = new MongoId($query["id"]);
-// 	$item = $collection->findOne(array("_id" => $id));
-// 	$mongo->close();
-// 	return json_encode($item);
-// }
-
-// function deleteItem($query) {
-// 	$mongo = new MongoClient();
-// 	$db = $mongo->inventorytracking;
-// 	$collection->equipments;
-// 	$itemToDelete = findItem($query);
-// 	$collection->remove(array( '_id' => new MongoID($itemToDelete)));
-
-// 	if(! findItem($query)) {
-// 		return ("Removed item successfully.");
-// 	} else {
-// 		return ("Item removal unsuccessful.");
-// 	}
-// }
-
+use App\Models\Equipment;
 
 // Back-end routes
 // Do not modify codes below.
-require_once 'core/CoreService.php';
+// require_once 'core/CoreService.php';
 use \App\core\CoreService as CoreService;
 
+// http://www.restapitutorial.com/lessons/httpmethods.html
+// REST API routes
+$app->group('/v1', function() {
+
+    // equipment routes
+    $this->group('/equipments', function() {
+        // CREATE
+        $this->post('', 'EquipmentController:create');
+
+        // READ single equipment
+        // for info about this route, check docs https://www.slimframework.com/docs/objects/router.html#route-placeholders
+        $this->get('[/{params:.*}]', 'EquipmentController:find');
+        // read all equipments
+        // $this->get('', 'EquipmentController:find');
+
+        // UPDATE to update/replace item by ID
+        // body is json with keys being the fields to update
+        // and values being the values to update
+        $this->put('/{id}', 'EquipmentController:updateOne');
+        // $this->put('/', 'EquipmentController:updateCollection');
+
+        // DESTROY
+        $this->delete('/{id}', 'EquipmentController:delete');
+
+
+        // add equipment type to equipment
+        $this->put('/addequipmenttype/{id}', 'EquipmentController:addEqType');
+
+    });
+
+    // equipment types routes
+    $this->group('/equipmenttypes', function() {
+
+
+        // input has to be json as {"name" : "someequipmenttype"}
+        // then add as many other fields. Validation will happen
+        // inside controller.
+        $this->post('', 'EquipmentTypeController:create');
+
+        // $this->get('/search/{id}', 'ApiController:searchId');
+    });
+
+
+    $this->get('/testget', function($request, $response) {
+        $dm = $this->get('dm');
+        $var = $this->dm->getRepository(Equipment::class)->findAll();
+        return $response->withJson($var);
+    });
+});
+
+// test route to see if DM is working
+$app->get('/', function($request, $response) {
+    $equipment = new Equipment();
+    $equipment->setLoaner("Karthik");
+    $dm = $this->get('dm');
+    $dm->persist($equipment);
+    $dm->flush();
+});
+
+
 // Route registrations
+// Just for sprint2. This will change in sprint 3 but the way these routes working will be the same.
 $app->post('/core/equipment/add', 'addEquipment');
 $app->get('/core/equipment/get/by-id/{id}', 'getEquipmentById');
 $app->get('/core/equipment/get/by-department-tag/{tag}', 'getEquipmentByDeptTag');
 $app->delete('/core/equipment/remove/{id}', 'removeEquipment');
 $app->get('/core/equipment/getall', 'getAllEquipments');
+$app->post('/core/equipment/update', 'updateEquipment');
 
 // Functions used in each route
 function getAllEquipments($request, $response)
@@ -245,7 +169,6 @@ function addEquipment($request, $response)
     return $json_response;
 }
 
-// Not working yet
 function updateEquipment($request, $response)
 {
     $json = $request->getParsedBody();
@@ -265,5 +188,3 @@ function updateEquipment($request, $response)
     
     return $json_response;
 }
-
-$app->post('/core/equipment/update', 'updateEquipment');

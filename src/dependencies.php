@@ -12,41 +12,36 @@ $container = $app->getContainer();
 $container['view'] = function ($c) {
     $settings = $c->get('settings');
     $view = new Slim\Views\Twig($settings['view']['template_path']);
-
-        // $settings['view']['twig']);
-    // $view = new \Slim\Views\Twig(__DIR__.'/templates', [
-    //         'cache' => false,
-    //     ]);
-
-    // Add extensions
     $view->addExtension(new Slim\Views\TwigExtension($c->get('router'), $c->request->getUri()));
     $view->addExtension(new Twig_Extension_Debug());
     return $view;
 };
 
-// -----------------------------------------------------------------------------
-// Service factories
-// -----------------------------------------------------------------------------
 // monolog
-// $container['logger'] = function ($c) {
-//     $settings = $c->get('settings');
-//     $logger = new Monolog\Logger($settings['logger']['name']);
-//     $logger->pushProcessor(new Monolog\Processor\UidProcessor());
-//     $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['logger']['path'], Monolog\Logger::DEBUG));
-//     return $logger;
-// };
 $container['logger'] = function ($c) {
-    $settings = $c->get('settings')['logger'];
-    $logger = new Monolog\Logger($settings['name']);
-    $logger->pushProcessor(new Monolog\Processor\UidProcessor());
-    $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
+    $settings = $c->get('settings');
+    $logger = new \Monolog\Logger($settings['logger']['name']);
+    $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
+    $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['logger']['path'], \Monolog\Logger::DEBUG));
     return $logger;
 };
 
-$container['db'] = function($c) {
-    $db = new App\core\DummyDB();
-    return $db;
+// -----------------------------------------------------------------------------
+// Service factories
+// -----------------------------------------------------------------------------
+
+$container['dm'] = function($c) {
+    return App\Helper\Database\DatabaseHelper::getConnection();
 };
+
+/**
+ *  This is the repository manager. you can set the repository with
+ *  setRepo() and query the collection.
+ */
+$container['rm'] = function($c) {
+    return new App\Models\RepositoryManager(App\Helper\Container\ContainerHelper::getContainer());
+};
+
 
 
 // -----------------------------------------------------------------------------
@@ -58,14 +53,27 @@ $container['db'] = function($c) {
 // };
 
 $container['HomeController'] = function ($c) {
-    return new \App\Controller\HomeController($c->get('view'), $c->get('logger'));
+    return new \App\Controller\HomeController($c->get('view'));
 };
 
-$container["ApiController"] = function($c) {
-    return new \App\Controller\ApiController($c->get('db'));
+$container["EquipmentController"] = function ($c) {
+    return new App\Controller\EquipmentController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
-$container["DummyController"] = function($c) {
-    return new \App\Controller\DummyController($c->get('db'));
+$container['EquipmentTypeController'] = function ($c) {
+    return new App\Controller\EquipmentTypeController(App\Helper\Container\ContainerHelper::getContainer());
 };
+
+// $container["DummyController"] = function($c) {
+//     return new \App\Controller\DummyController($c->get('db'));
+// };
+
+
+// -----------------------------------------------------------------------------
+// Validators factories
+// -----------------------------------------------------------------------------
+$container['EquipmentValidator'] = function ($c) {
+    return new App\Validators\EquipmentValidator(App\Helper\Container\ContainerHelper::getContainer());
+};
+
 
