@@ -9,6 +9,17 @@ use \App\core\CoreService as CoreService;
 
 // http://www.restapitutorial.com/lessons/httpmethods.html
 // REST API routes
+
+// $app->get('/home', function($request, $response) {
+//     // $this->logger->info("reached /home");
+//     return $this->view->render($response, 'template.html');
+// });
+
+// $app->group('/', function() {
+//     $this->get('/home', 'EquipmentController:index');
+// }
+
+
 $app->group('/v1', function() {
 
     // equipment routes
