@@ -10,9 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class EquipmentType {
 
-	/**
-	 * @ODM\Id
-	 */
+	/** @ODM\Id */
 	public $id;
 
 	/** @ODM\Field(type="string") */
@@ -27,21 +25,24 @@ class EquipmentType {
 	// references to other IDs. so removing EquipmentType from DocumentManager
 	// also removes all of the mapped EquipmentTypeAttributes
 
-	/** ODM\EmbedMany(targetDocument="EquipmentTypeAttributes", cascade=ALL) */
+	/** ODM\EmbedMany(targetDocument="EquipmentTypeAttribute", cascade=ALL) */
 	public $equipment_type_attributes;
 
 	public function __construct() {
+		// arraycollection instead of php array. 
+		// arraycollection is a doctrine wrapper around a php array
+		// http://www.doctrine-project.org/api/common/2.3/class-Doctrine.Common.Collections.ArrayCollection.html
+
+		// go to that URL for API docs on arraycollection functions
 		$this->equipment_type_attributes = new ArrayCollection();
 	}
-
-	public function newEquipmentTypeAttr()
-
 
 	public function setName($string) {
 		$this->name = $name;
 	}
 
 	public function addEquipmentTypeAttribute($newAttr) {
-		$this->equipment_type_attributes[] = $newAttr;
+		// add is the ArrayCollection function to append to the array
+		$this->equipment_type_attributes->add($newAttr);
 	}
 }
