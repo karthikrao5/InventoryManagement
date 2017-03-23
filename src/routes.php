@@ -10,14 +10,77 @@ use \App\core\CoreService as CoreService;
 // http://www.restapitutorial.com/lessons/httpmethods.html
 // REST API routes
 
+
+
+
+
 // $app->get('/home', function($request, $response) {
 //     // $this->logger->info("reached /home");
 //     return $this->view->render($response, 'template.html');
 // });
 
-// $app->group('/', function() {
-//     $this->get('/home', 'EquipmentController:index');
-// }
+$app->get('/equipment', function($request, $response) {
+    // $this->logger->info("reached /home");
+    return $this->view->render($response, 'hp.html', array(data => getAll()));
+});
+
+
+$app->get('/equipment/{id}', function($request, $response) {
+    // $this->logger->info("reached /home");
+    $id = $request->getAttribute('id');
+    $core = CoreService::getInstance();
+    $result = $core->getEquipmentById($request->getAttribute('id'));
+    // $json_response = $response->withJson($result);
+    $data =  $result['equipment'];
+
+
+    return $this->view->render($response, 'equipmentpage.html', array(data => $data));
+});
+$app->get('/addequipment', function($request, $response) {
+    // $this->logger->info("reached /home");
+    return $this->view->render($response, 'addequipment.html');
+});
+$app->get('/addequipmenttype', function($request, $response) {
+    // $this->logger->info("reached /home");
+    return $this->view->render($response, 'addequipmenttype.html');
+});
+
+
+
+
+// returns json object of all items
+function getAll() {
+    $mongo = new MongoClient();
+    $db = $mongo->inventorytracking;
+    $collection = $db->equipments;
+    // MongoCursor aka iterator of all documents in collection
+    $cursor = $collection->find();
+    if ($cursor) {
+        return iterator_to_array($cursor);
+    }
+    return null;
+}
+
+function addItem($itemToAdd) {
+    $mongo = new MongoClient();
+    $db = $mongo->inventorytracking;
+    $collection = $db->equipments;
+
+    $itemToAdd["created_on"] = new MongoDate(); // Add timestamp.
+    $itemToAdd["last_updated"] = new MongoDate();
+    $result = $collection->insert($itemToAdd, array('w' => 1)); // Insert given document to collection and get result array.
+
+    if ($result) {
+        return $result; 
+    } else {
+        return "Error inserting to db.";
+    }
+    
+}
+
+
+
+
 
 
 $app->group('/v1', function() {
@@ -69,13 +132,13 @@ $app->group('/v1', function() {
 });
 
 // test route to see if DM is working
-$app->get('/', function($request, $response) {
-    $equipment = new Equipment();
-    $equipment->setLoaner("Karthik");
-    $dm = $this->get('dm');
-    $dm->persist($equipment);
-    $dm->flush();
-});
+// $app->get('/', function($request, $response) {
+//     $equipment = new Equipment();
+//     $equipment->setLoaner("Karthik");
+//     $dm = $this->get('dm');
+//     $dm->persist($equipment);
+//     $dm->flush();
+// });
 
 
 // Route registrations

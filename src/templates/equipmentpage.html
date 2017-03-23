@@ -4,14 +4,17 @@
 
          <h1>{{ param }}</h1>
 
-             {% for key, value in attribute(data, id) %}
-              
-                     <div class="form-group">
-                      <label for="{{key}}">{{key}}:</label>
+
+         	<form class="form-group">
+             {% for key, value in data %}
+
+                      <label for="{{key}}">{{key | upper | replace({"_" : " "})}}:</label>
                       <input type="text" class="form-control" id="{{key}}" value="{{value}}">
-                    </div>
+
 
              {% endfor %}
+            </form>
 
+        <a class="btn btn-primary" href="javascript:history.back()" role="button">Submit</a>
 
         {% endblock %}
