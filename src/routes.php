@@ -10,7 +10,7 @@ use \App\core\CoreService as CoreService;
 // http://www.restapitutorial.com/lessons/httpmethods.html
 // REST API routes
 
-
+$app->get('/home', 'HomeController:index');
 
 
 

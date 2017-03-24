@@ -3,28 +3,33 @@
 namespace App\Controller;
 
 use Slim\Views\Twig;
-use Psr\Log\LoggerInterface;
-// use \Psr\Http\Message\ServerRequestInterface as Request;
-// use \Psr\Http\Message\ResponseInterface as Response;
+use App\Models\Equipment;
+use App\Models\EquipmentType;
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
+use Interop\Container\ContainerInterface;
+use Doctrine\ODM\MongoDB\DocumentManager;
 
-class HomeController {
+class HomeController extends AbstractController {
 
-	protected $logger;
-	protected $view;
+	private $view;
+	private $rm;
 
-	public function __construct(Twig $view, LoggerInterface $logger) {
+	public function __construct(ContainerInterface $c) {
+        parent::__construct($c);
+        $this->view = $this->ci->get('view');
 
-		$this->logger = $logger;
-
-		$this->view = $view;
-	}
+        $this->rm = $this->ci->get('rm');
+        $this->rm->setRepo(Equipment::class);
+    }
 
 	public function index($request, $response) {
-		
-		 // $this->logger->info("Home page action dispatched");
 
-		return $this->view->render($response, 'template.html');
-		// return "Home Controller Index";
+		$data = $this->rm->getAllInCollection();
+
+		// print_r(json_encode($data));
+		// return null;
+		return $this->view->render($response, 'hp.html', array(data => $data));
 	}
 
 }

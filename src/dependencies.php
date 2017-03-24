@@ -53,7 +53,7 @@ $container['rm'] = function($c) {
 // };
 
 $container['HomeController'] = function ($c) {
-    return new \App\Controller\HomeController($c->get('view'));
+    return new \App\Controller\HomeController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
 $container["EquipmentController"] = function ($c) {
