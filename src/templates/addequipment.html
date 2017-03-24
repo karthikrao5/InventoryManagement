@@ -1,0 +1,99 @@
+{% extends "template.html" %}
+
+        {% block content %}
+
+         <h1>{{ param }}</h1>
+
+
+         	<form id="attributeform" class="form-group">
+                
+                  
+                <div>
+                <label id="one" for="equipment_type">Equipment Type</label>
+                <select id="equipment_type" class="selectpicker">
+                      <option></option>
+                      <option>Laptop</option>
+                      <option>Router</option>
+                      <option id="gh" >Hard Drive</option>
+                </select>
+                </div>
+            <div id="dynamic"></div>
+            </form>
+            <a class="btn btn-primary" href="http://127.0.0.1:8080/test" role="button">Submit</a>
+
+
+             <script>
+                    // $("#submitform").click(function(){
+                    //     var post = "{";
+                    //     var x = 0;
+                    //     $("#type_form").children().each(function() {
+                    //         if (! ($(this).children().eq(0).val() === "")){
+                    //             post += "\"" + $(this).children().eq(0).val() + "\": ";
+                    //             if (! ($(this).children().eq(1).val() === "")){
+                    //                 post += "\"" +  $(this).children().eq(1).val() + "\",";
+                    //             } else {
+                    //                 post += "null,";
+                    //             }
+
+                    //         }
+
+                       
+                    //     });
+                    //     post = post.substring(0, post.length - 1) + "}";  
+                    //     $("#output").val(post);
+
+                    // });
+
+
+                    $("#equipment_type").on('change', function(){
+                        
+
+
+                        // $("#hy").append("div");
+                        var path = 'http://127.0.0.1:8080/core/equipment-type/get/by-name/';
+                        path += $("#equipment_type").val();
+
+                        $.getJSON(path, function(attributes) {
+
+                            // while (Object.keys($('#attributeform').length > 10)) {
+
+                            //     $('#attributeform').remove('.div');
+                            // }
+                            // $("#output").append($("#attributeform").children().length + " ");
+                            // while ($("#attributeform").children().length > 10) {
+                            //     $("#attributeform").remove();
+                            // }
+                            $("#dynamic").empty();
+                            $("#output").append($("#dynamic").children().length + " ");
+
+                            var list = attributes.equipment_type;
+                            for (var key in list) {
+                                if ( ! (key === "_id" || key === "equipment_type")) {
+                                    var label = document.createElement("label");
+                                    label.append(list[key] + ":   ");
+
+                                    var input = document.createElement("input");
+
+                                    var div = document.createElement("div");
+
+
+
+                                    div.append(label);
+                                    div.append(input);
+
+                                    $("#dynamic").append(div);
+                                }
+
+                            }
+                            $("#output").append($("#dynamic").children().length + " ");
+
+                        });
+
+                    });
+
+            </script>
+            <div><textarea rows="4" cols="50" id="output"></textarea></div>
+
+
+
+        {% endblock %}
