@@ -43,7 +43,7 @@ class EquipmentController extends AbstractController{
 
         if (empty($params)) {
             // $returnValue = $this->rm->getAllInCollection();
-            $returnValue = $this->dm->createQueryBuilder(Equipment::class)->find();
+            $returnValue = $this->dm->getRepository(Equipment::class)->findAll();
             return $response->withJson($returnValue);
         }
 

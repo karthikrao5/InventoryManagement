@@ -30,7 +30,7 @@ class EquipmentTypeController extends AbstractController{
 
         if (empty($params)) {
             // $returnValue = $this->rm->getAllInCollection();
-            $returnValue = $this->dm->createQueryBuilder(EquipmentType::class)->find();
+            $returnValue = $this->dm->getRepository(EquipmentType::class)->findAll();
             return $response->withJson($returnValue);
         }
 

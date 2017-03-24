@@ -12,25 +12,25 @@ use \DateTime;
 class Log {
 
 	/** @ODM\Id */
-	private $id; 
+	public $id; 
 	public function getId() { return $this->id; }
 
 	/** @ODM\ReferenceOne(targetDocument="Equipment", inversedBy="logs") */
-	private $equipment;
+	public $equipment;
 	public function getEquipment() { return $this->equipment; }
 	public function setEquipment(Equipment $eq) { $this->equipment = $eq; }
 
 	/** @ODM\Field(type="date") */
-	private $created_on;
+	public $created_on;
 	public function getCreatedOn() { return $this->created_on; }
 
 	/** @ODM\Field(type="string") */
-	private $action_by;
+	public $action_by;
 	public function getActionBy() { return $action_by; }
 	public function setActionBy($string) { $this->action_by = $string; }
 
 	/** @ODM\Field(type="string") */
-	private $action_via;
+	public $action_via;
 	public function getActionVia() { return $action_via; }
 	public function setActionVia($string) { $this->action_via = $string; }
 

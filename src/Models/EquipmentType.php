@@ -11,11 +11,11 @@ use App\Models\Equipment;
 class EquipmentType {
 
 	/** @ODM\Id */
-	private $id;
+	public $id;
 	public function getId() { return $this->id; }
 
 	/** @ODM\Field(type="string") */
-	private $name;
+	public $name;
 	public function getName() { return $this->name; }
 	public function setName($string) { $this->name = $string; }
 
@@ -23,7 +23,7 @@ class EquipmentType {
 	// so it removes all the Equipments with this equipmentType
 
 	/** @ODM\ReferenceOne(targetDocument="Equipment") */
-	private $equipment;
+	public $equipment;
 	public function getEquipment() { return $this->equipment; }
 	public function setEquipment(Equipment $equip) { $this->equipment = $equip; }
 	
