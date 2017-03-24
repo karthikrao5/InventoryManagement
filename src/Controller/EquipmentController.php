@@ -84,6 +84,8 @@ class EquipmentController extends AbstractController{
 
         // TODO Validate fields. 
         // $this->ci->get("SomeValidator")->validateMe($json);
+		
+		$this->validator->validateID('wrongid');
 
         $equipment = new Equipment();
 

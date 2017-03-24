@@ -11,8 +11,16 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 
 class EquipmentTypeController extends AbstractController{
 
+	protected $validator;
+
+    private $rm;
+	
     public function __construct(ContainerInterface $c) {
         parent::__construct($c);
+		$validator = $this->ci->get('EquipmentTypeValidator');
+
+        $this->rm = $this->ci->get('rm');
+        $this->rm->setRepo(EquipmentType::class);
     }
 
     // -----------------------------------------------------------------
@@ -40,23 +48,26 @@ class EquipmentTypeController extends AbstractController{
         }
 
         $json = $request->getParsedBody();
-
+		
+		$result = $this->validator->isJSON($json);
+		
+		return $response->write('Test')->withStatus(200);
         // $equipmentType = new EquipmentType($json["equipment_type"]);
-        $equipment_type = new EquipmentType();
-        $equipment_type->setName($json['name']);
+        //$equipment_type = new EquipmentType();
+        //$equipment_type->setName($json['name']);
 
         // check if this already exists
-        $find = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('name' => $json["equipment_type"]));
+        //$find = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('name' => $json["equipment_type"]));
 
-        if ($find) {
-            return $response->write("This equipment type is already in the system.")->withStatus(200);
-        } else {
-            $this->dm->persist($equipment_type);
-            $this->dm->flush();
-            return $response->write("Successfully entered new equipment type.")->withStatus(200);
-        }
+        //if ($find) {
+        //    return $response->write("This equipment type is already in the system.")->withStatus(200);
+        //} else {
+        //    $this->dm->persist($equipment_type);
+        //    $this->dm->flush();
+        //    return $response->write("Successfully entered new equipment type.")->withStatus(200);
+        //}
 
-        return $response->write("Something went wrong, should not reach here.")->withStatus(400);
+        //return $response->write("Something went wrong, should not reach here.")->withStatus(400);
 	}
 
     // -----------------------------------------------------------------
