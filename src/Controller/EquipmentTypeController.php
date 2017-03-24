@@ -17,7 +17,7 @@ class EquipmentTypeController extends AbstractController{
 	
     public function __construct(ContainerInterface $c) {
         parent::__construct($c);
-		$validator = $this->ci->get('EquipmentTypeValidator');
+		$this->validator = $this->ci->get('EquipmentTypeValidator');
 
         $this->rm = $this->ci->get('rm');
         $this->rm->setRepo(EquipmentType::class);

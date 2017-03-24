@@ -18,7 +18,7 @@ class EquipmentController extends AbstractController{
 
     public function __construct(ContainerInterface $c) {
         parent::__construct($c);
-        $validator = $this->ci->get('EquipmentValidator');
+        $this->validator = $this->ci->get('EquipmentValidator');
 
         $this->rm = $this->ci->get('rm');
         $this->rm->setRepo(Equipment::class);
@@ -84,8 +84,6 @@ class EquipmentController extends AbstractController{
 
         // TODO Validate fields. 
         // $this->ci->get("SomeValidator")->validateMe($json);
-		
-		$this->validator->validateID('wrongid');
 
         $equipment = new Equipment();
 
