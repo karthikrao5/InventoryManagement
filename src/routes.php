@@ -120,7 +120,7 @@ $app->group('/v1', function() {
         // inside controller.
         $this->post('', 'EquipmentTypeController:create');
 
-        // $this->get('/search/{id}', 'ApiController:searchId');
+        $this->get('[/{params:.*}]', 'EquipmentTypeController:find');
     });
 
 

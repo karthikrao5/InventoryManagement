@@ -25,11 +25,15 @@ class HomeController extends AbstractController {
 
 	public function index($request, $response) {
 
-		$data = $this->rm->getAllInCollection();
+		// $data = $this->rm->getAllInCollection();
+		$data = $this->dm->createQueryBuilder(Equipment::class)->eagerCursor(true)->getQuery()->execute();
+		
+		foreach ($data as $item) {
+			print_r($item);
+		}
+		return null;
 
-		// print_r(json_encode($data));
-		// return null;
-		return $this->view->render($response, 'hp.html', array(data => $data));
+		// return $this->view->render($response, 'hp.twig', array(data => json_decode($data)));
 	}
 
 }

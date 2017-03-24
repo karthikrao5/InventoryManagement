@@ -4,28 +4,34 @@ namespace App\Models;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\Common\Collections\ArrayCollection;
+use App\Models\EquipmentTypeAttribute;
+use App\Models\Equipment;
 
-/**
- * @ODM\Document(db="inventorytracking")
- */
+/** @ODM\Document(db="inventorytracking") */
 class EquipmentType {
 
 	/** @ODM\Id */
-	public $id;
+	private $id;
+	public function getId() { return $this->id; }
 
 	/** @ODM\Field(type="string") */
-	public $name;
+	private $name;
+	public function getName() { return $this->name; }
+	public function setName($string) { $this->name = $string; }
 
 	// leave the cascade to none right now. might set it to cascade=REMOVE
 	// so it removes all the Equipments with this equipmentType
+
 	/** @ODM\ReferenceOne(targetDocument="Equipment") */
-	public $equipment_id;
+	private $equipment;
+	public function getEquipment() { return $this->equipment; }
+	public function setEquipment(Equipment $equip) { $this->equipment = $equip; }
 	
 	// cascade ALL means any change to EquipmentType's object is cascaded to all
 	// references to other IDs. so removing EquipmentType from DocumentManager
 	// also removes all of the mapped EquipmentTypeAttributes
-
-	/** ODM\EmbedMany(targetDocument="EquipmentTypeAttribute", cascade=ALL) */
+	
+	/** ODM\EmbedMany(targetDocument="EquipmentTypeAttribute") */
 	public $equipment_type_attributes;
 
 	public function __construct() {
@@ -37,12 +43,6 @@ class EquipmentType {
 		$this->equipment_type_attributes = new ArrayCollection();
 	}
 
-	public function setName($string) {
-		$this->name = $name;
-	}
-
-	public function addEquipmentTypeAttribute($newAttr) {
-		// add is the ArrayCollection function to append to the array
-		$this->equipment_type_attributes->add($newAttr);
-	}
+	public function getEquipmentTypeAttributes() { return $this->equipment_type_attributes; }
+	public function addEquipmentTypeAttribute(EquipmentTypeAttribute $newAttr) { $this->equipment_type_attributes[] = $newAttr; }
 }

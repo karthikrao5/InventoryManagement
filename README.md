@@ -37,16 +37,48 @@ Or alternatively, use Vagrant to setup development virtual machine automatically
 =======
 API routes:
 
-Equipment routes:
+Two creation routes:
+1. Equipment creation POST /v1/equipments with body as:
+{
+  "equipment_type": "laptop",
+  "department_tag": "Some department specific serial number here",
+  "gt_tag": null,
+  "status": "loaned",
+  "loaned_to": "krao34",
+  "comment": "laptop has a bad battery",
+  "attributes": {
+  	"cpu": "Intel Q6600",
+  	"gpu": "NVIDIA GTX 1080",
+  	"RAM": "16",
+  	"screen_size": "15"
+  },
+  "logs": {
+  	"action_by": "Justin Filosetta"
+  }
+}
 
-GET to get all equipments: /equipments 
-GET single equipment 	 : /equipments/{id}
+2. EquipmentType creation POST /v1/equipmenttypes with body as
+{
+	"name": "laptop",
+	"attributes": 
+	[
+		{
+			"name":"something",
+			"required": 0,
+			"unique": 1,
+			"data_type": "string",
+			"regex": "adfsasdf",
+			"help_comment": "something" 
+		},
+		{
+			"name":"something else",
+			"required": 1,
+			"unique": 1,
+			"data_type": "boolean",
+			"regex": "some regex",
+			"help_comment": "HELP ME"
+		}
+	]
+}
 
-POST create equipment	 : /equipments
-
-PUT	update by ID		 : /equipments/{id}
-REMOVE					 : /equipments/{id}
-
-Equipment Type routes:
-
-POST create				 : /equipmenttypes
+Note: EquipmentType must be created first since an Equipment maps to a single EquipmentType

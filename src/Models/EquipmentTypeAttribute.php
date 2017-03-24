@@ -3,44 +3,37 @@
 namespace App\Models;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Doctrine\Common\Collections\ArrayCollection;
 
-/**
- * @ODM\EmbeddedDocument(db="inventorytracking")
- */
+/** @ODM\EmbeddedDocument */
 class EquipmentTypeAttribute {
-
-	/** @ODM\Id */
-	public $id;
 
 	/** @ODM\Field(type="string") */
 	public $name;
+	public function getName() { return $this->name; }
+	public function setName($newName) { $this->name = $newName; }
 
-	/** @ODM\Field(type="string") */
+	/** ODM\Bool */
+	public $required;
+	public function isRequired() { return $this->required; }
+	public function setRequired($bool) { $this->required = $bool; }
+
+	/** @ODM\Bool */
 	public $unique;
+	public function isUnique() { return $this->unique; }
+	public function setUnique($bool) { $this->unique = $bool; }
 
 	/** @ODM\Field(type="string") */
 	public $data_type;
+	public function getDataType() { return $this->data_type; }
+	public function setDataType($string) { $this->data_type = $string; }
 
 	/** @ODM\Field(type="string") */
 	public $regex;
+	public function getRegex() { return $this->regex; }
+	public function setRegex($string) { $this->regex = $regex; }
 
 	/** @ODM\Field(type="string") */
 	public $help_comment;
-
-	public function __construct() {
-
-	}
-
-	public function setName($newName) {
-		$this->name = $newName;
-	}
-
-	public function setHelp($newHelp)  {
-		$this->help_comment = $newHelp;
-	}
-
-	public function setRegex($newRegex) {
-		$this->regex = $newRegex;
-	}
+	public function getHelpComment() { return $this->help_comment; }
+	public function setHelpComment($string) { $this->help_comment = $string; }	
 }
