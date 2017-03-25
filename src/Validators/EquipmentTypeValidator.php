@@ -29,10 +29,40 @@ class EquipmentTypeValidator extends AbstractValidator {
 	{
 		//check if all common attributes are present.
 		if(!isset($json['name'])) {return false;}
-		if(!isset($json['equipment_type_attributes'])) {return false;}
+		if(!isset($json['equipment_type_attributes']) || 
+			empty($json['equipment_type_attributes'])) {return false;}
+		
+		//check equipment type attributes
+		$attributes = $json['equipment_type_attributes'];
+		
+		foreach($attributes as $attribute)
+		{
+			if(!$this->validateAttribute($attribute)) {return false;}
+		}
 		
 		return true;
-		//check if type specific attributes are in correct format.
+	}
+	
+	public function validateAttribute($attribute)
+	{
+		//check if all attributes are present. syntax check
+		if(!isset($attribute['name'])) {return false;}
+		if(!isset($attribute['required'])) {return false;}
+		if(!isset($attribute['unique'])) {return false;}
+		if(!isset($attribute['data_type'])) {return false;}
+		if(!array_key_exists('regex', $attribute)) {return false;}
+		if(!array_key_exists('help_comment', $attribute)) {return false;}
+		if(!isset($attribute['enum'])) {return false;}
+		if(!isset($attribute['enum_values'])) {return false;}
+		
+		//semantics check. This doesn't check against database.
+		//if unique is set to true, required must be set to true.
+		if($attribute['unique'] && !$attribute['required']) {return false;}
+		
+		//if enum is set to true, enum_values array cannot be empty.
+		if($attribute['enum'] && empty($attribute['enum_values'])) {return false;}
+		
+		return true;
 	}
 }
 
