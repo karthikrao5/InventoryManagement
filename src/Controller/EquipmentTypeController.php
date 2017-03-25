@@ -49,9 +49,16 @@ class EquipmentTypeController extends AbstractController{
 
         $json = $request->getParsedBody();
 		
-		$result = $this->validator->isJSON($json);
+		if($this->validator->validateJSON($json))
+		{
+			return $response->write('Valid JSON given.')->withStatus(200);
+		}
+		else
+		{
+			return $response->write('Invalid JSON given.')->withStatus(400);
+		}
 		
-		return $response->write('Test')->withStatus(200);
+		
         // $equipmentType = new EquipmentType($json["equipment_type"]);
         //$equipment_type = new EquipmentType();
         //$equipment_type->setName($json['name']);

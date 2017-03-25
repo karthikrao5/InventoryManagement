@@ -27,7 +27,12 @@ class EquipmentTypeValidator extends AbstractValidator {
 	
 	public function validateJSON($json)
 	{
+		//check if all common attributes are present.
+		if(!isset($json['name'])) {return false;}
+		if(!isset($json['equipment_type_attributes'])) {return false;}
+		
 		return true;
+		//check if type specific attributes are in correct format.
 	}
 }
 
