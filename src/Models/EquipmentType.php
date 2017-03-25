@@ -34,7 +34,7 @@ class EquipmentType {
 		$this->equipment_type_attributes = new ArrayCollection();
 	}
 
-	public function setName($string) {
+	public function setName($name) {
 		$this->name = $name;
 	}
 

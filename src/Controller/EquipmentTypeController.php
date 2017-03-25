@@ -39,42 +39,38 @@ class EquipmentTypeController extends AbstractController{
 	// -----------------------------------------------------------------
 
 	public function create($request, $response) {
-		if(is_null($request)) {
+		if(is_null($request)) 
+		{
             return $response->write("Invalid request.")->withStatus(400);
         }
 
-        if (is_null($request->getParsedBody())) {
-            return $response->write("No body recieved.")->withStatus(200);
+        if (is_null($request->getParsedBody())) 
+		{
+            return $response->write("No body recieved.")->withStatus(400);
         }
 
         $json = $request->getParsedBody();
 		
-		if($this->validator->validateJSON($json))
-		{
-			return $response->write('Valid JSON given.')->withStatus(200);
-		}
-		else
+		if(!$this->validator->validateJSON($json))
 		{
 			return $response->write('Invalid JSON given.')->withStatus(400);
 		}
 		
+		//check if this already exists
+        $find = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('name' => $json['name']));
 		
-        // $equipmentType = new EquipmentType($json["equipment_type"]);
-        //$equipment_type = new EquipmentType();
-        //$equipment_type->setName($json['name']);
-
-        // check if this already exists
-        //$find = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('name' => $json["equipment_type"]));
-
-        //if ($find) {
-        //    return $response->write("This equipment type is already in the system.")->withStatus(200);
-        //} else {
-        //    $this->dm->persist($equipment_type);
-        //    $this->dm->flush();
-        //    return $response->write("Successfully entered new equipment type.")->withStatus(200);
-        //}
-
-        //return $response->write("Something went wrong, should not reach here.")->withStatus(400);
+		if ($find) 
+		{
+            return $response->write("This equipment type is already in the system.")->withStatus(400);
+        }
+		
+		$equipmentType = new EquipmentType();
+		$equipmentType->setName($json['name']);
+		
+		$this->dm->persist($equipmentType);
+		$this->dm->flush();
+		
+		return $response->write("Successfully entered new equipment type '".$json['name']."'")->withStatus(200);
 	}
 
     // -----------------------------------------------------------------

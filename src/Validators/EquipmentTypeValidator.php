@@ -19,6 +19,7 @@ class EquipmentTypeValidator extends AbstractValidator {
 		return false;
 	}
 	
+	//This function checks if given string (not array) is in json format.
 	public function isJSON($json)
 	{
 		json_decode($json);
