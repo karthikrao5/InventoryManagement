@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Models\Equipment;
 use App\Models\EquipmentType;
+use App\Models\EquipmentTypeAttribute;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use Interop\Container\ContainerInterface;
@@ -51,9 +52,11 @@ class EquipmentTypeController extends AbstractController{
 
         $json = $request->getParsedBody();
 		
-		if(!$this->validator->validateJSON($json))
+		$validationResult = $this->validator->validateJSON($json);
+		
+		if(!$validationResult['ok'])
 		{
-			return $response->write('Invalid JSON given.')->withStatus(400);
+			return $response->write('Invalid JSON given. '.$validationResult['msg'])->withStatus(400);
 		}
 		
 		//check if this already exists
@@ -64,13 +67,41 @@ class EquipmentTypeController extends AbstractController{
             return $response->write("This equipment type is already in the system.")->withStatus(400);
         }
 		
-		$equipmentType = new EquipmentType();
-		$equipmentType->setName($json['name']);
-		
+		$equipmentType = $this->createEquipmentTypeObj($json);
 		$this->dm->persist($equipmentType);
 		$this->dm->flush();
 		
-		return $response->write("Successfully entered new equipment type '".$json['name']."'")->withStatus(200);
+		return $response->write("Successfully created new equipment type '".$json['name']."'.")->withStatus(200);
+	}
+	
+	private function createEquipmentTypeObj($json)
+	{
+		$equipmentType = new EquipmentType();
+		$equipmentType->setName($json['name']);
+		
+		foreach($json['equipment_type_attributes'] as $json_attr)
+		{
+			$attribute = $this->createEquipmentTypeAttributeObj($json_attr);
+			$equipmentType->addEquipmentTypeAttribute($attribute);
+		}
+		
+		return $equipmentType;
+	}
+	
+	private function createEquipmentTypeAttributeObj($json)
+	{
+		$attribute = new EquipmentTypeAttribute();
+		
+		$attribute->setName($json['name']);
+		$attribute->setRequired($json['required']);
+		$attribute->setUnique($json['unique']);
+		$attribute->setDataType($json['data_type']);
+		$attribute->setRegex($json['regex']);
+		$attribute->setHelpComment($json['help_comment']);
+		$attribute->setEnum($json['enum']);
+		$attribute->setEnumValues($json['enum_values']);
+		
+		return $attribute;
 	}
 
     // -----------------------------------------------------------------
