@@ -19,3 +19,5 @@ class EquipmentValidator extends AbstractValidator {
 		return false;
 	}
 }
+
+?>

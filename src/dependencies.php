@@ -78,4 +78,9 @@ $container['EquipmentValidator'] = function ($c) {
     return new App\Validators\EquipmentValidator(App\Helper\Container\ContainerHelper::getContainer());
 };
 
+$container['EquipmentTypeValidator'] = function ($c) {
+    return new App\Validators\EquipmentTypeValidator(App\Helper\Container\ContainerHelper::getContainer());
+};
+
+
 
