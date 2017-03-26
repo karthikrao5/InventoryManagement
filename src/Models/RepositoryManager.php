@@ -23,7 +23,6 @@ class RepositoryManager {
 	 */
 	private $repo;
 
-	private $stringRepoName;
 
 	private $col;
 
@@ -37,7 +36,6 @@ class RepositoryManager {
 	 */
 	public function setRepo($repoName) {
 		$this->repo = $this->dm->getRepository($repoName);
-		$this->stringRepoName = $repoName;
 	}
 
 	/**
@@ -48,9 +46,9 @@ class RepositoryManager {
      *
      * @return \Doctrine\MongoDB\Collection
      */ 
-	public function getAllInCollection($limit = null, $offset = null) {
+	public function getAllInCollection() {
 		// findBy( array $criteria, array $sort = null, integer|null $limit = null, integer|null $skip = null )
-		return $this->repo->findBy(array(), null, $limit, $offset);
+		return $this->repo->findAll();
 	}
 
 	/**

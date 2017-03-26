@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('America/New_York');
+
 // register new services in containers
 // If a class is in a container, whenever slim sees the Controller name being
 // accessed, it will simply call the class function. (google "callable resolver slim3")
@@ -53,7 +55,7 @@ $container['rm'] = function($c) {
 // };
 
 $container['HomeController'] = function ($c) {
-    return new \App\Controller\HomeController($c->get('view'));
+    return new \App\Controller\HomeController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
 $container["EquipmentController"] = function ($c) {

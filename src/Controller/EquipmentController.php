@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Models\Equipment;
 use App\Models\EquipmentType;
+use App\Models\Log;
+use App\Models\Attribute;
+use App\Models\EquipmentTypeAttribute;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use Interop\Container\ContainerInterface;
@@ -14,14 +17,14 @@ class EquipmentController extends AbstractController{
 
     protected $validator;
 
-    private $rm;
+    // private $rm;
 
     public function __construct(ContainerInterface $c) {
         parent::__construct($c);
         $this->validator = $this->ci->get('EquipmentValidator');
 
-        $this->rm = $this->ci->get('rm');
-        $this->rm->setRepo(Equipment::class);
+        // $this->rm = $this->ci->get('rm');
+        // $this->rm->setRepo(Equipment::class);
     }
 
 
@@ -39,11 +42,13 @@ class EquipmentController extends AbstractController{
         $params = $request->getQueryParams();
 
         if (empty($params)) {
-            $returnValue = $this->rm->getAllInCollection();
+            // $returnValue = $this->rm->getAllInCollection();
+            $returnValue = $this->dm->getRepository(Equipment::class)->findAll();
             return $response->withJson($returnValue);
         }
 
-        $returnValue = $this->rm->findAllByCriteria($params);
+        // $returnValue = $this->rm->findAllByCriteria($params);
+        $returnValue = $this->dm->getRepository(Equipment::class)->findBy($params);
 
         if ($returnValue) {
             // 200 status
@@ -75,28 +80,62 @@ class EquipmentController extends AbstractController{
 
         $json = $request->getParsedBody();
 
-        $findMe = $this->rm->findAllByCriteria($json);
+        // $findMe = $this->rm->findAllByCriteria($json);
+
+        // search by dept tag since its unique and required
+        $findMe = $this->dm->getRepository(Equipment::class)->findBy(array("department_tag" => $json['department_tag']));
 
         // if something returned, item exists, send 409 conflict
         if ($findMe) {
             return $response->withStatus(409)->write("This item already exists.".json_encode($findMe));
-        }
+        } else {
+            // TODO Validate fields. 
+            // $this->ci->get("SomeValidator")->validateMe($json);
 
-        // TODO Validate fields. 
-        // $this->ci->get("SomeValidator")->validateMe($json);
+            $equipment = new Equipment();
 
-        $equipment = new Equipment();
+            // look for equipment type
+            $findEqType = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('name' => $json['equipment_type']));
 
-        $equipment->setDept($json['department_tag']);
-        $equipment->setGT($json['gt_tag']);
-        $equipment->setStatus($json['status']);
-        $equipment->setLoaner($json['loaned_to']);
-        $equipment->setComment($json['comment']);
+            // MUST HAVE THIS FIELD. VALIDATE THE REQUEST FOR THIS
+            if(!is_null($findEqType)) {
+                $equipment->setEquipmentType($findEqType);
+                $equipment->setDeptTag($json['department_tag']);
+                $equipment->setGtTag($json['gt_tag']);
+                $equipment->setStatus($json['status']);
+                $equipment->setLoanedTo($json['loaned_to']);
+                $equipment->setComment($json['comment']);
 
-        if(!is_null($equipment)) {
-            $this->dm->persist($equipment);
-            $this->dm->flush();
-            return $response->write("Successfully entered new equipment.")->withStatus(200);
+                // loop thru attributes
+                foreach ($json['attributes'] as $key => $value) {
+                    $newAttr = new Attribute();
+                    $newAttr->setKey($key);
+                    $newAttr->setValue($value);
+                    
+                    // the referencemany in equipment.php has cascade flag
+                    // so no need to persist separately
+
+                    $equipment->addAttribute($newAttr);
+                }
+
+                // loop thru logs??
+                foreach ($json['logs'] as $key => $value) {
+                    $newLog = new Log();
+                    $newLog->setEquipment($equipment);
+
+                    if ($key == "action_via") { $newLog->setActionVia($value); }
+                    if ($key == "action_by") { $newLog->setActionBy($value); }
+                }
+
+                if(!is_null($equipment)) {
+                    $this->dm->persist($equipment);
+                    $this->dm->flush();
+                    return $response->write("Successfully entered new equipment.")->withStatus(200);
+                }
+            } else {
+                // if equipment_type is not given, return error saying user must provide it
+                return $response->withStatus(400)->write("Equipment type not found.");
+            }
         }
 
         return $response->withStatus(404)->write("Something went wrong.");
@@ -160,19 +199,5 @@ class EquipmentController extends AbstractController{
         }
         
         return $response->write("Something happened with the remove function.")->withStatus(404);
-    }
-
-
-    public function addEqType($request, $response, $args) {
-        if(is_null($request)) {
-            return $response->write("Invalid request.")->withStatus(400);
-        }
-
-        if (is_null($request->getParsedBody())) {
-            return $response->write("No body recieved.")->withStatus(200);
-        }
-
-        // $this->dm-createQueryBuilder(Equipment::class)
-        //                             ->
     }
 }

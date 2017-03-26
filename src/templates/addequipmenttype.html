@@ -1,0 +1,98 @@
+{% extends "template.html" %}
+
+
+        {% block sidebar %}
+          {{ include('components/addequipmenttypesidebar.html') }}
+        {% endblock %}
+
+        {% block content %}
+
+         <h1>{{ param }}</h1>
+
+       
+
+            <a id="demo"> </a>
+         	<form class="form-group" id="type_form">
+                <div>
+                    <input id="equipment_type_key" size="30" type="text" value="equipment_type" />
+                    <input id="equipment_type_value"  size="70" type="text" />
+                </div> 
+
+                <div>
+                    <input id="department_tag_key" size="30" type="text" value="department_tag" />
+                    <input id="department_tag_value"  size="70" type="text" />
+                </div> 
+
+                <div>
+                    <input id="status_key" size="30" type="text" value="status" />
+                    <input id="status_value"  size="70" type="text" />
+                </div>
+
+                <div>
+                    <input id="loaned_to_key" size="30" type="text" value="loaned_to" />
+                    <input id="loaned_to_value"  size="70" type="text" />
+                </div>
+                <div>
+                    <input id="5_key" size="30" type="text"/>
+                    <input id="5_value"  size="70" type="text" />
+                </div>
+
+            </form>
+            <button class="btn btn-primary" role="button" onclick="addRow()">Add Attribute</button>
+            <button class="btn btn-primary" role="button" onclick="deleteRow()">Remove Attribute</button>
+            <button id="submitform" class="btn btn-primary" role="button">Submit</button> 
+            <div><textarea rows="4" cols="50" id="output"></textarea></div>
+
+            <script>
+                    $("#submitform").click(function(){
+                        var post = {};
+                        var x = 0;
+                        $("#type_form").children().each(function() {
+                            if (! ($(this).children().eq(0).val() === "")){
+                                post[$(this).children().eq(0).val()] = $(this).children().eq(1).val();
+                            }                      
+                        });
+
+
+                        $.post("http://127.0.0.1:8080/core/equipment-type/add", post, function(response) {
+                            var resp = "";
+                            for (key in response) {
+                                resp += key + ":  " + response[key] + "\n";
+                            }
+
+                            $("#output").val(resp);
+
+
+                        });
+
+                    });
+                function addRow(){
+
+                    var container = document.getElementById("type_form");
+                    var div = document.createElement("div");
+                    var input_key = document.createElement("input");
+                    input_key.size = "30"
+                    input_key.type = "text"
+                    var input_value = document.createElement("input");
+                    input_value.size = "70"
+                    input_value.type = "text"
+
+                    div.appendChild(input_key);
+                    div.appendChild(input_value);
+                    container.appendChild(div);
+
+               
+                }
+
+                function deleteRow () { 
+                    // document.getElementById('5_value').value = container.lastChild.length; 
+                    var container = document.getElementById("type_form");
+                    if (Object.keys(container).length > 8) {
+                        container.removeChild(container.lastChild);
+                    }
+
+                }
+
+            </script>
+
+        {% endblock %}

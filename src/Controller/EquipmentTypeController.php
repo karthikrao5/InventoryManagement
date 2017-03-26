@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller;
 
-
 use App\Models\Equipment;
 use App\Models\EquipmentType;
 use App\Models\EquipmentTypeAttribute;
@@ -27,12 +26,29 @@ class EquipmentTypeController extends AbstractController{
     // -----------------------------------------------------------------
 	// GET functions
 	// -----------------------------------------------------------------
-	public function getAll($request, $response) {
-		return $response->write("Placeholder")->withStatus(200);
-	}
+	public function find($request, $response) {
+		// return $response->write("Placeholder")->withStatus(200);
+		if(is_null($request)) {
+            return $response->write("Invalid request.")->withStatus(400);
+        }
 
-	public function findById($request, $response, $args) {
-		return $response->write("Placeholder")->withStatus(200);
+        $params = $request->getQueryParams();
+
+        if (empty($params)) {
+            // $returnValue = $this->rm->getAllInCollection();
+            $returnValue = $this->dm->getRepository(EquipmentType::class)->findAll();
+            return $response->withJson($returnValue);
+        }
+
+        // $returnValue = $this->rm->findAllByCriteria($params);
+        $returnValue = $this->dm->getRepository(EquipmentType::class)->findBy($params);
+
+        if ($returnValue) {
+            // 200 status
+            return $response->withJson($returnValue);
+        }
+
+        return $response->withStatus(404)->write("No equipment by those params.");
 	}
 
 	// -----------------------------------------------------------------

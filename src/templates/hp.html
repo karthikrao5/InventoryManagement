@@ -1,5 +1,7 @@
-{% extends "template.html" %}
-
+{% extends "template.html" %}	
+		{% block sidebar %}
+          {{ include('components/allequipmentsidebar.html') }}
+        {% endblock %}
         {% block content %}
          <h1>{{ param }}</h1>
          <div class="table-responsive">
@@ -27,7 +29,7 @@
 		    </tbody>
           </table>
           </div>
-          <a class="btn btn-primary" href="http://127.0.0.1:8080/test" role="button">Add</a>
+
 
 
         {% endblock %}
