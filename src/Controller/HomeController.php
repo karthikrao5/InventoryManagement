@@ -36,4 +36,52 @@ class HomeController extends AbstractController {
 		// return $this->view->render($response, 'hp.twig', array(data => json_decode($data)));
 	}
 
+	public function equipment($request, $response) {
+
+		// $data = $this->rm->getAllInCollection();
+		
+		return $this->view->render($response, 'hp.html', array(data => getAll()));
+
+		// return $this->view->render($response, 'hp.twig', array(data => json_decode($data)));
+	}
+
+	public function equipmentID($request, $response, $args) {
+
+		// $data = $this->rm->getAllInCollection();
+		
+		return $this->view->render($response, 'equipmentpage.html', array(data => $args['id']));
+
+		// return $this->view->render($response, 'hp.twig', array(data => json_decode($data)));
+	}
+
+
+
+
+
+// 	$app->get('/equipment', function($request, $response) {
+//     // $this->logger->info("reached /home");
+//     return $this->view->render($response, 'hp.html', array(data => getAll()));
+// });
+
+
+// $app->get('/equipment/{id}', function($request, $response) {
+//     // $this->logger->info("reached /home");
+//     $id = $request->getAttribute('id');
+//     $core = CoreService::getInstance();
+//     $result = $core->getEquipmentById($request->getAttribute('id'));
+//     // $json_response = $response->withJson($result);
+//     $data =  $result['equipment'];
+
+
+//     return $this->view->render($response, 'equipmentpage.html', array(data => $data));
+// });
+// $app->get('/addequipment', function($request, $response) {
+//     // $this->logger->info("reached /home");
+//     return $this->view->render($response, 'addequipment.html');
+// });
+// $app->get('/addequipmenttype', function($request, $response) {
+//     // $this->logger->info("reached /home");
+//     return $this->view->render($response, 'addequipmenttype.html');
+// });
+
 }

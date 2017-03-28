@@ -2,19 +2,53 @@
 
         {% block content %}
 
+        <style type="text/css">
+
+            label {
+              display: inline-block;
+              width: 140px;
+            }​
+        </style>
+
+
          <h1>{{ param }}</h1>
 
-
-         	<form class="form-group">
-             {% for key, value in data %}
+            <input type="hidden" id="id" value={{data}}>
+         	<form class="form-group" id='main_form'>
+           <!--   {% for key, value in data %}
 
                       <label for="{{key}}">{{key | upper | replace({"_" : " "})}}:</label>
                       <input type="text" class="form-control" id="{{key}}" value="{{value}}">
 
 
-             {% endfor %}
+             {% endfor %} -->
             </form>
 
         <a class="btn btn-primary" href="javascript:history.back()" role="button">Submit</a>
+
+        <script> 
+        $(document).ready(function(){
+
+            $out = ''
+            $path = 'http://127.0.0.1:8080/v1/equipments/?id=';
+            $path += $('#id').val();
+
+
+            $.getJSON($path, function(equipment) {
+
+                for (key in equipment[0]){
+
+                    $row = '<div class=\'form-group\'>';
+                    $row += '<label for=\'' +  key + '\'> <strong>' + key + '</strong>: </label>';
+                    $row += '<input type="text" class="form-control" id=\'' + key + '\' value=\'' + equipment[0][key] + '\'>';
+                    $row += '</div>';
+                    $out += $row;
+                }
+                $("#main_form").append($out);
+
+             });
+        });
+
+        </script>
 
         {% endblock %}
