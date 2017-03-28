@@ -15,10 +15,10 @@ class Log {
 	public $id; 
 	public function getId() { return $this->id; }
 
-	/** @ODM\ReferenceOne(targetDocument="Equipment", inversedBy="logs") */
-	public $equipment;
-	public function getEquipment() { return $this->equipment; }
-	public function setEquipment(Equipment $eq) { $this->equipment = $eq; }
+	// /** ODM\ReferenceOne(targetDocument="Equipment", inversedBy="logs") */
+	// public $equipment;
+	// public function getEquipment() { return $this->equipment; }
+	// public function setEquipment(Equipment $eq) { $this->equipment = $eq; }
 
 	/** @ODM\Field(type="date") */
 	public $created_on;

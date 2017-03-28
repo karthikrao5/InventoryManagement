@@ -22,7 +22,7 @@ class Equipment {
 
     // no cascade here because equipmentType will remain even if equipment mapping to it
     // is removed or modified in any way.
-    /** @ODM\ReferenceOne(targetDocument="EquipmentType") */
+    /** @ODM\ReferenceOne(targetDocument="EquipmentType", cascade={"all"}) */
     public $equipment_type;
     public function getEquipmentType() { return $this->equipment_type; }
     public function setEquipmentType(EquipmentType $type) { $this->equipment_type = $type; }
@@ -60,10 +60,10 @@ class Equipment {
     public function getComment() { return $this->comment; }
     public function setComment($string) { $this->comment = $string; }
 
-    /** @ODM\ReferenceMany(targetDocument="Attribute", mappedBy="equipment", cascade={"all"}) */
+    /** @ODM\ReferenceMany(targetDocument="Attribute", cascade={"all"}) */
     public $attributes;
 
-    /** #ODM\ReferenceMany(targetDocument="Log", mappedBy="equipment", cascade={"all"}) */
+    /** @ODM\ReferenceMany(targetDocument="Log", cascade={"all"}) */
     public $logs;
 
 
@@ -75,9 +75,9 @@ class Equipment {
     }
     
     public function getAttributes() { return $this->attributes; }
-    public function addAttribute(Attribute $attr) { $this->attributes[] = $attr; }
+    public function addAttribute(Attribute $attr) { $this->attributes->add($attr); }
 
     public function getLogs() { return $this->logs; }
-    public function addLog(Log $log) { $this->logs[] = $log; }
+    public function addLog(Log $log) { $this->logs->add($log); }
     
 }

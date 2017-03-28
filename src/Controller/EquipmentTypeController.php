@@ -90,6 +90,28 @@ class EquipmentTypeController extends AbstractController{
 		return $response->write("Successfully created new equipment type '".$json['name']."'.")->withStatus(200);
 	}
 	
+
+    // -----------------------------------------------------------------
+	// PUT functions
+	// -----------------------------------------------------------------
+
+	public function updateOne($request, $response) {
+		return $response->write("Placeholder")->withStatus(200);
+	}
+
+
+	// -----------------------------------------------------------------
+	// DELETE functions
+	// -----------------------------------------------------------------
+
+	public function delete($request, $response, $args) {
+		return $response->write("Placeholder")->withStatus(200);
+	}
+
+	// -----------------------------------------------------------------
+	// Private helper functions below 
+	// -----------------------------------------------------------------
+	
 	private function createEquipmentTypeObj($json)
 	{
 		$equipmentType = new EquipmentType();
@@ -118,23 +140,6 @@ class EquipmentTypeController extends AbstractController{
 		$attribute->setEnumValues($json['enum_values']);
 		
 		return $attribute;
-	}
-
-    // -----------------------------------------------------------------
-	// PUT functions
-	// -----------------------------------------------------------------
-
-	public function updateOne($request, $response) {
-		return $response->write("Placeholder")->withStatus(200);
-	}
-
-
-	// -----------------------------------------------------------------
-	// DELETE functions
-	// -----------------------------------------------------------------
-
-	public function delete($request, $response, $args) {
-		return $response->write("Placeholder")->withStatus(200);
 	}
  
 

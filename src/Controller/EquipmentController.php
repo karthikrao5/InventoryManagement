@@ -42,7 +42,6 @@ class EquipmentController extends AbstractController{
         $params = $request->getQueryParams();
 
         if (empty($params)) {
-            // $returnValue = $this->rm->getAllInCollection();
             $returnValue = $this->dm->getRepository(Equipment::class)->findAll();
             return $response->withJson($returnValue);
         }
@@ -121,10 +120,12 @@ class EquipmentController extends AbstractController{
                 // loop thru logs??
                 foreach ($json['logs'] as $key => $value) {
                     $newLog = new Log();
-                    $newLog->setEquipment($equipment);
-
+                    // $newLog->setEquipment($equipment);
+                    print_r($value);
                     if ($key == "action_via") { $newLog->setActionVia($value); }
                     if ($key == "action_by") { $newLog->setActionBy($value); }
+                    $equipment->addLog($newLog);
+                    print_r($equipment->getLogs());
                 }
 
                 if(!is_null($equipment)) {
