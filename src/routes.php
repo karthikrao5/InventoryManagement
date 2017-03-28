@@ -12,6 +12,11 @@ use \App\core\CoreService as CoreService;
 
 $app->get('/home', 'HomeController:index');
 
+$app->get('/equipment', 'HomeController:equipment');
+$app->get('/equipment/{id}', 'HomeController:equipmentID');
+// $app->get('/addequipment', 'HomeController:addEquipment');
+// $app->get('/addequipmenttype', 'HomeController:addEquipmentType');
+
 
 
 // $app->get('/home', function($request, $response) {
@@ -19,23 +24,23 @@ $app->get('/home', 'HomeController:index');
 //     return $this->view->render($response, 'template.html');
 // });
 
-$app->get('/equipment', function($request, $response) {
-    // $this->logger->info("reached /home");
-    return $this->view->render($response, 'hp.html', array(data => getAll()));
-});
+// $app->get('/equipment', function($request, $response) {
+//     // $this->logger->info("reached /home");
+//     return $this->view->render($response, 'hp.html', array(data => getAll()));
+// });
 
 
-$app->get('/equipment/{id}', function($request, $response) {
-    // $this->logger->info("reached /home");
-    $id = $request->getAttribute('id');
-    $core = CoreService::getInstance();
-    $result = $core->getEquipmentById($request->getAttribute('id'));
-    // $json_response = $response->withJson($result);
-    $data =  $result['equipment'];
+// $app->get('/equipment/{id}', function($request, $response) {
+//     // $this->logger->info("reached /home");
+//     $id = $request->getAttribute('id');
+//     $core = CoreService::getInstance();
+//     $result = $core->getEquipmentById($request->getAttribute('id'));
+//     // $json_response = $response->withJson($result);
+//     $data =  $result['equipment'];
 
 
-    return $this->view->render($response, 'equipmentpage.html', array(data => $data));
-});
+//     return $this->view->render($response, 'equipmentpage.html', array(data => $data));
+// });
 $app->get('/addequipment', function($request, $response) {
     // $this->logger->info("reached /home");
     return $this->view->render($response, 'addequipment.html');
