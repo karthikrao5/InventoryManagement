@@ -27,7 +27,6 @@ class EquipmentTypeController extends AbstractController{
 	// GET functions
 	// -----------------------------------------------------------------
 	public function find($request, $response) {
-		// return $response->write("Placeholder")->withStatus(200);
 		if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }
@@ -35,9 +34,12 @@ class EquipmentTypeController extends AbstractController{
         $params = $request->getQueryParams();
 
         if (empty($params)) {
-            // $returnValue = $this->rm->getAllInCollection();
-            $returnValue = $this->dm->getRepository(EquipmentType::class)->findAll();
-            return $response->withJson($returnValue);
+			$cursor = $this->dm->createQueryBuilder(EquipmentType::class)
+				->hydrate(false)
+				->getQuery()
+				->execute();
+			
+			return $response->withJson(iterator_to_array($cursor));
         }
 
         // $returnValue = $this->rm->findAllByCriteria($params);

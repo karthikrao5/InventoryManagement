@@ -11,33 +11,28 @@ use Doctrine\Common\Collections\ArrayCollection;
 class EquipmentTypeAttribute
 {
 	/** @ODM\Field(type="string") */
-	public $name;
+	private $name;
 	
 	/** @ODM\Field(type="boolean") */
-	public $required;
+	private $required;
 	
 	/** @ODM\Field(type="boolean") */
-	public $unique;
+	private $unique;
 	
 	/** @ODM\Field(type="string") */
-	public $data_type;
+	private $data_type;
 	
 	/** @ODM\Field(type="string", nullable=true) */
-	public $regex;
+	private $regex;
 	
 	/** @ODM\Field(type="string", nullable=true) */
-	public $help_comment;
+	private $help_comment;
 	
 	/** @ODM\Field(type="boolean") */
-	public $enum;
+	private $enum;
 	
 	/** @ODM\Field(type="collection", nullable=true) */
-	public $enum_values;
-	
-	public function __construct()
-	{
-		$this->enum_values = new ArrayCollection();
-	}
+	private $enum_values = array();
 	
 	public function setName($name) {$this->name = $name;}
 	public function getName() {return $this->name;}
