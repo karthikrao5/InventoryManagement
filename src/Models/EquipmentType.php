@@ -28,12 +28,12 @@ class EquipmentType {
 	// references to other IDs. so removing EquipmentType from DocumentManager
 	// also removes all of the mapped EquipmentTypeAttributes
 
-	/** @ODM\EmbedMany(targetDocument="EquipmentTypeAttribute", strategy="addToSet") */
+	/** @ODM\EmbedOne(targetDocument="EquipmentTypeAttribute") */
 	public $equipment_type_attributes;
 	
 	public function __construct()
 	{
-		$this->equipment_type_attributes = new ArrayCollection();
+		//$this->equipment_type_attributes = new ArrayCollection();
 	}
 
 	public function setName($name) {
@@ -41,8 +41,8 @@ class EquipmentType {
 	}
 
 	public function addEquipmentTypeAttribute(EquipmentTypeAttribute $newAttr) {
-		$this->equipment_type_attributes->add($newAttr);
+		//$this->equipment_type_attributes->add($newAttr);
 		// $this->equipment_type_attributes[] = $newAttr;
-
+		$this->equipment_type_attributes = $newAttr;
 	}
 }

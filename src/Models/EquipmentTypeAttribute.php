@@ -11,28 +11,28 @@ use Doctrine\Common\Collections\ArrayCollection;
 class EquipmentTypeAttribute
 {
 	/** @ODM\Field(type="string") */
-	private $name;
+	public $name;
 	
 	/** @ODM\Field(type="boolean") */
-	private $required;
+	public $required;
 	
 	/** @ODM\Field(type="boolean") */
-	private $unique;
+	public $unique;
 	
 	/** @ODM\Field(type="string") */
-	private $data_type;
+	public $data_type;
 	
 	/** @ODM\Field(type="string", nullable=true) */
-	private $regex;
+	public $regex;
 	
 	/** @ODM\Field(type="string", nullable=true) */
-	private $help_comment;
+	public $help_comment;
 	
 	/** @ODM\Field(type="boolean") */
-	private $enum;
+	public $enum;
 	
 	/** @ODM\Field(type="collection", nullable=true) */
-	private $enum_values;
+	public $enum_values;
 	
 	public function __construct()
 	{

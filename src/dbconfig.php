@@ -19,7 +19,7 @@ return [
         'configuration' => [
             'ProxyDir' =>  __DIR__ . '/../src/Helper/odmcache/Proxy',
             'HydratorsDir' => __DIR__ . '/../src/Helper/odmcache/Hydrators',
-            'Models' => __DIR__ . '/../src/Models/',
+            'Models' => __DIR__ . '/../src/Models',
         ]
     ]
 ];
