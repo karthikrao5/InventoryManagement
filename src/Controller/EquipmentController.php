@@ -95,7 +95,7 @@ class EquipmentController extends AbstractController{
             $equipment = new Equipment();
 
             // look for equipment type
-            $findEqType = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('id' => $json['equipment_type_id']));
+            $findEqType = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('name' => $json['equipment_type']));
 
             // MUST HAVE THIS FIELD. VALIDATE THE REQUEST FOR THIS
             if(!is_null($findEqType)) {
@@ -112,7 +112,9 @@ class EquipmentController extends AbstractController{
                     $newAttr->setKey($key);
                     $newAttr->setValue($value);
                     
-                    
+                    // the referencemany in equipment.php has cascade flag
+                    // so no need to persist separately
+
                     $equipment->addAttribute($newAttr);
                 }
 
@@ -120,11 +122,11 @@ class EquipmentController extends AbstractController{
                 foreach ($json['logs'] as $key => $value) {
                     $newLog = new Log();
                     // $newLog->setEquipment($equipment);
-                    // print_r($value);
+                    print_r($value);
                     if ($key == "action_via") { $newLog->setActionVia($value); }
                     if ($key == "action_by") { $newLog->setActionBy($value); }
                     $equipment->addLog($newLog);
-                    // print_r($equipment->getLogs());
+                    print_r($equipment->getLogs());
                 }
 
                 if(!is_null($equipment)) {
