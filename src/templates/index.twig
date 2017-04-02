@@ -2,8 +2,7 @@
 
 {% block content %}
 	<h1>This is the twig index pageasdfads</h1>
-	<p>{{ base_url() }}</p>
-
-	<p>{{ data }}</p>
+	<a href="{{ path_for("get-add-equipment") }}">Add Equipment</a>
+	<a href="{{ path_for("get-add-equipment-type") }}">Add Equipment Type</a>
 	
 {% endblock %}

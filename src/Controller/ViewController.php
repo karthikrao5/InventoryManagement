@@ -33,6 +33,11 @@ class ViewController extends AbstractController {
 	public function postEquipmentForm($request, $response, $args) {
 		$body = $request->getParsedBody();
 
+		foreach ($body as $key => $value) {
+			print_r($key.", ".$value);
+			print_r("\n==============\n");
+		}
+
 		// print_r($body);
 		// return null;
 		$this->logger->info("Posting Equipment to db", array("name"=>$body["department_tag"]));
@@ -46,7 +51,7 @@ class ViewController extends AbstractController {
 
 	// POST
 	public function postEquipmentTypeForm($request, $response, $args) {
-		print_r($request->getParsedBody());
+		$body = $request->getParsedBody();
 		return null;
 	}
 

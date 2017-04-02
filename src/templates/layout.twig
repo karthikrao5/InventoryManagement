@@ -1,25 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Document</title>
-  <link rel="stylesheet" href="{{ base_url() }}/css/bootstrap.css">
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Bootstrap core CSS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <link href="{{ base_url() }}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ base_url() }}/css/main.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="{{ base_url() }}/js/bootstrap.min.js"></script>
 </head>
     <body>
-        
-        {% block content %}
 
+        {% block header %}
+            {{ include('partials/top-nav.twig') }}
         {% endblock %}
-
-
+        
+        <div class="container-fluid">
+            <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+              {% block content %}            
+              {% endblock %}
+            </main>
+        </div>
+        
         {% block footer %}
           {{ include('partials/footer.twig') }}
         {% endblock %}
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-        <script src="{{ base_url() }}/js/jquery-3.1.1.min.js" ></script>
-        <script src="{{ base_url() }}/js/bootstrap.min.js"></script>
+        
         <script src="{{ base_url() }}/js/testindex.js"></script>
-
     </body>
 </html>

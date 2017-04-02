@@ -2,17 +2,28 @@
 
 {% block content %}
 
-	<form action="" method="post">
+  <a href="{{ path_for('home') }}">Back to Home</a> 
+
+	<form class="equipment-type-form"action="" method="post">
       <fieldset>
         <input name="name" type="text" placeholder="Equipment Type Name">
       </fieldset>
+      
+      <div class="attributes-container">
+        <div class="single-attribute-form">
 
-      <fieldset class="equipment-type-attribute-fieldset">
-      	<legend>Equipment Type Attributes</legend>
-      	<input name="attributes[key]" type="text" placeholder="Attribute key"> | <input name="attributes[value]" type="text" placeholder="Attribute value">
-        <button type="button" class="attribute-button">Add another attribute</button>
-      </fieldset>
+        <fieldset class="attribute-fieldset">
+          <input name="attributes[key]" type="text" placeholder="Attribute key"> | <input name="attributes[value]" type="text" placeholder="Attribute value">
+          <button type="button" class="add-field-button">Add another field</button>
+        </fieldset>
+
+        </div>
+      </div>
+
+      <button type="button" class="add-attribute-button">Add another attribute</button>
       <input type="submit" class="button">
     </form>
-	
+	 
+
+
 {% endblock %}
