@@ -15,13 +15,6 @@ class Attribute {
 	public $id;
 	public function getId() { return $this->id; }
 
-	// no cascade here because removing or modifying an attribute
-	// should not affect the equipment that maps to it. 
-	/** ODM\ReferenceOne(targetDocument="Equipment", inversedBy="attributes") */
-	// public $equipment;
-	// public function getEquipment() { return $this->equipment; }
-	// public function setEquipment(Equipment $equip) { $this->equipment = $equip; }
-
 	/** @ODM\Field(type="string") */
 	public $key;
 	public function getKey() { return $this->key; }

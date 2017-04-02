@@ -32,7 +32,7 @@ class EquipmentController extends AbstractController{
 // GET functions
 // -----------------------------------------------------------------
     /**
-     * @return json of document entry or multiple entries
+     * @return json of document
      */
     public function find($request, $response) {
         if(is_null($request)) {
@@ -42,12 +42,13 @@ class EquipmentController extends AbstractController{
         $params = $request->getQueryParams();
 
         if (empty($params)) {
-            $returnValue = $this->dm->getRepository(Equipment::class)->findAll();
-            return $response->withJson($returnValue);
+            $cursor = $this->dm->getRepository(Equipment::class)->getAllEquipment();
+            // return $response->withStatus(200);
+            return $response->withJson(iterator_to_array($cursor));
         }
 
         // $returnValue = $this->rm->findAllByCriteria($params);
-        $returnValue = $this->dm->getRepository(Equipment::class)->findBy($params);
+        $returnValue = $this->dm->getRepository(Equipment::class)->findByParams($params);
 
         if ($returnValue) {
             // 200 status
@@ -94,7 +95,7 @@ class EquipmentController extends AbstractController{
             $equipment = new Equipment();
 
             // look for equipment type
-            $findEqType = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('name' => $json['equipment_type']));
+            $findEqType = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('id' => $json['equipment_type_id']));
 
             // MUST HAVE THIS FIELD. VALIDATE THE REQUEST FOR THIS
             if(!is_null($findEqType)) {
@@ -111,9 +112,7 @@ class EquipmentController extends AbstractController{
                     $newAttr->setKey($key);
                     $newAttr->setValue($value);
                     
-                    // the referencemany in equipment.php has cascade flag
-                    // so no need to persist separately
-
+                    
                     $equipment->addAttribute($newAttr);
                 }
 
@@ -121,11 +120,11 @@ class EquipmentController extends AbstractController{
                 foreach ($json['logs'] as $key => $value) {
                     $newLog = new Log();
                     // $newLog->setEquipment($equipment);
-                    print_r($value);
+                    // print_r($value);
                     if ($key == "action_via") { $newLog->setActionVia($value); }
                     if ($key == "action_by") { $newLog->setActionBy($value); }
                     $equipment->addLog($newLog);
-                    print_r($equipment->getLogs());
+                    // print_r($equipment->getLogs());
                 }
 
                 if(!is_null($equipment)) {

@@ -11,7 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 
 /**
- * @ODM\Document(db="inventorytracking")
+ * @ODM\Document(db="inventorytracking", repositoryClass="App\Models\Repository\EquipmentRepository")
  */
 class Equipment {
 
