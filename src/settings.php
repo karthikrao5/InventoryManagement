@@ -6,12 +6,13 @@ return [
         'displayErrorDetails' => true,
         // View settings
         'view' => [
-            'template_path' => __DIR__ . '/../src/templates',
-            // 'twig' => [
-            //     'cache' => __DIR__ . '/cache/twig',
-            //     'debug' => true,
-            //     'auto_reload' => true,
-            // ],
+            'template_path' => __DIR__ . '/templates',
+            'twig' => [
+                // 'cache' => __DIR__ . '/cache/twig',
+                // 'debug' => true,
+                // 'auto_reload' => true,
+                'cache' => false
+            ],
         ],
         'logger' => [
             'name' => 'slim-app',

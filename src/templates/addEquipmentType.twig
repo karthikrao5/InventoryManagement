@@ -1,0 +1,18 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+
+	<form action="" method="post">
+      <fieldset>
+        <input name="name" type="text" placeholder="Equipment Type Name">
+      </fieldset>
+
+      <fieldset class="equipment-type-attribute-fieldset">
+      	<legend>Equipment Type Attributes</legend>
+      	<input name="attributes[key]" type="text" placeholder="Attribute key"> | <input name="attributes[value]" type="text" placeholder="Attribute value">
+        <button type="button" class="attribute-button">Add another attribute</button>
+      </fieldset>
+      <input type="submit" class="button">
+    </form>
+	
+{% endblock %}

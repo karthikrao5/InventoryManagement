@@ -10,13 +10,12 @@ use \App\core\CoreService as CoreService;
 // http://www.restapitutorial.com/lessons/httpmethods.html
 // REST API routes
 
-$app->get('/home', 'HomeController:index');
+$app->get('/home', 'ViewController:index');
+$app->get('/add-equipment', 'ViewController:getEquipmentForm');
+$app->post("/add-equipment", 'ViewController:postEquipmentForm');
 
-$app->get('/equipment', 'HomeController:equipment');
-$app->get('/equipment/{id}', 'HomeController:equipmentID');
-// $app->get('/addequipment', 'HomeController:addEquipment');
-// $app->get('/addequipmenttype', 'HomeController:addEquipmentType');
-
+$app->get('/add-equipment-type', 'ViewController:getEquipmentTypeForm');
+$app->post('/add-equipment-type', 'ViewController:postEquipmentTypeForm');
 
 
 // $app->get('/home', function($request, $response) {

@@ -13,9 +13,9 @@ $container = $app->getContainer();
 // Twig
 $container['view'] = function ($c) {
     $settings = $c->get('settings');
-    $view = new Slim\Views\Twig($settings['view']['template_path']);
+    $view = new Slim\Views\Twig($settings['view']['template_path'], $settings['view']['twig']);
     $view->addExtension(new Slim\Views\TwigExtension($c->get('router'), $c->request->getUri()));
-    $view->addExtension(new Twig_Extension_Debug());
+    // $view->addExtension(new Twig_Extension_Debug());
     return $view;
 };
 
@@ -26,6 +26,11 @@ $container['logger'] = function ($c) {
     $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
     $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['logger']['path'], \Monolog\Logger::DEBUG));
     return $logger;
+};
+
+// flash messages
+$container['flash'] = function () {
+    return new \Slim\Flash\Messages();
 };
 
 // -----------------------------------------------------------------------------
@@ -54,8 +59,8 @@ $container['rm'] = function($c) {
 //     return new App\Controller\ApiController($c->get('logger'));
 // };
 
-$container['HomeController'] = function ($c) {
-    return new \App\Controller\HomeController(App\Helper\Container\ContainerHelper::getContainer());
+$container['ViewController'] = function ($c) {
+    return new \App\Controller\ViewController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
 $container["EquipmentController"] = function ($c) {

@@ -18,7 +18,8 @@
         {% endblock %}
         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
           {% block content %}
-            {{ include('components/dummy_content.html') }}
+            <!-- {{ include('components/dummy_content.html') }} -->
+            
           {% endblock %}
         </main>
 
@@ -26,7 +27,7 @@
     </div>
 
     {% block footer %}
-      {{ include('components/footer.html') }}
+      {{ include('partials/footer.twig') }}
     {% endblock %}
 
   </body>
