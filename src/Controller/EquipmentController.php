@@ -122,11 +122,11 @@ class EquipmentController extends AbstractController{
                 foreach ($json['logs'] as $key => $value) {
                     $newLog = new Log();
                     // $newLog->setEquipment($equipment);
-                    print_r($value);
+                    // print_r($value);
                     if ($key == "action_via") { $newLog->setActionVia($value); }
                     if ($key == "action_by") { $newLog->setActionBy($value); }
                     $equipment->addLog($newLog);
-                    print_r($equipment->getLogs());
+                    // print_r($equipment->getLogs());
                 }
 
                 if(!is_null($equipment)) {
