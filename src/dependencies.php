@@ -87,5 +87,8 @@ $container['EquipmentTypeValidator'] = function ($c) {
     return new App\Validators\EquipmentTypeValidator(App\Helper\Container\ContainerHelper::getContainer());
 };
 
+$container["core"] = function($c) {
+    return new App\Core\CoreService();
+};
 
 

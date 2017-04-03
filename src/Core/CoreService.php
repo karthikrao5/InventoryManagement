@@ -72,7 +72,7 @@ class CoreService
 		$equipmentType = new EquipmentType();
 		$equipmentType->setName($requestJson["name"]);
 
-		$attributes[] = array();
+		$attributes = array();
 		foreach ($requestJson['equipment_type_attributes'] as $attr) {
 			$newAttr = new EquipmentTypeAttribute();
 			$newAttr->setName($attr["name"]);
@@ -86,9 +86,7 @@ class CoreService
 
 			$attributes[] = $attr;
 		}
-
 		$equipmentType->setAttributes($attributes);
-
 		$this->dao->createEquipmentType($equipmentType);
 		
 		return array("ok" => true, "message" => "success.");

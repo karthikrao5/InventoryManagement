@@ -23,9 +23,12 @@ abstract class AbstractController {
 	 */
 	protected $logger;
 
+	protected $core;
+
 	public function __construct(ContainerInterface $c) {
 		$this->ci = $c;
 		$this->dm = $c->get('dm');
 		$this->logger = $c->get('logger');
+		$this->core = $c->get("core");
 	}
 }

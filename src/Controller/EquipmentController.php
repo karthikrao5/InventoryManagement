@@ -39,23 +39,26 @@ class EquipmentController extends AbstractController{
             return $response->write("Invalid request.")->withStatus(400);
         }
 
-        $params = $request->getQueryParams();
+        $array = $this->core->getEquipment();
+        return $response->withJson($array);
 
-        if (empty($params)) {
-            $cursor = $this->dm->getRepository(Equipment::class)->getAllEquipment();
-            // return $response->withStatus(200);
-            return $response->withJson(iterator_to_array($cursor));
-        }
+        // $params = $request->getQueryParams();
 
-        // $returnValue = $this->rm->findAllByCriteria($params);
-        $returnValue = $this->dm->getRepository(Equipment::class)->findByParams($params);
+        // if (empty($params)) {
+        //     $cursor = $this->dm->getRepository(Equipment::class)->getAllEquipment();
+        //     // return $response->withStatus(200);
+        //     return $response->withJson(iterator_to_array($cursor));
+        // }
 
-        if ($returnValue) {
-            // 200 status
-            return $response->withJson($returnValue);
-        }
+        // // $returnValue = $this->rm->findAllByCriteria($params);
+        // $returnValue = $this->dm->getRepository(Equipment::class)->findByParams($params);
 
-        return $response->withStatus(404)->write("No equipment by those params.");
+        // if ($returnValue) {
+        //     // 200 status
+        //     return $response->withJson($returnValue);
+        // }
+
+        // return $response->withStatus(404)->write("No equipment by those params.");
     }
 
     

@@ -95,6 +95,12 @@ class DAO
 		//change this behavior later
 		$mongo = new MongoClient(DAO::$connectionString);
 		$equipments = $mongo->inventorytracking->equipments;
+
+		if(is_null($searchCriteria)) 
+		{
+			return iterator_to_array($equipments->find());
+		}
+
 		$cursor = $equipments->find($searchCriteria);
 		$mongo->close();
 		
