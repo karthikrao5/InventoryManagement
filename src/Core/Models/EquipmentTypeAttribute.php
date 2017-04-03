@@ -47,7 +47,7 @@ class EquipmentTypeAttribute implements \JsonSerializable
     public function setEquipmentTypeId($equipmentTypeId) {$this->equipmentTypeId = $equipmentTypeId;}
 	public function getEquipmentTypeIdString() {return $this->equipmentTypeId->{'$id'};}
 
-    public function JsonSerialize()
+    public function jsonSerialize()
     {
         return get_object_vars($this);
     }

@@ -93,7 +93,7 @@ class Attribute implements \JsonSerializable
         return $this->value;
     }
     
-    public function JsonSerialize()
+    public function jsonSerialize()
     {	
         return get_object_vars($this);
     }
