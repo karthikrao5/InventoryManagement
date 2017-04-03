@@ -1,7 +1,7 @@
 {% extends "layout.twig" %}
 
 {% block content %}
-	<h1>This is the twig index pageasdfads</h1>
+	<h1>Equipments</h1>
 
 
 	<div class="table-responsive">
@@ -12,14 +12,18 @@
 					<th>GT Tag</th>
 					<th>Status</th>
 					<th>Loaned To</th>
+					<th>Equipment Type Name</th>
+					<th>Functions</th>
 				</tr>
 
 				{% for row in data %}
 					<tr>
-						<td>{{ row.department_tag }}</td>
-						<td>{{ row.gt_tag }}</td>
+						<td>{{ row.departmentTag }}</td>
+						<td>{{ row.gtTag }}</td>
 						<td>{{ row.status }}</td>
-						<td>{{ row.loaned_to }}</td>
+						<td>{{ row.loanedTo }}</td>
+						<td> {{ row.equipmentTypeName }}</td>
+						<td><a href="">Edit</a>/<a href="">Show</a>/<a href="">Delete</a></td>
 					</tr>
 				{% endfor %}
 				
@@ -30,5 +34,6 @@
 	</div>
 	<a href="{{ path_for("get-add-equipment") }}">Add Equipment</a>
 	<a href="{{ path_for("get-add-equipment-type") }}">Add Equipment Type</a>
+	<a href="{{ path_for("get-add-equipment-type") }}">Show All Equipment Types</a>
 	
 {% endblock %}

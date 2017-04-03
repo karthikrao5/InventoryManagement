@@ -35,11 +35,21 @@ class EquipmentController extends AbstractController{
      * @return json of document
      */
     public function find($request, $response) {
+
+
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }
+        // TESTED THIS CODE, params works don't mess with it.
+        $params = $request->getQueryParams();
+        if ($params) {
+            $array = $this->core->getEquipment($params);
+        } else {
+            $array = $this->core->getEquipment();
+        }
 
-        $array = $this->core->getEquipment();
+        // return null;
+
         if($array) {
             return $response->withJson($array);
         } else {

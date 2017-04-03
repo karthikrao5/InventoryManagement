@@ -3,7 +3,7 @@ namespace App\Core;
 
 use App\Core\DAO;
 use App\Core\Models\Attribute;
-use App\Core\Medels\Equipment;
+use App\Core\Models\Equipment;
 use App\Core\Models\EquipmentType;
 use App\Core\Models\EquipmentTypeAttribute;
 
@@ -32,7 +32,7 @@ class CoreService
 		$equipment->setLoanedTo($requestJson['loaned_to']);
 		$equipment->setCreatedOn($requestJson['created_on']);
 		$equipment->setLastUpdated($requestJson['last_updated']);
-		$equipment->setComment($requestJson['comment']);
+		$equipment->setComments($requestJson['comment']);
 		
 		$attrs = array();
 		foreach($requestJson['attributes'] as $attrJson)
@@ -86,32 +86,84 @@ class CoreService
 	
 	public function getEquipment($requestJson=NULL)
 	{
-		$searchCriteriaArr = array();
-		$searchCriteriaArr['department_tag'] = $requestJson['department_tag'];
-		//dev purpose code
-		$equipments = $this->dao->getEquipment($searchCriteriaArr);
-		
-		$result = array("ok" => true, "msg" => "success.", "equipments" => $equipments);
-		
+
+		$isDbSuccess = False;
+
+
+		if ($requestJson) {
+			$searchCriteriaArr = array();
+
+			if ($requestJson["department_tag"]) {
+				$searchCriteriaArr["departmentTag"] = $requestJson["department_tag"];
+			} else if($requestJson["gt_tag"]) {
+				$searchCriteriaArr["gtTag"] = $requestJson["gt_tag"];
+			} else if($requestJson["equipment_td"]) {
+				$searchCriteriaArr["equipmentId"] = $requestJson["equipment_td"];
+			} else if($requestJson["equipment_type_name"]) {
+				$searchCriteriaArr["equipmentTypeName"] = $requestJson["equipment_type_name"];
+			} else if($requestJson["status"]) {
+				$searchCriteriaArr["status"] = $requestJson["status"];
+			};
+			$equipments = $this->dao->getEquipment($searchCriteriaArr);
+			if ($equipmentTypes) {
+				$isDbSuccess = True;
+			} else {
+				$isDbSuccess = False;
+			}
+		} else {
+			//dev purpose code
+			$equipments = $this->dao->getEquipment();
+			if ($equipmentTypes) {
+				$isDbSuccess = True;
+			} else {
+				$isDbSuccess = False;
+			}
+		}
+
+		if ($isDbSuccess) {
+			$result = array("ok" => true, "msg" => "Success getting equipment", "equipments" => $equipments);
+		} else {
+			$result = array("ok" => false, "msg" => "Get equipment was not successful.", "equipments" => $equipments);
+		}
 		return $result;
 	}
 	
+
 	public function getEquipmentType($requestJson=NULL)
 	{
 		$equipmentTypes = null;
+		$isDbSuccess = False;
 		
-		if(is_null($requestJson) || empty($requestJson))
-		{
-			$equipmentTypes = $this->dao->getEquipmentType(null);
-		}
-		else
-		{
+		if($requestJson) {
 			$searchCriteriaArr = array();
-			$searchCriteriaArr['name'] = $requestJson['name'];
+
+			// validation of id doesnt work
+			if ($requestJson["_id"]) {
+				$searchCriteriaArr["_id"] = $requestJson["id"];
+			} else if($requestJson["name"]) {
+				$searchCriteriaArr["name"] = $requestJson["name"];
+			}
+
 			$equipmentTypes = $this->dao->getEquipmentType($searchCriteriaArr);
+			if ($equipmentTypes) {
+				$isDbSuccess = True;
+			} else {
+				$isDbSuccess = False;
+			}
+		} else {
+			$equipmentTypes = $this->dao->getEquipmentType(null);
+			if ($equipmentTypes) {
+				$isDbSuccess = True;
+			} else {
+				$isDbSuccess = False;
+			}
 		}
 		
-		$result = array("ok" => true, "msg" => "success.", "equipment_types" => $equipmentTypes);
+		if ($isDbSuccess) {
+			$result = array("ok" => true, "msg" => "Success getting equipment type!.", "equipment_types" => $equipmentTypes);
+		} else {
+			$result = array("ok" => false, "msg" => "Get equipment type was not successful.", "equipment_types" => array());
+		}
 		
 		return $result;
 	}

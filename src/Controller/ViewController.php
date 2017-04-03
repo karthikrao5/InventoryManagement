@@ -12,16 +12,17 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 
 class ViewController extends AbstractController {
 
-	private $view;
 
 	public function __construct(ContainerInterface $c) {
         parent::__construct($c);
-        $this->view = $this->ci->get('view');
     }
 
+    // GET
+	// this one works. checked by karthik 04/03/17
 	public function index($request, $response) {
-		$result = $this->core->getEquipment();
-		return $this->view->render($response, "index.twig", array("data"=> $result));
+		// return $this->view->render($response, "hp.html");
+		$array = $this->core->getEquipment();
+		return $this->view->render($response, "index.twig", array("data"=> $array["equipments"]));
 	}
 
 	// GET
@@ -46,13 +47,19 @@ class ViewController extends AbstractController {
 
 	// GET
 	public function getEquipmentTypeForm($request, $response) {
-		return $this->view->render($response, "addEquipmentType.twig");
+		$array = $this->core->getEquipmentType();
+		return $this->view->render($response, "addEquipmentType.twig", array("data"=>$array["equipment_types"]));
 	}
 
 	// POST
 	public function postEquipmentTypeForm($request, $response, $args) {
 		$body = $request->getParsedBody();
 		return null;
+	}
+
+	public function showAllEquipmentTypes($request, $response) {
+		$array = $this->core->getEquipmentTypes();
+		return $this->view->render($response, "index.twig", array("data"=> $array["equipments"]));
 	}
 
 }

@@ -96,22 +96,22 @@ class DAO
 		$mongo = new MongoClient(DAO::$connectionString);
 		$equipments = $mongo->inventorytracking->equipments;
 
-		if(is_null($searchCriteria)) 
+		if(is_null($searchCriteria) || !$searchCriteria) 
 		{
 			return iterator_to_array($equipments->find());
+		} else {
+			$cursor = $equipments->find($searchCriteria);
+			$array = array();
+			
+			foreach($cursor as $equipment)
+			{
+				$array[] = $equipment;
+			}
+			$mongo->close();
+			return $array;
 		}
-
-		$cursor = $equipments->find($searchCriteria);
-		$mongo->close();
-		
-		$array = array();
-		
-		foreach($cursor as $equipment)
-		{
-			$array[] = $equipment;
-		}
-		
-		return $array;
+		// should not get here
+		return null;
 	}
 	
 	public function getEquipmentType($searchCriteria)
@@ -123,18 +123,20 @@ class DAO
 		if(is_null($searchCriteria)) 
 		{
 			return iterator_to_array($equipmenttypes->find());
+		} else {
+			$cursor = $equipmenttypes->find($searchCriteria);
+			$mongo->close();
+			
+			$array = array();
+			
+			foreach($cursor as $equipmentType)
+			{
+				$array[] = $equipmentType;
+			}
+			
+			return $array;
 		}
 
-		$cursor = $equipmenttypes->find($searchCriteria);
-		$mongo->close();
-		
-		$array = array();
-		
-		foreach($cursor as $equipmentType)
-		{
-			$array[] = $equipmentType;
-		}
-		
-		return $array;
+		return null;
 	}
 }

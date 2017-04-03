@@ -3,8 +3,8 @@
 {% block content %}
 
 	<a href="{{ path_for('home') }}">Back to Home</a> 
-
-	<form action="" method="post">
+  <div class="container-fluid">
+    <form action="" method="post">
       <fieldset>
         <input name="department_tag" type="text" placeholder="Department Tag">
         <input name="gt_tag" type="text" placeholder="GT Tag">
@@ -15,10 +15,12 @@
       </fieldset>
 
       <fieldset>
-      	<legend>Attributes</legend>
-      	<input name="name" type="text" placeholder="Attribute key"> | <input name="value" type="text" placeholder="Attribute value">
+        <legend>Attributes</legend>
+        <input name="name" type="text" placeholder="Attribute key"> | <input name="value" type="text" placeholder="Attribute value">
       </fieldset>
       <input type="submit" class="button">
     </form>
+  </div>
+	
 	
 {% endblock %}

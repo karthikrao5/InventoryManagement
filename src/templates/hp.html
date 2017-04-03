@@ -34,10 +34,10 @@
 
             		$equipment = attributes[key];
             		$row = '<tr id=\'' + $equipment.id + '\'>'
-            		$row += '<td>' + $equipment.equipment_type +  ' </td>'
-            		$row += '<td>' + $equipment.department_tag +  ' </td>'
+            		$row += '<td>' + $equipment.equipmentTypeName +  ' </td>'
+            		$row += '<td>' + $equipment.departmentTag +  ' </td>'
             		$row += '<td>' + $equipment.status +  ' </td>'
-            		$row += '<td>' + $equipment.loaned_to +  ' </td>'
+            		$row += '<td>' + $equipment.loanedTo +  ' </td>'
             		$row += '</tr>'
             		$out += $row;
             	}
