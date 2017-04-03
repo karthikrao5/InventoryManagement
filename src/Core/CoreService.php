@@ -92,7 +92,7 @@ class CoreService
 		return array("ok" => true, "message" => "success.");
 	}
 	
-	public function getEquipment($requestJson)
+	public function getEquipment($requestJson=NULL)
 	{
 		$searchCriteriaArr = array();
 		$searchCriteriaArr['department_tag'] = $requestJson['department_tag'];
@@ -104,7 +104,7 @@ class CoreService
 		return $result;
 	}
 	
-	public function getEquipmentType($requestJson)
+	public function getEquipmentType($requestJson=NULL)
 	{
 		$searchCriteriaArr = array();
 		$searchCriteriaArr['name'] = $requestJson['name'];

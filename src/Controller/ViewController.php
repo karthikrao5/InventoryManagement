@@ -20,8 +20,8 @@ class ViewController extends AbstractController {
     }
 
 	public function index($request, $response) {
-
-		return $this->view->render($response, "index.twig", array(data=>$arr));
+		$result = $this->core->getEquipment();
+		return $this->view->render($response, "index.twig", array("data"=> $result));
 	}
 
 	// GET

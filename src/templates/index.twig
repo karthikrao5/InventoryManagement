@@ -2,6 +2,33 @@
 
 {% block content %}
 	<h1>This is the twig index pageasdfads</h1>
+
+
+	<div class="table-responsive">
+		<table class="table table-striped table-bordered " id="main_table">
+			<thead>
+				<tr>
+					<th>Dept. Tag</th>
+					<th>GT Tag</th>
+					<th>Status</th>
+					<th>Loaned To</th>
+				</tr>
+
+				<tr>
+					{% for key, value in data %}
+						{% if key == "department_tag" %}
+							<td>{{ value }}</td>
+						{% endif %}
+
+						
+					{% endfor %}
+				</tr>
+				
+			</thead>
+			<tbody id='table_body'>
+			</tbody>
+		</table>
+	</div>
 	<a href="{{ path_for("get-add-equipment") }}">Add Equipment</a>
 	<a href="{{ path_for("get-add-equipment-type") }}">Add Equipment Type</a>
 	
