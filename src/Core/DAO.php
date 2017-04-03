@@ -122,7 +122,7 @@ class DAO
 
 		if(is_null($searchCriteria)) 
 		{
-			return iterator_to_array($equipments->find());
+			return iterator_to_array($equipmenttypes->find());
 		}
 
 		$cursor = $equipmenttypes->find($searchCriteria);

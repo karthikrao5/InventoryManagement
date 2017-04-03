@@ -98,10 +98,18 @@ class CoreService
 	
 	public function getEquipmentType($requestJson)
 	{
-		$searchCriteriaArr = array();
-		$searchCriteriaArr['name'] = $requestJson['name'];
-		//dev purpose code
-		$equipmentTypes = $this->dao->getEquipmentType($searchCriteriaArr);
+		$equipmentTypes = null;
+		
+		if(is_null($requestJson) || empty($requestJson))
+		{
+			$equipmentTypes = $this->dao->getEquipmentType(null);
+		}
+		else
+		{
+			$searchCriteriaArr = array();
+			$searchCriteriaArr['name'] = $requestJson['name'];
+			$equipmentTypes = $this->dao->getEquipmentType($searchCriteriaArr);
+		}
 		
 		$result = array("ok" => true, "msg" => "success.", "equipment_types" => $equipmentTypes);
 		
