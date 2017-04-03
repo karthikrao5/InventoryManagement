@@ -7,14 +7,6 @@ use App\Core\Medels\Equipment;
 use App\Core\Models\EquipmentType;
 use App\Core\Models\EquipmentTypeAttribute;
 
-/*
-include_once __DIR__.'/Core/DAO.php';
-include_once __DIR__.'/Core/Models/EquipmentType.php';
-include_once __DIR__.'/Core/Models/EquipmentTypeAttribute.php';
-include_once __DIR__.'/Core/Models/Equipment.php';
-include_once __DIR__.'/Core/Models/Attribute.php';
-*/
-
 class CoreService
 {
 	private $dao;
@@ -84,7 +76,7 @@ class CoreService
 			$newAttr->setEnum($attr["enum"]);
 			$newAttr->setEnumValues($attr["enum_values"]);		
 
-			$attributes[] = $attr;
+			$attributes[] = $newAttr;
 		}
 		$equipmentType->setAttributes($attributes);
 		$this->dao->createEquipmentType($equipmentType);

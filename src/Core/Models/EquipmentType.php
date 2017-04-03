@@ -31,10 +31,8 @@ class EquipmentType implements \JsonSerializable
     public function jsonSerialize()
     {
 		$attrs = array();
-        print_r("afasdfknja");
 		foreach($this->equipment_type_attributes as $attr)
 		{
-            print_r($attr);
 			$attrs[] = $attr->jsonSerialize();
 		}
 		
