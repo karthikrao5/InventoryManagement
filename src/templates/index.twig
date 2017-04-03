@@ -14,15 +14,14 @@
 					<th>Loaned To</th>
 				</tr>
 
-				<tr>
-					{% for key, value in data %}
-						{% if key == "department_tag" %}
-							<td>{{ value }}</td>
-						{% endif %}
-
-						
-					{% endfor %}
-				</tr>
+				{% for row in data %}
+					<tr>
+						<td>{{ row.department_tag }}</td>
+						<td>{{ row.gt_tag }}</td>
+						<td>{{ row.status }}</td>
+						<td>{{ row.loaned_to }}</td>
+					</tr>
+				{% endfor %}
 				
 			</thead>
 			<tbody id='table_body'>
