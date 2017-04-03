@@ -32,7 +32,11 @@ class EquipmentTypeController extends AbstractController{
         }
 
         $array = $this->core->getEquipmentType();
-        return $response->withJson($array);
+        if($array) {
+            return $response->withJson($array);
+        } else {
+            return $response->withStatus(404)->write("Something went wrong with the find function in EquipmentTypeController.");
+        }
 
 		// if(is_null($request)) {
   //           return $response->write("Invalid request.")->withStatus(400);

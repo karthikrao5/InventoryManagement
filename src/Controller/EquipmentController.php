@@ -40,7 +40,12 @@ class EquipmentController extends AbstractController{
         }
 
         $array = $this->core->getEquipment();
-        return $response->withJson($array);
+        if($array) {
+            return $response->withJson($array);
+        } else {
+            return $response->withStatus(404)->write("Something went wrong with the find function in EquipmentController.");
+        }
+        
 
         // $params = $request->getQueryParams();
 
