@@ -31,26 +31,33 @@ class EquipmentTypeController extends AbstractController{
             return $response->write("Invalid request.")->withStatus(400);
         }
 
-        $params = $request->getQueryParams();
+        $array = $this->core->getEquipmentType();
+        return $response->withJson($array);
 
-        if (empty($params)) {
-			$cursor = $this->dm->createQueryBuilder(EquipmentType::class)
-				->hydrate(false)
-				->getQuery()
-				->execute();
+		// if(is_null($request)) {
+  //           return $response->write("Invalid request.")->withStatus(400);
+  //       }
+
+  //       $params = $request->getQueryParams();
+
+  //       if (empty($params)) {
+		// 	$cursor = $this->dm->createQueryBuilder(EquipmentType::class)
+		// 		->hydrate(false)
+		// 		->getQuery()
+		// 		->execute();
 			
-			return $response->withJson(iterator_to_array($cursor));
-        }
+		// 	return $response->withJson(iterator_to_array($cursor));
+  //       }
 
-        // $returnValue = $this->rm->findAllByCriteria($params);
-        $returnValue = $this->dm->getRepository(EquipmentType::class)->findBy($params);
+  //       // $returnValue = $this->rm->findAllByCriteria($params);
+  //       $returnValue = $this->dm->getRepository(EquipmentType::class)->findBy($params);
 
-        if ($returnValue) {
-            // 200 status
-            return $response->withJson($returnValue);
-        }
+  //       if ($returnValue) {
+  //           // 200 status
+  //           return $response->withJson($returnValue);
+  //       }
 
-        return $response->withStatus(404)->write("No equipment by those params.");
+  //       return $response->withStatus(404)->write("No equipment by those params.");
 	}
 
 	// -----------------------------------------------------------------
@@ -58,8 +65,24 @@ class EquipmentTypeController extends AbstractController{
 	// -----------------------------------------------------------------
 
 	public function create($request, $response) {
+		if(is_null($request)) 
+		{
+            return $response->write("Invalid request.")->withStatus(400);
+        }
 
-		$this->core->createEquipmentType($request->getParsedBody());
+        if (is_null($request->getParsedBody())) 
+		{
+            return $response->write("No body recieved.")->withStatus(400);
+        }
+
+		$result = $this->core->createEquipmentType($request->getParsedBody());
+
+		if ($result["ok"]) {
+			return $response->withStatus(200)->write("Successfully created new EquipmentType!");
+		} else {
+			return $response->withStatus(404)->write("Something went wrong, EquipmentType was not created.");
+		}
+
 		// if(is_null($request)) 
 		// {
   //           return $response->write("Invalid request.")->withStatus(400);

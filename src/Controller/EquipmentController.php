@@ -81,69 +81,77 @@ class EquipmentController extends AbstractController{
             return $response->write("No body recieved.")->withStatus(200);
         }
 
-        $json = $request->getParsedBody();
+        $result = $this->core->createEquipment($request->getParsedBody());
 
-        // $findMe = $this->rm->findAllByCriteria($json);
-
-        // search by dept tag since its unique and required
-        $findMe = $this->dm->getRepository(Equipment::class)->findBy(array("department_tag" => $json['department_tag']));
-
-        // if something returned, item exists, send 409 conflict
-        if ($findMe) {
-            return $response->withStatus(409)->write("This item already exists.".json_encode($findMe));
+        if ($result["ok"]) {
+            return $response->withStatus(200)->write("Successfully created new Equipment!");
         } else {
-            // TODO Validate fields. 
-            // $this->ci->get("SomeValidator")->validateMe($json);
-
-            $equipment = new Equipment();
-
-            // look for equipment type
-            $findEqType = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('name' => $json['equipment_type']));
-
-            // MUST HAVE THIS FIELD. VALIDATE THE REQUEST FOR THIS
-            if(!is_null($findEqType)) {
-                $equipment->setEquipmentType($findEqType);
-                $equipment->setDeptTag($json['department_tag']);
-                $equipment->setGtTag($json['gt_tag']);
-                $equipment->setStatus($json['status']);
-                $equipment->setLoanedTo($json['loaned_to']);
-                $equipment->setComment($json['comment']);
-
-                // loop thru attributes
-                foreach ($json['attributes'] as $key => $value) {
-                    $newAttr = new Attribute();
-                    $newAttr->setKey($key);
-                    $newAttr->setValue($value);
-                    
-                    // the referencemany in equipment.php has cascade flag
-                    // so no need to persist separately
-
-                    $equipment->addAttribute($newAttr);
-                }
-
-                // loop thru logs??
-                foreach ($json['logs'] as $key => $value) {
-                    $newLog = new Log();
-                    // $newLog->setEquipment($equipment);
-                    // print_r($value);
-                    if ($key == "action_via") { $newLog->setActionVia($value); }
-                    if ($key == "action_by") { $newLog->setActionBy($value); }
-                    $equipment->addLog($newLog);
-                    // print_r($equipment->getLogs());
-                }
-
-                if(!is_null($equipment)) {
-                    $this->dm->persist($equipment);
-                    $this->dm->flush();
-                    return $response->write("Successfully entered new equipment.")->withStatus(200);
-                }
-            } else {
-                // if equipment_type is not given, return error saying user must provide it
-                return $response->withStatus(400)->write("Equipment type not found.");
-            }
+            return $response->withStatus(404)->write("Something went wrong, Equipment was not created.");
         }
 
-        return $response->withStatus(404)->write("Something went wrong.");
+        // $json = $request->getParsedBody();
+
+        // // $findMe = $this->rm->findAllByCriteria($json);
+
+        // // search by dept tag since its unique and required
+        // $findMe = $this->dm->getRepository(Equipment::class)->findBy(array("department_tag" => $json['department_tag']));
+
+        // // if something returned, item exists, send 409 conflict
+        // if ($findMe) {
+        //     return $response->withStatus(409)->write("This item already exists.".json_encode($findMe));
+        // } else {
+        //     // TODO Validate fields. 
+        //     // $this->ci->get("SomeValidator")->validateMe($json);
+
+        //     $equipment = new Equipment();
+
+        //     // look for equipment type
+        //     $findEqType = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('name' => $json['equipment_type']));
+
+        //     // MUST HAVE THIS FIELD. VALIDATE THE REQUEST FOR THIS
+        //     if(!is_null($findEqType)) {
+        //         $equipment->setEquipmentType($findEqType);
+        //         $equipment->setDeptTag($json['department_tag']);
+        //         $equipment->setGtTag($json['gt_tag']);
+        //         $equipment->setStatus($json['status']);
+        //         $equipment->setLoanedTo($json['loaned_to']);
+        //         $equipment->setComment($json['comment']);
+
+        //         // loop thru attributes
+        //         foreach ($json['attributes'] as $key => $value) {
+        //             $newAttr = new Attribute();
+        //             $newAttr->setKey($key);
+        //             $newAttr->setValue($value);
+                    
+        //             // the referencemany in equipment.php has cascade flag
+        //             // so no need to persist separately
+
+        //             $equipment->addAttribute($newAttr);
+        //         }
+
+        //         // loop thru logs??
+        //         foreach ($json['logs'] as $key => $value) {
+        //             $newLog = new Log();
+        //             // $newLog->setEquipment($equipment);
+        //             // print_r($value);
+        //             if ($key == "action_via") { $newLog->setActionVia($value); }
+        //             if ($key == "action_by") { $newLog->setActionBy($value); }
+        //             $equipment->addLog($newLog);
+        //             // print_r($equipment->getLogs());
+        //         }
+
+        //         if(!is_null($equipment)) {
+        //             $this->dm->persist($equipment);
+        //             $this->dm->flush();
+        //             return $response->write("Successfully entered new equipment.")->withStatus(200);
+        //         }
+        //     } else {
+        //         // if equipment_type is not given, return error saying user must provide it
+        //         return $response->withStatus(400)->write("Equipment type not found.");
+        //     }
+        // }
+
+        // return $response->withStatus(404)->write("Something went wrong.");
     }
 // -----------------------------------------------------------------
 // PUT functions
