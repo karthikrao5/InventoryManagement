@@ -42,7 +42,9 @@ $jsonStr = '{
 }';
 
 $coreService = new CoreService();
-$jsonArr = json_decode($jsonStr, true);
-$equipmentType = $coreService->createEquipmentType($jsonArr);
+//$jsonArr = json_decode($jsonStr, true);
+//$equipmentType = $coreService->createEquipmentType($jsonArr);
 
-print_r($equipmentType);
+//print_r($equipmentType);
+
+print_r($coreService->getEquipmentType(null));
