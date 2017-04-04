@@ -7,6 +7,7 @@
 	<div class="table-responsive">
 		<table class="table table-striped table-bordered " id="main_table">
 			<thead>
+				
 				<tr>
 					<th>Dept. Tag</th>
 					<th>GT Tag</th>
@@ -15,18 +16,19 @@
 					<th>Equipment Type Name</th>
 					<th>Functions</th>
 				</tr>
-
+				
 				{% for row in data %}
 					<tr>
 						<td>{{ row.departmentTag }}</td>
 						<td>{{ row.gtTag }}</td>
 						<td>{{ row.status }}</td>
 						<td>{{ row.loanedTo }}</td>
-						<td> {{ row.equipmentTypeName }}</td>
-						<td><a href="">Edit</a>/<a href="">Show</a>/<a href="">Delete</a></td>
+						<td>{{ row.equipmentTypeName }}</td>
+			<td><a href="{{ base_url() }}/edit-equipment/?{{ {"department_tag": row.departmentTag}|url_encode }}">Edit</a>/<a href="">Delete</a></td>
 					</tr>
 				{% endfor %}
-				
+					
+					
 			</thead>
 			<tbody id='table_body'>
 			</tbody>
@@ -37,3 +39,7 @@
 	<a href="{{ path_for("get-add-equipment-type") }}">Show All Equipment Types</a>
 	
 {% endblock %}
+
+
+
+{# {{ base_url() }}/edit-equipment?{{ {"department_tag": row.departmentTag}|url_encode }} #}

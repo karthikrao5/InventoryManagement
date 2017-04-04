@@ -12,7 +12,6 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 
 class ViewController extends AbstractController {
 
-
 	public function __construct(ContainerInterface $c) {
         parent::__construct($c);
     }
@@ -60,6 +59,29 @@ class ViewController extends AbstractController {
 	public function showAllEquipmentTypes($request, $response) {
 		$array = $this->core->getEquipmentTypes();
 		return $this->view->render($response, "index.twig", array("data"=> $array["equipments"]));
+	}
+
+	// public function showEquipment($request, $response) {
+	// 	$equip = $this->core->getEquipment()
+	// }
+
+
+	// GET request to load page for the selected equipment
+	public function editEquipment($request, $response) {
+		print_r(json_encode($request->getQueryParams()));
+		return null;
+	}
+
+	// PUT function that accepts a request body as input
+	public function updateEquipment($request, $response) {
+		return null;
+	}
+
+	// DELETE equipment identified by query param
+	public function deleteEquipment($request, $response) {
+		$itemToDelete = $response->getQueryParams();
+		print_r(json_encode($itemToDelete));
+		return null;
 	}
 
 }

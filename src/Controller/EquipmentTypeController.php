@@ -27,11 +27,20 @@ class EquipmentTypeController extends AbstractController{
 	// GET functions
 	// -----------------------------------------------------------------
 	public function find($request, $response) {
-		if(is_null($request)) {
+		
+        if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }
+        // TESTED THIS CODE, params works don't mess with it.
+        $params = $request->getQueryParams();
+        if ($params) {
+            $array = $this->core->getEquipmentType($params);
+        } else {
+            $array = $this->core->getEquipmentType();
+        }
 
-        $array = $this->core->getEquipmentType();
+        // return null;
+
         if($array) {
             return $response->withJson($array);
         } else {

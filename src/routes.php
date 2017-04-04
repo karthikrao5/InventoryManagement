@@ -20,6 +20,16 @@ $app->post('/add-equipment-type', 'ViewController:postEquipmentTypeForm');
 
 $app->get("/show-all-equipmenttypes", "ViewController:showAllEquipmentTypes")->setName("all-equipment-types");
 
+$app->get("/edit-equipment[/{params:.*}]", "ViewController:editEquipment")->setName("edit-equipment");
+$app->put("/edit-equipment", "ViewController:updateEquipment");
+
+
+$app->delete('/delete-equipment[/{params:.*}]', 'ViewController:deleteEquipment')->setName("delete-equipment");
+
+$app->get("/test", function($request, $response) {
+    return $this->view->render($response, "hp.html", array());
+});
+
 // $app->get('/home', function($request, $response) {
 //     // $this->logger->info("reached /home");
 //     return $this->view->render($response, 'template.html');
@@ -39,7 +49,9 @@ $app->get("/show-all-equipmenttypes", "ViewController:showAllEquipmentTypes")->s
 //     // $json_response = $response->withJson($result);
 //     $data =  $result['equipment'];
 
-
+$app->get('/home', function($request, $response) {
+    return $app->get("view")->render($response, "hp.html");
+});
 //     return $this->view->render($response, 'equipmentpage.html', array(data => $data));
 // });
 $app->get('/addequipment', function($request, $response) {

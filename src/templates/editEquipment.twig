@@ -1,0 +1,16 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+	<a href="{{ path_for('root') }}">Back to Home</a> 
+	
+	<div class="container">
+		<ul>
+			{% for field in data %}
+				<li>{{ field.departmentTag }}</li>
+				
+			{% endfor %}
+		</ul>
+			
+	</div>
+
+{% endblock %}		
