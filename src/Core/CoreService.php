@@ -89,7 +89,8 @@ class CoreService
 
 		$isDbSuccess = False;
 
-
+		// if there is a search criteria, validate the fields and generate
+		// the search array that mongoclient can recognize
 		if ($requestJson) {
 			$searchCriteriaArr = array();
 
@@ -110,6 +111,8 @@ class CoreService
 			} else {
 				$isDbSuccess = False;
 			}
+
+		// if no search array is given, return all equipments
 		} else {
 			//dev purpose code
 			$equipments = $this->dao->getEquipment();

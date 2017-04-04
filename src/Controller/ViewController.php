@@ -26,28 +26,35 @@ class ViewController extends AbstractController {
 
 	// GET
 	public function getEquipmentForm($request, $response) {
-		return $this->view->render($response, "addEquipment.twig");
+		$fields = array("department_tag" => "text",
+					 	"gt_tag" => "text", 
+					 	"equipment_type_name" => "text", 
+					 	"status" => "text", 
+					 	"comment" => "text"
+					 	);
+		return $this->view->render($response, "addEquipment.twig", array("fields" => $fields));
 	}
 
-	// POST
+	// POST 
 	public function postEquipmentForm($request, $response, $args) {
 		$body = $request->getParsedBody();
 
-		foreach ($body as $key => $value) {
-			print_r($key.", ".$value);
-			print_r("\n==============\n");
-		}
+		// foreach ($body as $key => $value) {
+		// 	print_r($key.$value);
+		// }
+		print_r(json_encode($body));
+		return null;
 
 		// print_r($body);
 		// return null;
-		$this->logger->info("Posting Equipment to db", array("name"=>$body["department_tag"]));
-		return $this->view->render($response, "success.twig", array("ok" => "true", "msg" => "successfully entered equipment!"));
+		// $this->logger->info("Posting Equipment to db", array("name"=>$body["department_tag"]));
+		// return $this->view->render($response, "success.twig", array("ok" => "true", "msg" => "successfully entered equipment!"));
 	}
 
 	// GET
 	public function getEquipmentTypeForm($request, $response) {
-		$array = $this->core->getEquipmentType();
-		return $this->view->render($response, "addEquipmentType.twig", array("data"=>$array["equipment_types"]));
+		$fields = array("name" => "text");
+		return $this->view->render($response, "addEquipmentType.twig", array("fields"=>$fields));
 	}
 
 	// POST
@@ -68,8 +75,10 @@ class ViewController extends AbstractController {
 
 	// GET request to load page for the selected equipment
 	public function editEquipment($request, $response) {
-		print_r(json_encode($request->getQueryParams()));
-		return null;
+		// print_r(json_encode($request->getQueryParams()));
+		$item = $this->core->getEquipment($request->getQueryParams());
+		return $this->view->render($response, "editEquipment.twig", array("data" => $item["equipments"]));
+		// return null;
 	}
 
 	// PUT function that accepts a request body as input

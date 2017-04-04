@@ -4,20 +4,26 @@
 
 	<a href="{{ path_for('root') }}">Back to Home</a> 
   <div class="container-fluid">
-    <form action="" method="post">
+    <form action="{{ base_url() }}/add-equipment" method="POST">
       <fieldset>
-        <input name="department_tag" type="text" placeholder="Department Tag">
+        {% for name, type in fields %}
+          <input type={{ type }} name={{ name }} placeholder={{ name }}>
+
+        {% endfor %}
+        {# <input name="department_tag" type="text" placeholder="Department Tag">
         <input name="gt_tag" type="text" placeholder="GT Tag">
         <input name="equipment_type_name" type="text" placeholder="Equipment Type Name">
         <input name="status" type="text" placeholder="Status">
         <textarea name="comment" placeholder="Comments..."></textarea>
-        <input name="gt_tag" type="text" placeholder="GT Tag">
+        <input name="gt_tag" type="text" placeholder="GT Tag"> #}
       </fieldset>
 
-      <fieldset>
+      <fieldset class="attribute-fieldset">
         <legend>Attributes</legend>
-        <input name="name" type="text" placeholder="Attribute key"> | <input name="value" type="text" placeholder="Attribute value">
+        <input name="attributes[0][key]" type="text" placeholder="Attribute key"> | <input name="attributes[0][value]" type="text" placeholder="Attribute value">
+        <input name="attributes[1][key]" type="text" placeholder="Attribute key"> | <input name="attributes[1][value]" type="text" placeholder="Attribute value">
       </fieldset>
+      <button type="button" class="add-attribute-button">Add another attribute</button>
       <input type="submit" class="button">
     </form>
   </div>
