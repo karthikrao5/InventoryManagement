@@ -7,13 +7,20 @@ use App\Core\Models\Equipment;
 use App\Core\Models\EquipmentType;
 use App\Core\Models\EquipmentTypeAttribute;
 
+use Interop\Container\ContainerInterface;
+
+
 class CoreService
 {
 	private $dao;
+	private $logger;
+	private $container;
 	
-	public function __construct()
+	public function __construct(ContainerInterface $c)
 	{
 		$this->dao = new DAO();
+		$this->container = $c;
+		$this->logger = $c->get("logger");
 	}
 	
 	public function createEquipment($requestJson)
@@ -116,7 +123,7 @@ class CoreService
 		} else {
 			//dev purpose code
 			$equipments = $this->dao->getEquipment();
-			if ($equipmentTypes) {
+			if ($equipments) {
 				$isDbSuccess = True;
 			} else {
 				$isDbSuccess = False;
@@ -124,8 +131,12 @@ class CoreService
 		}
 
 		if ($isDbSuccess) {
+			$this->logger->debug("Equipment was successfully returned from DAO.php.");
+			$this->logger->error("Test");
+			$this->logger->info("test");
 			$result = array("ok" => true, "msg" => "Success getting equipment", "equipments" => $equipments);
 		} else {
+			$this->logger->error("Equipment was not successfully called from DAO");
 			$result = array("ok" => false, "msg" => "Get equipment was not successful.", "equipments" => $equipments);
 		}
 		return $result;

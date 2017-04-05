@@ -16,10 +16,15 @@
         <div class="single-attribute-form">
 
         <fieldset class="attribute-fieldset">
+          {% import 'macro.twig' as siteMacros %}
 
+          <p>The current version is {{ constant('Twig_Environment::VERSION') }}</p> 
+          {{ attribute(siteMacros, 'addAttribute', ['key', 'value', 'text']) }} {# <p>Type One Foobar</p> #}
 
-          <input name="attributes[key]" type="text" placeholder="Attribute key"> | <input name="attributes[value]" type="text" placeholder="Attribute value">
-          <button type="button" class="add-field-button">Add another field</button>
+          {# {{ attribute(macro, "addAttribute", "Hello") }} #}
+
+          {# <input name="attributes[key]" type="text" placeholder="Attribute key"> | <input name="attributes[value]" type="text" placeholder="Attribute value">
+          <button type="button" class="add-field-button">Add another field</button> #}
         </fieldset>
 
         </div>

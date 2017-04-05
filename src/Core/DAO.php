@@ -90,7 +90,7 @@ class DAO
 		return $array['_id'];
 	}
 	
-	public function getEquipment($searchCriteria)
+	public function getEquipment($searchCriteria=null)
 	{
 		//change this behavior later
 		$mongo = new MongoClient(DAO::$connectionString);

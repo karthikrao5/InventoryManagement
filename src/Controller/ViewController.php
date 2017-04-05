@@ -42,6 +42,7 @@ class ViewController extends AbstractController {
 		// foreach ($body as $key => $value) {
 		// 	print_r($key.$value);
 		// }
+		// $this->logger->debug("debug log");
 		print_r(json_encode($body));
 		return null;
 

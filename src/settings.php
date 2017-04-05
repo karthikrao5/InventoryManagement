@@ -17,7 +17,10 @@ return [
         'logger' => [
             'name' => 'slim-app',
             'level' => Monolog\Logger::DEBUG,
-            'path' => __DIR__ . '/log/app.log',
+            // 'path' => __DIR__ . '/log/app.log',
+            'debugPath' => __DIR__.'/../../log/slimDebug.log',
+            'errorPath' => __DIR__."/../../log/slimError.log",
+            'infoPath' => __DIR__."/../../log/slimInfo.log"
         ],
     ],
 ];

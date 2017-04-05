@@ -24,7 +24,10 @@ $container['logger'] = function ($c) {
     $settings = $c->get('settings');
     $logger = new \Monolog\Logger($settings['logger']['name']);
     $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
-    $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['logger']['path'], \Monolog\Logger::DEBUG));
+    $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['logger']['debugPath'], \Monolog\Logger::DEBUG));
+    $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['logger']['errorPath'], \Monolog\Logger::ERROR));
+    $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['logger']['infoPath'], \Monolog\Logger::INFO));
+
     return $logger;
 };
 
@@ -88,7 +91,7 @@ $container['EquipmentTypeValidator'] = function ($c) {
 };
 
 $container["core"] = function($c) {
-    return new App\Core\CoreService();
+    return new App\Core\CoreService(App\Helper\Container\ContainerHelper::getContainer());
 };
 
 
