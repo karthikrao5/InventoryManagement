@@ -5,7 +5,7 @@ namespace App\Core\Models;
 class EquipmentTypeAttribute implements \JsonSerializable
 {
     private $_id;
-	private $equipmentTypeId;
+	private $equipment_type_id;
     private $name;
     private $required;
     private $unique;
@@ -43,13 +43,12 @@ class EquipmentTypeAttribute implements \JsonSerializable
     public function setEnumValues($enum_values) {$this->enum_values = $enum_values;}
     public function getEnumValues() {return $this->enum_values;}
 
-    public function getEquipmentTypeId() {return $this->equipmentTypeId;}
-    public function setEquipmentTypeId($equipmentTypeId) {$this->equipmentTypeId = $equipmentTypeId;}
-	public function getEquipmentTypeIdString() {return $this->equipmentTypeId->{'$id'};}
+    public function getEquipmentTypeId() {return $this->equipment_type_id;}
+    public function setEquipmentTypeId($equipmentTypeId) {$this->equipment_type_id = $equipmentTypeId;}
+	public function getEquipmentTypeIdString() {return $this->equipment_type_id->{'$id'};}
 
     public function jsonSerialize()
     {
         return get_object_vars($this);
     }
 }
-

@@ -89,11 +89,11 @@ function addItem($itemToAdd) {
     $result = $collection->insert($itemToAdd, array('w' => 1)); // Insert given document to collection and get result array.
 
     if ($result) {
-        return $result; 
+        return $result;
     } else {
         return "Error inserting to db.";
     }
-    
+
 }
 
 
@@ -121,7 +121,7 @@ $app->group('/v1', function() {
         // $this->put('/', 'EquipmentController:updateCollection');
 
         // DESTROY
-        $this->delete('/{id}', 'EquipmentController:delete');
+        $this->delete('', 'EquipmentController:delete');
 
 
         // add equipment type to equipment
@@ -139,6 +139,8 @@ $app->group('/v1', function() {
         $this->post('', 'EquipmentTypeController:create');
 
         $this->get('[/{params:.*}]', 'EquipmentTypeController:find');
+
+        $this->delete('', 'EquipmentTypeController:delete');
     });
 
 
@@ -174,7 +176,7 @@ function getAllEquipments($request, $response)
     $core = CoreService::getInstance();
     $result = $core->getAllEquipments();
     $json_response = $response->withJson($result);
-    
+
     if($result['result'])
     {
         $json_response->withStatus(200);
@@ -183,7 +185,7 @@ function getAllEquipments($request, $response)
     {
         $json_response->withStatus(400);
     }
-    
+
     return $json_response;
 }
 
@@ -192,7 +194,7 @@ function removeEquipment($request, $response)
     $core = CoreService::getInstance();
     $result = $core->removeEquipment($request->getAttribute('id'));
     $json_response = $response->withJson($result);
-    
+
     if($result['result'])
     {
         $json_response->withStatus(200);
@@ -201,7 +203,7 @@ function removeEquipment($request, $response)
     {
         $json_response->withStatus(400);
     }
-    
+
     return $json_response;
 }
 
@@ -210,7 +212,7 @@ function getEquipmentByDeptTag($request, $response)
     $core = CoreService::getInstance();
     $result = $core->getEquipmentByDepartmentTag($request->getAttribute('tag'));
     $json_response = $response->withJson($result);
-    
+
     if($result['result'])
     {
         $json_response->withStatus(200);
@@ -219,7 +221,7 @@ function getEquipmentByDeptTag($request, $response)
     {
         $json_response->withStatus(400);
     }
-    
+
     return $json_response;
 }
 
@@ -228,7 +230,7 @@ function getEquipmentById($request, $response)
     $core = CoreService::getInstance();
     $result = $core->getEquipmentById($request->getAttribute('id'));
     $json_response = $response->withJson($result);
-    
+
     if($result['result'])
     {
         $json_response->withStatus(200);
@@ -237,7 +239,7 @@ function getEquipmentById($request, $response)
     {
         $json_response->withStatus(400);
     }
-    
+
     return $json_response;
 }
 
@@ -246,9 +248,9 @@ function addEquipment($request, $response)
     $json = $request->getParsedBody();
     $core = CoreService::getInstance();
     $result = $core->addEquipment($json);
-    
+
     $json_response = $response->withJson($result);
-    
+
     if($result['result'])
     {
         $json_response->withStatus(200);
@@ -257,7 +259,7 @@ function addEquipment($request, $response)
     {
         $json_response->withStatus(400);
     }
-    
+
     return $json_response;
 }
 
@@ -266,9 +268,9 @@ function updateEquipment($request, $response)
     $json = $request->getParsedBody();
     $core = CoreService::getInstance();
     $result = $core->updateEquipment($json);
-    
+
     $json_response = $response->withJson($result);
-    
+
     if($result['result'])
     {
         $json_response->withStatus(200);
@@ -277,6 +279,6 @@ function updateEquipment($request, $response)
     {
         $json_response->withStatus(400);
     }
-    
+
     return $json_response;
 }

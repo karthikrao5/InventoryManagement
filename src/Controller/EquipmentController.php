@@ -55,7 +55,7 @@ class EquipmentController extends AbstractController{
         } else {
             return $response->withStatus(404)->write("Something went wrong with the find function in EquipmentController.");
         }
-        
+
 
         // $params = $request->getQueryParams();
 
@@ -76,7 +76,7 @@ class EquipmentController extends AbstractController{
         // return $response->withStatus(404)->write("No equipment by those params.");
     }
 
-    
+
 
 
 // -----------------------------------------------------------------
@@ -84,10 +84,10 @@ class EquipmentController extends AbstractController{
 // -----------------------------------------------------------------
 
     /**
-     * 
+     *
      */
     public function create($request, $response) {
-        
+
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }
@@ -115,7 +115,7 @@ class EquipmentController extends AbstractController{
         // if ($findMe) {
         //     return $response->withStatus(409)->write("This item already exists.".json_encode($findMe));
         // } else {
-        //     // TODO Validate fields. 
+        //     // TODO Validate fields.
         //     // $this->ci->get("SomeValidator")->validateMe($json);
 
         //     $equipment = new Equipment();
@@ -137,7 +137,7 @@ class EquipmentController extends AbstractController{
         //             $newAttr = new Attribute();
         //             $newAttr->setKey($key);
         //             $newAttr->setValue($value);
-                    
+
         //             // the referencemany in equipment.php has cascade flag
         //             // so no need to persist separately
 
@@ -208,24 +208,22 @@ class EquipmentController extends AbstractController{
 // -----------------------------------------------------------------
 
     public function delete($request, $response, $args) {
-        if(is_null($request)) {
+        if(is_null($request))
+		{
             return $response->write("Invalid request.")->withStatus(400);
         }
 
-        if (is_null($request->getParsedBody())) {
-            return $response->write("No body recieved.")->withStatus(200);
+        if (is_null($request->getParsedBody()))
+		{
+            return $response->write("No body recieved.")->withStatus(400);
         }
 
-        $this->dm->createQueryBuilder(Equipment::class)
-                                    ->remove()
-                                    ->field('id')->equals($args['id'])
-                                    ->getQuery()
-                                    ->execute();
+		$result = $this->core->deleteEquipment($request->getParsedBody());
 
-        if (!$this->dm->getRepository(Equipment::class)->findOneBy(array('id'=>$args['id']))) {
-            return $response->write("Successfully removed equipment.")->withStatus(200);
-        }
-        
-        return $response->write("Something happened with the remove function.")->withStatus(404);
+		if ($result["ok"]) {
+			return $response->withStatus(200)->write("Successfully deleted ".$result['n']." Equipments!");
+		} else {
+			return $response->withStatus(404)->write("Something went wrong, Equipments are not deleted.");
+		}
     }
 }

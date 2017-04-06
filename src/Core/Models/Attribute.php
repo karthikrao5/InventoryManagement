@@ -5,9 +5,9 @@ namespace App\Core\Models;
 class Attribute implements \JsonSerializable
 {
     private $_id; // MongoId
-    private $equipmentId; // MongoId
-    private $equipmentTypeId; // MongoId
-    private $equipmentTypeAttributeId; // MongoId
+    private $equipment_id; // MongoId
+    private $equipment_type_id; // MongoId
+    private $equipment_type_attribute_id; // MongoId
 
     private $name;
     private $value;
@@ -30,47 +30,47 @@ class Attribute implements \JsonSerializable
 
     public function getEquipmentId()
     {
-        return $this->equipmentId;
+        return $this->equipment_id;
     }
 
     public function setEquipmentId($id)
     {
-        $this->equipmentId = $id;
+        $this->equipment_id = $id;
     }
 
     public function getEquipmentIdString()
     {
-        return $this->equipmentId->{'$id'};
+        return $this->equipment_id->{'$id'};
     }
 
     public function getEquipmentTypeId()
     {
-        return $this->equipmentTypeId;
+        return $this->equipment_type_id;
     }
 
     public function setEquipmentTypeId($id)
     {
-        $this->equipmentTypeId = $id;
+        $this->equipment_type_id = $id;
     }
 
     public function getEquipmentTypeIdString()
     {
-        return $this->equipmentTypeId->{'$id'};
+        return $this->equipment_type_id->{'$id'};
     }
 
     public function setEquipmentTypeAttributeId($id)
     {
-        $this->equipmentTypeAttributeId = $id;
+        $this->equipment_type_attribute_id = $id;
     }
 
     public function getEquipmentTypeAttributeId()
     {
-        return $this->equipmentTypeAttributeId;
+        return $this->equipment_type_attribute_id;
     }
 
     public function getEquipmentTypeAttributeIdString()
     {
-        return $this->equipmentTypeAttributeId->{'$id'};
+        return $this->equipment_type_attribute_id->{'$id'};
     }
 
     public function setName($name)
@@ -92,9 +92,9 @@ class Attribute implements \JsonSerializable
     {
         return $this->value;
     }
-    
+
     public function jsonSerialize()
-    {	
+    {
         return get_object_vars($this);
     }
 }
