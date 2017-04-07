@@ -13,7 +13,7 @@ class DAO
 	{
 		$mongo = new MongoClient(DAO::$connectionString);
 		$equipmentTypes = $mongo->inventorytracking->equipmenttypes;
-		$equipmentTypes->insert($equipmentType);
+		$result = $equipmentTypes->insert($equipmentType);
 
 		$attributes = array(); //one with '_id's
 		$attributeIds = array(); //only '_id's
@@ -47,42 +47,38 @@ class DAO
 
 	public function createEquipment($equipment)
 	{
-		$array = $equipment->jsonSerialize();
-		unset($array['_id']);
-
 		$mongo = new MongoClient(DAO::$connectionString);
 		$equipments = $mongo->inventorytracking->equipments;
-		$equipments->insert($array);
+		$equipments->insert($equipment);
 
-		$equipment->setId($array['_id']);
-
-		foreach($equipment->getAttributes() as $equipmentAttr)
+		$attributes = array(); //one with '_id's
+		$attributeIds = array(); //only '_id's
+		foreach($equipment['attributes'] as $attribute)
 		{
-			$equipmentAttr->setEquipmentId($equipment->getId());
-			$id = $this->createEquipmentAttribute($equipmentAttr);
+			$attribute['equipment_id'] = $equipment['_id'];
+			$updatedAttribute = $this->createEquipmentAttribute($attribute);
+			$attributes[] = $updatedAttribute;
+			$attributeIds[] = $updatedAttribute['_id'];
 		}
 
-		$array = $equipment->jsonSerialize();
-		$equipments->update(array("_id" => $equipment->getId()), $array);
-
+		$equipment['attributes'] = $attributeIds;
+		$equipments->update(array("_id" => $equipment['_id']),
+			array('$set' => $equipment));
 		$mongo->close();
 
-		return $array['_id'];
+		$equipment['attributes'] = $attributes;
+
+		return $equipment;
 	}
 
 	public function createEquipmentAttribute($attribute)
 	{
-		$array = $attribute->jsonSerialize();
-		unset($array['_id']);
-
 		$mongo = new MongoClient(DAO::$connectionString);
 		$attributes = $mongo->inventorytracking->equipmentattributes;
-		$attributes->insert($array);
+		$attributes->insert($attribute);
 		$mongo->close();
 
-		$attribute->setId($array['_id']);
-
-		return $array['_id'];
+		return $attribute;
 	}
 
 	public function getEquipment($searchCriteria=null)
@@ -99,10 +95,12 @@ class DAO
 			$result = iterator_to_array($equipments->find($searchCriteria));
 		}
 
+		$mongo->close();
+
 		return $result;
 	}
 
-	public function getEquipmentType($searchCriteria)
+	public function getEquipmentType($searchCriteria=null)
 	{
 		//change this behavior later
 		$mongo = new MongoClient(DAO::$connectionString);
@@ -242,18 +240,103 @@ class DAO
 		return $result;
 	}
 
-	public function addEquipmentAttribute()
+	public function addEquipmentAttribute($equipment, $attribute, $equipmentType, $equipmentTypeAttribute)
 	{
+		$mongo = new MongoClient(DAO::$connectionString);
+		$equipments = $mongo->inventorytracking->equipments;
 
+		$attribute['equipment_id'] = $equipment['_id'];
+		$attribute['equipment_type_id'] = $equipmentType['_id'];
+		$attribute['equipment_type_attribute_id'] = $equipmentTypeAttribute['_id'];
+
+		$updatedAttribute = $this->createEquipmentAttribute($attribute);
+
+		$attributeIds = array();
+		foreach($equipment['attributes'] as $attr)
+		{
+			$attributeIds[] = $attr['_id'];
+		}
+
+		$attributeIds[] = $updatedAttribute['_id'];
+		$temp = $equipment['attributes'];
+
+		$equipment['attributes'] = $attributeIds;
+		$equipments->update(array('_id' => $equipment['_id']),
+			array('$set' => $equipment));
+
+		$equipment['attributes'] = $temp;
+		$equipment['attributes'][] = $updatedAttribute;
+
+		return $equipment;
 	}
 
-	public function removeEquipmentAttribute()
+	public function removeEquipmentAttribute($equipment, $attribute)
 	{
+		$mongo = new MongoClient(DAO::$connectionString);
+		$equipments = $mongo->inventorytracking->equipments;
+		$equipmentAttributes = $mongo->inventorytracking->equipmentattributes;
 
+		$attributes = $equipment['attributes'];
+
+		foreach($attributes as $key => $attrId)
+		{
+			if($attribute['_id'] == $attrId)
+			{
+				unset($attributes[$key]);
+				break;
+			}
+		}
+
+		$equipment['attributes'] = $attributes;
+		$equipments->update(array('_id' => $equipment['_id']),
+			array('$set' => $equipment));
+		$equipmentAttributes->remove(array('_id' => $attribute['_id']));
+
+		return $equipment;
 	}
 
-	public function updateEquipmentAttriubte()
+	public function updateEquipmentAttriubte($attributeOld, $attributeNew)
 	{
+		$mongo = new MongoClient(DAO::$connectionString);
+		$equipmentAttributes = $mongo->inventorytracking->equipmentattributes;
 
+		$equipmentAttributes->update(array('_id' => $attributeOld['_id']),
+			array('$set' => $attributeNew));
+	}
+
+	public function getEquipmentAttribute($searchCriteria=null)
+	{
+		$mongo = new MongoClient(DAO::$connectionString);
+		$equipmentAttributes = $mongo->inventorytracking->equipmentattributes;
+
+		$result = null;
+		if(is_null($searchCriteria) || empty($searchCriteria))
+		{
+			$result = iterator_to_array($equipmentAttributes->find());
+		}
+		else
+		{
+			$result = iterator_to_array($equipmentAttributes->find($searchCriteria));
+		}
+
+		return $result;
+	}
+
+	public function getEquipmentTypeAttribute($searchCriteria)
+	{
+		$mongo = new MongoClient(DAO::$connectionString);
+		$equipmentTypeAttributes = $mongo->inventorytracking->equipmenttypeattributes;
+
+		$result = null;
+		if(is_null($searchCriteria) || empty($searchCriteria))
+		{
+			$result = iterator_to_array($equipmentTypeAttributes->find());
+		}
+		else
+		{
+			$result = iterator_to_array($equipmentTypeAttributes->find($searchCriteria));
+		}
+
+		return $result;
 	}
 }
