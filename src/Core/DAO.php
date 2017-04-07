@@ -58,9 +58,10 @@ class DAO
 		$equipments->insert($equipment);
 
 		// set ids to equipment attributes
+
 		foreach($equipmentType['equipment_type_attributes'] as $equipTypeAttr)
 		{
-			foreach($equipment['attributes'] as $equipAttr)
+			foreach($equipment['attributes'] as &$equipAttr)
 			{
 				if($equipTypeAttr['name'] == $equipAttr['name'])
 				{
@@ -83,7 +84,8 @@ class DAO
 		$equipment['attributes'] = $attributes;
 
 		$equipments->update(array("_id" => $equipment['_id']),
-			array('attributes' => $attributeIds));
+			array('$set'=> array('attributes' => $attributeIds)));
+
 		$mongo->close();
 
 		return $equipment;
@@ -103,7 +105,6 @@ class DAO
 	{
 		$mongo = new MongoClient(DAO::$connectionString);
 		$equipments = $mongo->inventorytracking->equipments;
-		$attributes = $mongo->inventorytracking->equipmentattributes;
 
 		$result = null;
 		if(is_null($searchCriteria) || empty($searchCriteria))
@@ -118,23 +119,36 @@ class DAO
 			$result = iterator_to_array($equipments->find($searchCriteria));
 		}
 
+		$newArr = array();
 		if(!is_null($result) && !empty($result))
 		{
 			foreach($result as $equipment)
 			{
-				$this->joinEquipment($equipment, $attributes);
+				$newArr[] = $this->joinEquipment($equipment);
 			}
 		}
 
 		$mongo->close();
-
-		return $result;
+		return $newArr;
 	}
 
-	private function joinEquipment(&$equipment, $attributes)
+	private function joinEquipment($equipment)
 	{
+		$mongo = new MongoClient(DAO::$connectionString);
+		$attributes = $mongo->inventorytracking->equipmentattributes;
+
+		//This is an associative array, which doesn't convert to JSON array.
 		$attrs =  iterator_to_array($attributes->find(array('equipment_id' => $equipment['_id'])));
-		$equipment['attributes'] = $attrs;
+		$array = array();
+
+		foreach($attrs as $attr)
+		{
+			$array[] = $attr;
+		}
+
+		$equipment['attributes'] = $array;
+		$mongo->close();
+		return $equipment;
 	}
 
 	public function getEquipmentType($searchCriteria=null)
