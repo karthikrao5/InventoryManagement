@@ -94,6 +94,11 @@ class DAO
 		{
 			$result = iterator_to_array($equipments->find());
 		} else {
+			if(isset($searchCriteria['_id']))
+			{
+				$searchCriteria['_id'] = new MongoId($searchCriteria['_id']);
+			}
+
 			$result = iterator_to_array($equipments->find($searchCriteria));
 		}
 
@@ -128,6 +133,11 @@ class DAO
 		{
 			$result = iterator_to_array($equipmenttypes->find());
 		} else {
+			if(isset($searchCriteria['_id']))
+			{
+				$searchCriteria['_id'] = new MongoId($searchCriteria['_id']);
+			}
+
 			$result = iterator_to_array($equipmenttypes->find($searchCriteria));
 		}
 

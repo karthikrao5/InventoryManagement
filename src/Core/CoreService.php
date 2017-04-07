@@ -22,25 +22,20 @@ class CoreService
 	{
 		//todo - requestJson validation
 
-		$this->dao->createEquipment($equipment);
+		$updated = $this->dao->createEquipment($requestJson);
 
-		return array("ok" => true, "message" => "success.");
+		return array("ok" => true, "message" => "Successfully created Equipment '".$requestJson['department_tag']."' !",
+			'equipment' => $updated);
 	}
 
 	public function createEquipmentType($requestJson)
 	{
 		//todo - requestJson validation
 
-		$result = $this->dao->createEquipmentType($requestJson);
+		$updated = $this->dao->createEquipmentType($requestJson);
 
-		if($result['ok'])
-		{
-			return array('ok' => true, 'msg' => "Successfully Created EquipmentType ".$equipmentType['name']."!", 'equipment_type' => $result['updated']);
-		}
-		else
-		{
-			return array('ok' => false, 'msg' => $result['msg'], 'equipment_type' => null);
-		}
+		return array("ok" => true, "message" => "Successfully created EquipmentType '".$requestJson['name']."' !",
+			'equipment' => $updated);
 	}
 
 	public function getEquipment($requestJson=NULL)
