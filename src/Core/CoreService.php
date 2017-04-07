@@ -92,8 +92,6 @@ class CoreService
 	{
 		$result = array("ok" => false, "msg" => null);
 
-		//send in Mongoids for now
-
 		if(is_null($requestJson) || empty($requestJson))
 		{
 			$result['msg'] = "Json is empty or null.";
@@ -111,8 +109,6 @@ class CoreService
 	public function deleteEquipmentType($requestJson)
 	{
 		$result = array("ok" => false, "msg" => null);
-
-		//send in Mongoids for now
 
 		if(is_null($requestJson) || empty($requestJson))
 		{
