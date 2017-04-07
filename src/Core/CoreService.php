@@ -2,11 +2,6 @@
 namespace App\Core;
 
 use App\Core\DAO;
-use App\Core\Models\Attribute;
-use App\Core\Models\Equipment;
-use App\Core\Models\EquipmentType;
-use App\Core\Models\EquipmentTypeAttribute;
-
 use Interop\Container\ContainerInterface;
 
 
@@ -25,42 +20,8 @@ class CoreService
 
 	public function createEquipment($requestJson)
 	{
-		//this is not an object.
-		$result = $this->getEquipmentType(array("name" => $requestJson['equipment_type_name']));
-		$equipmentTypes = $result['equipment_types'];
+		//todo - requestJson validation
 
-		$equipmentType = reset($equipmentTypes);
-
-		$equipment = new Equipment();
-		$equipment->setDepartmentTag($requestJson['department_tag']);
-		$equipment->setGtTag($requestJson['gt_tag']);
-		$equipment->setEquipmentTypeName($requestJson['equipment_type_name']);
-		$equipment->setStatus($requestJson['status']);
-		$equipment->setLoanedTo($requestJson['loaned_to']);
-		$equipment->setCreatedOn($requestJson['created_on']);
-		$equipment->setLastUpdated($requestJson['last_updated']);
-		$equipment->setComments($requestJson['comment']);
-
-		$attrs = array();
-		foreach($requestJson['attributes'] as $attrJson)
-		{
-			$attr = new Attribute();
-			$attr->setName($attrJson['name']);
-			$attr->setValue($attrJson['value']);
-			$attr->setEquipmentTypeId($equipmentType['_id']);
-
-			foreach($equipmentType['equipment_type_attributes'] as $equipmentTypeAttr)
-			{
-				if($attr->getName() == $equipmentTypeAttr['name'])
-				{
-					$attr->setEquipmentTypeAttributeId($equipmentTypeAttr["_id"]);
-				}
-			}
-
-			$attrs[] = $attr;
-		}
-
-		$equipment->setAttributes($attrs);
 		$this->dao->createEquipment($equipment);
 
 		return array("ok" => true, "message" => "success.");
@@ -68,27 +29,7 @@ class CoreService
 
 	public function createEquipmentType($requestJson)
 	{
-		/*
-		$equipmentType = new EquipmentType();
-		$equipmentType->setName($requestJson["name"]);
-
-		$attributes = array();
-		foreach ($requestJson['equipment_type_attributes'] as $attr) {
-			$newAttr = new EquipmentTypeAttribute();
-			$newAttr->setName($attr["name"]);
-			$newAttr->setRequired($attr["required"]);
-			$newAttr->setUnique($attr["unique"]);
-			$newAttr->setDataType($attr["data_type"]);
-			$newAttr->setRegex($attr["regex"]);
-			$newAttr->setHelpComment($attr["help_comment"]);
-			$newAttr->setEnum($attr["enum"]);
-			$newAttr->setEnumValues($attr["enum_values"]);
-
-			$attributes[] = $newAttr;
-		}
-		$equipmentType->setAttributes($attributes);
-		$this->dao->createEquipmentType($equipmentType);
-		*/
+		//todo - requestJson validation
 
 		$result = $this->dao->createEquipmentType($requestJson);
 
