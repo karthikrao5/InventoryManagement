@@ -30,9 +30,18 @@ class CoreService
 
 	public function createEquipmentType($requestJson)
 	{
+		$returnArray = array('ok' => false, 'msg' => null, 'equipment' => null);
 		//todo - requestJson validation
+		$result = $this->getEquipmentType(array('name' => $requestJson['equipment_type_name']));
 
-		$updated = $this->dao->createEquipmentType($requestJson);
+		if(!$result['ok'])
+		{
+			$returnArray['ok'] = false;
+			$returnArray['msg'] = "EquipmentType '".$requestJson['equipment_type_name']."' not found.";
+			return $returnArray;
+		}
+
+		$updated = $this->dao->createEquipmentType($requestJson, $result['equipment_type'][0]);
 
 		return array("ok" => true, "message" => "Successfully created EquipmentType '".$requestJson['name']."' !",
 			'equipment' => $updated);
@@ -92,41 +101,23 @@ class CoreService
 
 	public function getEquipmentType($requestJson=NULL)
 	{
-		$equipmentTypes = null;
-		$isDbSuccess = False;
+		$result = array('ok' => false, 'msg' => null, 'n' => 0, 'equipment_types' => null);
 
-		if($requestJson) {
-			$searchCriteriaArr = array();
+		$equipmentTypes = $this->dao->getEquipmentType($requestJson);
 
-			// validation of id doesnt work
-			if ($requestJson["_id"]) {
-				$searchCriteriaArr["_id"] = $requestJson["id"];
-			} else if($requestJson["name"]) {
-				$searchCriteriaArr["name"] = $requestJson["name"];
-			}
-
-			$equipmentTypes = $this->dao->getEquipmentType($searchCriteriaArr);
-			if ($equipmentTypes) {
-				$isDbSuccess = True;
-			} else {
-				$isDbSuccess = False;
-			}
-		} else {
-			$equipmentTypes = $this->dao->getEquipmentType(null);
-			if ($equipmentTypes) {
-				$isDbSuccess = True;
-			} else {
-				$isDbSuccess = False;
-			}
+		if(is_null($equipmentTypes) || empty($equipmentTypes))
+		{
+			$result['msg'] = "Equipment Type not found with given search criteria.";
+			return $result;
 		}
-
-		if ($isDbSuccess) {
-			$result = array("ok" => true, "msg" => "Success getting equipment type!.", "equipment_types" => $equipmentTypes);
-		} else {
-			$result = array("ok" => false, "msg" => "Get equipment type was not successful.", "equipment_types" => array());
+		else
+		{
+			$result['ok'] = true;
+			$result['msg'] = "Successfully found Equipment Types.";
+			$result['n'] = count($equipmentTypes);
+			$result['equipment_types'] = $equipmentTypes;
+			return $result;
 		}
-
-		return $result;
 	}
 
 	public function deleteEquipment($requestJson)

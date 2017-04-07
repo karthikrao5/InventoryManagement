@@ -1,0 +1,56 @@
+New Equipment type input
+
+{
+  "name" : "laptop",
+  "comments" : "some comments here.",
+  "equipment_type_attributes": [
+    {
+      "name": "serial_number",
+      "required": true,
+      "unique": true,
+      "data_type" : "string",
+      "regex" : "some regex string",
+      "help_comment" : "some comment",
+      "enum" : true,
+      "enum_values" : [
+        "value1", "value2", "value3"
+      ]
+    },
+    {
+      "name": "serial_number1",
+      "required": true,
+      "unique": true,
+      "data_type" : "string",
+      "regex" : "some regex string",
+      "help_comment" : "some comment",
+      "enum" : true,
+      "enum_values" : [
+        "value1", "value2", "value3"
+      ]
+    }
+  ]
+}
+
+New Equipment input with the type above
+
+{
+	"department_tag" : "math-12342",
+	"gt_tag" : null,
+	"equipment_type_name" : "laptop",
+	"status" : "loaned",
+	"loaned_to" : "bkang61",
+	"created_on" : "2017-01-01 00:00:00",
+	"last_updated" : "2017-01-02 00:00:00",
+	"comment" : "some comment",
+
+	"attributes" : [
+		{
+			"name" : "serial_number",
+			"value" : "DS6AF5DS4F6-454645DSF"
+		},
+		{
+			"name" : "serial_number2",
+			"value" : "DS6AF5DS4F6-454645DSF"
+		}
+	]
+}

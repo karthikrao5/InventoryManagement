@@ -95,39 +95,6 @@ class EquipmentTypeController extends AbstractController{
 		} else {
 			return $response->withStatus(400)->withJson($result);
 		}
-
-		// if(is_null($request))
-		// {
-  //           return $response->write("Invalid request.")->withStatus(400);
-  //       }
-
-  //       if (is_null($request->getParsedBody()))
-		// {
-  //           return $response->write("No body recieved.")->withStatus(400);
-  //       }
-
-  //       $json = $request->getParsedBody();
-
-		// $validationResult = $this->validator->validateJSON($json);
-
-		// if(!$validationResult['ok'])
-		// {
-		// 	return $response->write('Invalid JSON given. '.$validationResult['msg'])->withStatus(400);
-		// }
-
-		// //check if this already exists
-  //       $find = $this->dm->getRepository(EquipmentType::class)->findOneBy(array('name' => $json['name']));
-
-		// if ($find)
-		// {
-  //           return $response->write("This equipment type is already in the system.")->withStatus(400);
-  //       }
-
-		// $equipmentType = $this->createEquipmentTypeObj($json);
-		// $this->dm->persist($equipmentType);
-		// $this->dm->flush();
-
-		// return $response->write("Successfully created new equipment type '".$json['name']."'.")->withStatus(200);
 	}
 
 
