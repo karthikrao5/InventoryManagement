@@ -68,6 +68,7 @@ class CoreService
 
 	public function createEquipmentType($requestJson)
 	{
+		/*
 		$equipmentType = new EquipmentType();
 		$equipmentType->setName($requestJson["name"]);
 
@@ -87,8 +88,18 @@ class CoreService
 		}
 		$equipmentType->setAttributes($attributes);
 		$this->dao->createEquipmentType($equipmentType);
+		*/
 
-		return array("ok" => true, "message" => "success.");
+		$result = $this->dao->createEquipmentType($requestJson);
+
+		if($result['ok'])
+		{
+			return array('ok' => true, 'msg' => "Successfully Created EquipmentType ".$equipmentType['name']."!", 'equipment_type' => $result['updated']);
+		}
+		else
+		{
+			return array('ok' => false, 'msg' => $result['msg'], 'equipment_type' => null);
+		}
 	}
 
 	public function getEquipment($requestJson=NULL)

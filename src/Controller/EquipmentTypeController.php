@@ -91,9 +91,9 @@ class EquipmentTypeController extends AbstractController{
 		$result = $this->core->createEquipmentType($request->getParsedBody());
 
 		if ($result["ok"]) {
-			return $response->withStatus(200)->write("Successfully created new EquipmentType!");
+			return $response->withStatus(200)->withJson($result);
 		} else {
-			return $response->withStatus(404)->write("Something went wrong, EquipmentType was not created.");
+			return $response->withStatus(400)->withJson($result);
 		}
 
 		// if(is_null($request))
