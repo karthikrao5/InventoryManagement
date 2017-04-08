@@ -6,3 +6,6 @@ vagrant/.vagrant/machines/default/virtualbox/action_set_name
 vagrant/.vagrant/machines/default/virtualbox/creator_uid
 vagrant/.vagrant/machines/default/virtualbox/id
 vagrant/.vagrant/machines/default/virtualbox/index_uuid
+/nbproject/private/
+nbproject/project.xml
+nbproject/project.properties

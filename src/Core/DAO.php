@@ -61,15 +61,15 @@ class DAO
 
 		foreach($equipmentType['equipment_type_attributes'] as $equipTypeAttr)
 		{
-			foreach($equipment['attributes'] as &$equipAttr)
-			{
-				if($equipTypeAttr['name'] == $equipAttr['name'])
-				{
-					$equipAttr['equipment_type_attribute_id'] = $equipTypeAttr['_id'];
-					$equipAttr['equipment_type_id'] = $equipmentType['_id'];
-					$equipAttr['equipment_id'] = $equipment['_id'];
-				}
-			}
+                    foreach($equipment['attributes'] as &$equipAttr)
+                    {
+                        if($equipTypeAttr['name'] == $equipAttr['name'])
+                        {
+                            $equipAttr['equipment_type_attribute_id'] = $equipTypeAttr['_id'];
+                            $equipAttr['equipment_type_id'] = $equipmentType['_id'];
+                            $equipAttr['equipment_id'] = $equipment['_id'];
+                        }
+                    }
 		}
 
 		$attributes = array(); //one with '_id's
@@ -244,85 +244,91 @@ class DAO
 		return $result;
 	}
 
-	public function addEquipmentTypeAttribute($equipmentType, $equipmentTypeAttribute)
+	public function addEquipmentTypeAttribute($equipmentTypeId, $equipmentTypeAttribute)
 	{
-		$mongo = new MongoClient(DAO::$connectionString);
-		$equipmentTypes = $mongo->inventorytracking->equipmenttypes;
-
-		$equipmentTypeAttribute['equipment_type_id'] = $equipmentType['_id'];
+		$equipmentTypeAttribute['equipment_type_id'] = new MongoId($equipmentTypeId);
 		$updatedAttribute = $this->createEquipmentTypeAttribute($equipmentTypeAttribute);
 
-		$attributeIds = array();
+		$attrRefArray = $this->getEquipmentTypeAttributesArray(new MongoId($equipmentTypeId));
+		$attrRefArray[] = $updatedAttribute['_id'];
 
-		foreach($equipmentType['equipment_type_attributes'] as $attr)
-		{
-			$attributeIds = $attr['_id'];
-		}
-		$attributeIds[] = $updatedAttribute['_id'];
+		$result = $this->updateEquipmentTypeAttributesArray(new MongoId($equipmentTypeId), $attrRefArray);
 
-		$equipmentType['equipment_type_attributes'][] = $updatedAttribute;
-
-		$result = $equipmentTypes->update(array('_id' => $equipmentType['_id']),
-			array('$set' => array('equipment_type_attributes' => $attributeIds)));
-
-		$mongo->close();
-
-		return $equipmentType;
+		return $result;
 	}
 
-	public function removeEquipmentTypeAttribute($equipmentType, $equipmentTypeAttribute)
+	//returns array of references
+	private function getEquipmentTypeAttributesArray($mongoId)
 	{
 		$mongo = new MongoClient(DAO::$connectionString);
 		$equipmentTypes = $mongo->inventorytracking->equipmenttypes;
-		$equipmentTypeAttributes = $mongo->inventorytracking->equipmenttypeattributes;
 
-		foreach($equipmentType['equipment_type_attributes'] as $key => $attribute)
+		$equipmentType = $equipmentTypes->findOne(array('_id' => $mongoId));
+		$mongo->close();
+
+		return $equipmentType['equipment_type_attributes'];
+	}
+
+	private function updateEquipmentTypeAttributesArray(&$mongoId, $array)
+	{
+		$mongo = new MongoClient(DAO::$connectionString);
+		$equipmentTypes = $mongo->inventorytracking->equipmenttypes;
+
+		$result = $equipmentTypes->update(array('_id' => $mongoId),
+			array('$set' => array('equipment_type_attributes' => $array)));
+
+		$mongo->close();
+		return $result;
+	}
+
+	public function removeEquipmentTypeAttribute($equipmentTypeId, $equipmentTypeAttributeId)
+	{
+		$mongo = new MongoClient(DAO::$connectionString);
+		$equipmentTypeAttributes = $mongo->inventorytracking->equipmenttypeattributes;
+                $equipmentTypeAttributes->remove(array('_id' => new MongoId($equipmentTypeAttributeId)));
+                $mongo->close();
+
+		$attrRefArray = $this->getEquipmentTypeAttributesArray(new MongoId($equipmentTypeId));
+
+		foreach($attrRefArray as $key => $value)
 		{
-			if($attribute['name'] == $equipmentTypeAttribute['name'])
+			if($value->{'$id'} == $equipmentTypeAttributeId)
 			{
-				unset($equipmentType['equipment_type_attributes'][$key]);
+				unset($attrRefArray[$key]);
 				break;
 			}
 		}
 
-		$attributeIds = array();
-		foreach ($equipmentType['equipment_type_attributes'] as $attr)
-		{
-			$attributeIds[] = $attr['_id'];
-		}
+		$result = $this->updateEquipmentTypeAttributesArray(new MongoId($equipmentTypeId), $attrRefArray);
 
-		$equipmentTypes->update(array('_id' => $equipmentType['_id']),
-			array('$set' => array('equipment_type_attributes' => $attributeIds)));
-
-		$mongo->close();
-
-		return $equipmentType;
+		return $result;
 	}
 
-	public function updateEquipmentType($equipmentTypeOld, $equipmentTypeNew)
+	//expects id as a string, not mongo id.
+	public function updateEquipmentType($id, $updateValues)
 	{
 		$mongo = new MongoClient(DAO::$connectionString);
 		$equipmentTypes = $mongo->inventorytracking->equipmenttypes;
 
-		unset($equipmentTypeNew['_id']);
+		unset($updateValues['_id']);
 
-		$result = $equipmentTypes->update(array('_id' => $equipmentTypeOld['_id']),
-			array('$set' => array('name' => $equipmentTypeNew['name'])));
+		$result = $equipmentTypes->update(array('_id' => new MongoId($id)),
+			array('$set' => $updateValues));
 
 		$mongo->close();
 
 		return $result;
 	}
 
-	public function updateEquipmentTypeAttribute($attributeOld, $attributeNew)
+	public function updateEquipmentTypeAttribute($id, $updateValues)
 	{
 		$mongo = new MongoClient(DAO::$connectionString);
 		$equipmentTypeAttributes = $mongo->inventorytracking->equipmenttypeattributes;
 
-		unset($attributeNew['_id']);
+		unset($updateValues['_id']);
 
-		$result = $equipmentTypeAttributes->update(array('_id' => $attributeOld['_id']),
-			array('$set' => $attributeNew));
+		$result = $equipmentTypeAttributes->update(array('_id' => new MongoId($id)),
+			array('$set' => $updateValues));
 
 		$mongo->close();
 

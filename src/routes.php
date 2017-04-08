@@ -141,13 +141,8 @@ $app->group('/v1', function() {
         $this->get('[/{params:.*}]', 'EquipmentTypeController:find');
 
         $this->delete('', 'EquipmentTypeController:delete');
-    });
 
-
-    $this->get('/testget', function($request, $response) {
-        $dm = $this->get('dm');
-        $var = $this->dm->getRepository(Equipment::class)->findAll();
-        return $response->withJson($var);
+        $this->put('', 'EquipmentTypeController:updateOne');
     });
 });
 

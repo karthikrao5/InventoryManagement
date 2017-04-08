@@ -103,7 +103,9 @@ class EquipmentTypeController extends AbstractController{
 	// -----------------------------------------------------------------
 
 	public function updateOne($request, $response) {
-		return $response->write("Placeholder")->withStatus(200);
+		$result = $this->core->updateEquipmentType($request->getParsedBody());
+
+		return $response->withJson($result);
 	}
 
 
@@ -131,40 +133,4 @@ class EquipmentTypeController extends AbstractController{
 			return $response->withStatus(404)->write("Something went wrong, EquipmentType are not deleted.");
 		}
 	}
-
-	// -----------------------------------------------------------------
-	// Private helper functions below
-	// -----------------------------------------------------------------
-
-	private function createEquipmentTypeObj($json)
-	{
-		$equipmentType = new EquipmentType();
-		$equipmentType->setName($json['name']);
-
-		foreach($json['equipment_type_attributes'] as $json_attr)
-		{
-			$attribute = $this->createEquipmentTypeAttributeObj($json_attr);
-			$equipmentType->addEquipmentTypeAttribute($attribute);
-		}
-
-		return $equipmentType;
-	}
-
-	private function createEquipmentTypeAttributeObj($json)
-	{
-		$attribute = new EquipmentTypeAttribute();
-
-		$attribute->setName($json['name']);
-		$attribute->setRequired($json['required']);
-		$attribute->setUnique($json['unique']);
-		$attribute->setDataType($json['data_type']);
-		$attribute->setRegex($json['regex']);
-		$attribute->setHelpComment($json['help_comment']);
-		$attribute->setEnum($json['enum']);
-		$attribute->setEnumValues($json['enum_values']);
-
-		return $attribute;
-	}
-
-
 }

@@ -54,3 +54,51 @@ New Equipment input with the type above
 		}
 	]
 }
+
+input for Equipment Type edit
+
+{
+	"id" : "58e81cc37f8b9ac4571ef7c6",
+
+	"update_equipment_type" :
+	{
+		"name" : "laptop2",
+		"comment" : "Changed laptop to laptop2."
+	}
+
+	"update_equipment_type_attributes" :
+	[
+		{
+			"equipment_type_attribute_id" : "58e81cc37f8b9ac4571ef7c6",
+			"name" : "serial_number",
+			"required" : true,
+			"unique" : true,
+			"data_type" : "string",
+			"regex" : "some regex string",
+			"help_comment" : "some comment.",
+			"enum" : true,
+			"enum_values" : ["value1", "value2", "value3"]
+		}
+	]
+
+	"add_equipment_type_attributes" :
+	[
+		{
+			"name": "serial_number4",
+			"required": true,
+			"unique": true,
+			"data_type" : "string",
+			"regex" : "some regex string",
+			"help_comment" : "some comment",
+			"enum" : true,
+			"enum_values" : [
+				"value1", "value2", "value3"
+			]
+		}
+	]
+
+	"remove_equipment_type_attributes" :
+	[
+		"58e81cc37f8b9ac4571ef7c7"
+	]
+}
