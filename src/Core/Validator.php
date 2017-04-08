@@ -1,29 +1,21 @@
 <?php
-    namespace App\core;
+    namespace App\Core;
 	
-	class Validator implements IValidator
+	class Validator
 	{
-		private $dao;
-		
-		public function __constructor(IDAO $dao)
-		{
-			$this->dao = $dao;
+
+		public funciton __construct($ci) {
+
 		}
-		
-		public function validateCreateEquipment($document)
-		{
-			return true;
+		// TODO User authentication through apache env variable
+
+		public function getAuthUser() {
+			// TODO return current authenticated user
 		}
+
 		
-		public function validateUpdateEquipment($document)
-		{
-			throw new BadMethodCallException('Not implemented.');
+		public function checkKey($someKey) {
+			return false;
 		}
-        
-        // MongoId string must be 24 characters long.
-        public function validateMongoIdString($id)
-        {
-            return preg_match('/^[0-9a-zA-Z]{24}$/', $id) == 1;
-        }
 	}
 ?>
