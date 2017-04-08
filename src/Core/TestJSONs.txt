@@ -1,0 +1,144 @@
+New Equipment type input
+
+{
+  "name" : "laptop",
+  "comments" : "some comments here.",
+  "equipment_type_attributes": [
+    {
+      "name": "serial_number",
+      "required": true,
+      "unique": true,
+      "data_type" : "string",
+      "regex" : "some regex string",
+      "help_comment" : "some comment",
+      "enum" : true,
+      "enum_values" : [
+        "value1", "value2", "value3"
+      ]
+    },
+    {
+      "name": "serial_number1",
+      "required": true,
+      "unique": true,
+      "data_type" : "string",
+      "regex" : "some regex string",
+      "help_comment" : "some comment",
+      "enum" : true,
+      "enum_values" : [
+        "value1", "value2", "value3"
+      ]
+    }
+  ]
+}
+
+New Equipment input with the type above
+
+{
+	"department_tag" : "math-12342",
+	"gt_tag" : null,
+	"equipment_type_name" : "laptop",
+	"status" : "loaned",
+	"loaned_to" : "bkang61",
+	"created_on" : "2017-01-01 00:00:00",
+	"last_updated" : "2017-01-02 00:00:00",
+	"comment" : "some comment",
+
+	"attributes" : [
+		{
+			"name" : "serial_number",
+			"value" : "DS6AF5DS4F6-454645DSF"
+		},
+		{
+			"name" : "serial_number1",
+			"value" : "DS6AF5DS4F6-454645DSF"
+		}
+	]
+}
+
+input for Equipment Type edit (change ids based on your data)
+
+{
+	"_id" : "58e81cc37f8b9ac4571ef7c6",
+
+	"update_equipment_type" :
+	{
+		"name" : "laptop2",
+		"comment" : "Changed laptop to laptop2."
+	},
+
+	"update_equipment_type_attributes" :
+	[
+		{
+			"_id" : "58e81cc37f8b9ac4571ef7c6",
+			"name" : "serial_number",
+			"required" : true,
+			"unique" : true,
+			"data_type" : "string",
+			"regex" : "some regex string",
+			"help_comment" : "some comment.",
+			"enum" : true,
+			"enum_values" : ["value1", "value2", "value3"]
+		}
+	],
+
+	"add_equipment_type_attributes" :
+	[
+		{
+			"name": "serial_number4",
+			"required": true,
+			"unique": true,
+			"data_type" : "string",
+			"regex" : "some regex string",
+			"help_comment" : "some comment",
+			"enum" : true,
+			"enum_values" : [
+				"value1", "value2", "value3"
+			]
+		}
+	],
+
+	"remove_equipment_type_attributes" :
+	[
+		"58e81cc37f8b9ac4571ef7c7"
+	]
+}
+
+input for equipment edit (change ids based on your data)
+
+{
+	"_id" : "58e81cc37f8b9ac4571ef7c6",
+
+	"update_equipment" :
+	{
+        "department_tag": "math-12342",
+        "gt_tag": null,
+        "equipment_type_name": "laptop",
+        "status": "loaned",
+        "loaned_to": "bkang61",
+        "created_on": "2017-01-01 00:00:00",
+        "last_updated": "2017-01-02 00:00:00",
+        "comment": "some comment"
+	},
+
+	"update_equipment_attributes" :
+	[
+		{
+			"_id" : "58e81cc37f8b9ac4571ef7c6",
+			"name" : "serial_number",
+            "value" : "some other value"
+		}
+	],
+
+	"add_equipment_attributes" :
+	[
+		{
+            "name" : "serial_number999",
+            "value" : "some value"
+		}
+	],
+
+	"remove_equipment_attributes" :
+	[
+		"58e81cc37f8b9ac4571ef7c7"
+	]
+}
