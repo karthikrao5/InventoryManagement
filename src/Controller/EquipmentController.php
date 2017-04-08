@@ -118,25 +118,9 @@ class EquipmentController extends AbstractController{
             return $response->write("No body recieved.")->withStatus(200);
         }
 
-        if(!validateID($args['id'])) {
-            return $response->write("Invalid ID.")->withStatus(404);
-        }
-
-        $json = $request->getParsedBody();
-
-
-        $qb = $this->dm->createQueryBuilder(Equipment::class)
-                                    ->findAndUpdate()
-                                    ->field('id')->equals($args['id']);
-
-        foreach ($json as $key => $value) {
-            $query = $qb->field($key)->set($value);
-        }
-
-        $qb->getQuery()->execute();
-
-        return $response->write("Successfully updated equipment.")->withStatus(200);
-
+        $result = $this->core->updateEquipment($request->getParsedBody());
+        
+        return $response->withJson($result);
     }
 
 // -----------------------------------------------------------------

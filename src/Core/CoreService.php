@@ -127,6 +127,35 @@ class CoreService
 	public function updateEquipment($requestJson)
 	{
 		$result = array("ok" => false, "msg" => null, "updated_equipment" => null);
+                
+                if(isset($requestJson['update_equipment']) && !empty($requestJson['update_equipment']))
+                {
+                    $result = $this->dao->updateEquipment($requestJson['_id'], $requestJson['update_equipment']);
+                }
+                
+                if(isset($requestJson['update_equipment_attributes']) && !empty($requestJson['update_equipment_attributes']))
+                {
+                    foreach ($requestJson['update_equipment_attributes'] as $updateTarget)
+                    {
+                        $result = $this->dao->updateEquipmentAttriubte($updateTarget['_id'], $updateTarget);
+                    }
+                }
+                
+                if(isset($requestJson['add_equipment_attributes']) && !empty($requestJson['add_equipment_attributes']))
+                {
+                    foreach($requestJson['add_equipment_attributes'] as $newAttribute)
+                    {
+                        $result = $this->dao->addEquipmentAttribute($requestJson['_id'], $newAttribute);
+                    }
+                }
+                
+                if(isset($requestJson['remove_equipment_attributes']) && !empty($requestJson['remove_equipment_attributes']))
+                {
+                    foreach($requestJson['remove_equipment_attributes'] as $removeTarget)
+                    {
+                        $result = $this->dao->removeEquipmentAttribute($requestJson['_id'], $removeTarget);
+                    }
+                }
 
 		return $result;
 	}
@@ -139,7 +168,7 @@ class CoreService
 		//update equipment type document itself (not its attributes).
 		if(isset($requestJson['update_equipment_type']))
 		{
-			$result = $this->dao->updateEquipmentType($requestJson['_id'], $requestJson['update_equipment_type']);
+                    $result = $this->dao->updateEquipmentType($requestJson['_id'], $requestJson['update_equipment_type']);
 		}
 
 		if(isset($requestJson['update_equipment_type_attributes']) && !empty($requestJson['update_equipment_type_attributes']))
