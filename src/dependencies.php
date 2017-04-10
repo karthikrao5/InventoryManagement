@@ -36,6 +36,10 @@ $container['flash'] = function () {
     return new \Slim\Flash\Messages();
 };
 
+$container['validator'] = function ($c) {
+    return new App\Core\Validator(App\Helper\Container\ContainerHelper::getContainer());
+};
+
 // -----------------------------------------------------------------------------
 // Service factories
 // -----------------------------------------------------------------------------
@@ -74,6 +78,10 @@ $container['EquipmentTypeController'] = function ($c) {
     return new App\Controller\EquipmentTypeController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
+$container['ApiKeyController'] = function ($c) {
+    return new App\Controller\ApiKeyController(App\Helper\Container\ContainerHelper::getContainer());
+};
+
 // $container["DummyController"] = function($c) {
 //     return new \App\Controller\DummyController($c->get('db'));
 // };
@@ -89,6 +97,7 @@ $container['EquipmentValidator'] = function ($c) {
 $container['EquipmentTypeValidator'] = function ($c) {
     return new App\Validators\EquipmentTypeValidator(App\Helper\Container\ContainerHelper::getContainer());
 };
+
 
 $container["core"] = function($c) {
     return new App\Core\CoreService(App\Helper\Container\ContainerHelper::getContainer());

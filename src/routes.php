@@ -66,6 +66,11 @@ $app->get('/addequipmenttype', function($request, $response) {
 
 // Backend routes.
 $app->group('/v1', function() {
+
+    $this->group('/api', function() {
+        $this->post('/newkey[/{params:.*}]', 'ApiKeyController:generateNewKey');
+    });
+
     // equipment routes
     $this->group('/equipments', function() {
         $this->post('', 'EquipmentController:create');
