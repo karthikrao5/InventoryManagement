@@ -10,7 +10,7 @@ use \App\core\CoreService as CoreService;
 // http://www.restapitutorial.com/lessons/httpmethods.html
 // REST API routes
 
-$app->group('/view', function() {
+$app->group('/frontend', function() {
     $this->get('/', 'ViewController:index')->setName("root");
 
     $this->get('/add-equipment', 'ViewController:getEquipmentForm')->setName("get-add-equipment");
