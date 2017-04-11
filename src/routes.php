@@ -10,22 +10,29 @@ use \App\core\CoreService as CoreService;
 // http://www.restapitutorial.com/lessons/httpmethods.html
 // REST API routes
 
+
+// this is the angular route to pull the index page.
+$app->get('/', function($request, $response) {
+    $this->view->render($response, 'index.html');
+});
+
 $app->group('/frontend', function() {
-    $this->get('/', 'ViewController:index')->setName("root");
 
-    $this->get('/add-equipment', 'ViewController:getEquipmentForm')->setName("get-add-equipment");
-    $this->post("/add-equipment", 'ViewController:postEquipmentForm');
+    // $this->get('/', 'ViewController:index')->setName("root");
 
-    $this->get('/add-equipment-type', 'ViewController:getEquipmentTypeForm')->setName("get-add-equipment-type");
-    $this->post('/add-equipment-type', 'ViewController:postEquipmentTypeForm');
+    // $this->get('/add-equipment', 'ViewController:getEquipmentForm')->setName("get-add-equipment");
+    // $this->post("/add-equipment", 'ViewController:postEquipmentForm');
 
-    $this->get("/show-all-equipmenttypes", "ViewController:showAllEquipmentTypes")->setName("all-equipment-types");
+    // $this->get('/add-equipment-type', 'ViewController:getEquipmentTypeForm')->setName("get-add-equipment-type");
+    // $this->post('/add-equipment-type', 'ViewController:postEquipmentTypeForm');
 
-    $this->get("/edit-equipment[/{params:.*}]", "ViewController:editEquipment")->setName("edit-equipment");
-    $this->put("/edit-equipment", "ViewController:updateEquipment");
+    // $this->get("/show-all-equipmenttypes", "ViewController:showAllEquipmentTypes")->setName("all-equipment-types");
+
+    // $this->get("/edit-equipment[/{params:.*}]", "ViewController:editEquipment")->setName("edit-equipment");
+    // $this->put("/edit-equipment", "ViewController:updateEquipment");
 
 
-    $this->delete('/delete-equipment[/{params:.*}]', 'ViewController:deleteEquipment')->setName("delete-equipment");
+    // $this->delete('/delete-equipment[/{params:.*}]', 'ViewController:deleteEquipment')->setName("delete-equipment");
 
 });
 

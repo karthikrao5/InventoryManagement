@@ -16,13 +16,14 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 class EquipmentController extends AbstractController{
 
     protected $validator;
+    protected $authValidator;
 
     // private $rm;
 
     public function __construct(ContainerInterface $c) {
         parent::__construct($c);
         $this->validator = $this->ci->get('EquipmentValidator');
-
+        $this->authValidator = $this->ci->get('AuthValidator');
         // $this->rm = $this->ci->get('rm');
         // $this->rm->setRepo(Equipment::class);
     }
@@ -40,6 +41,12 @@ class EquipmentController extends AbstractController{
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }
+
+        $user = $authValidator->getAuthUser();
+        // $this->authValidator->isAccessible($user["user_type"], )
+
+
+
         // TESTED THIS CODE, params works don't mess with it.
         $params = $request->getQueryParams();
         if ($params) {
