@@ -10,18 +10,31 @@ class CoreService
 	private $dao;
 	private $logger;
 	private $container;
+	private $equipmentValidator;
+	private $equipmentTypeValidator;
 
 	public function __construct(ContainerInterface $c)
 	{
 		$this->dao = new DAO();
 		$this->container = $c;
 		$this->logger = $c->get("logger");
+		$this->equipmentValidator = $c->get("EquipmentValidator");
+		$this->equipmentTypeValidator = $c->get('EquipmentTypeValidator');
 	}
 
 	public function createEquipment($requestJson)
 	{
 		$returnArray = array('ok' => false, 'msg' => null, 'equipment' => null);
 		//todo - requestJson validation
+		
+		$result = $this->equipmentValidator->validateJSON($requestJson);
+
+		if(!$result['ok']) {
+			$returnArray['ok'] = false;
+			$resultArray['msg'] = $result['msg'];
+			return $resultArray;
+		}
+
 		$result = $this->getEquipmentType(array('name' => $requestJson['equipment_type_name']));
 
 		if(!$result['ok'])
@@ -39,10 +52,19 @@ class CoreService
 
 	public function createEquipmentType($requestJson)
 	{
-		$updated = $this->dao->createEquipmentType($requestJson, $result['equipment_type'][0]);
+		$result = $this->equipmentTypeValidator->validateJSON($requestJson);
+
+		if(!$result['ok']) {
+			$returnArray['ok'] = false;
+			$resultArray['msg'] = $result['msg'];
+			return $resultArray;
+		}
+
+
+		$added = $this->dao->createEquipmentType($requestJson, $result['equipment_type'][0]);
 
 		return array("ok" => true, "message" => "Successfully created EquipmentType '".$requestJson['name']."' !",
-			'equipment_type' => $updated);
+			'equipment_type' => $added);
 	}
 
 	public function getEquipment($requestJson=NULL)
@@ -128,34 +150,34 @@ class CoreService
 	{
 		$result = array("ok" => false, "msg" => null, "updated_equipment" => null);
                 
-                if(isset($requestJson['update_equipment']) && !empty($requestJson['update_equipment']))
-                {
-                    $result = $this->dao->updateEquipment($requestJson['_id'], $requestJson['update_equipment']);
-                }
-                
-                if(isset($requestJson['update_equipment_attributes']) && !empty($requestJson['update_equipment_attributes']))
-                {
-                    foreach ($requestJson['update_equipment_attributes'] as $updateTarget)
-                    {
-                        $result = $this->dao->updateEquipmentAttriubte($updateTarget['_id'], $updateTarget);
-                    }
-                }
-                
-                if(isset($requestJson['add_equipment_attributes']) && !empty($requestJson['add_equipment_attributes']))
-                {
-                    foreach($requestJson['add_equipment_attributes'] as $newAttribute)
-                    {
-                        $result = $this->dao->addEquipmentAttribute($requestJson['_id'], $newAttribute);
-                    }
-                }
-                
-                if(isset($requestJson['remove_equipment_attributes']) && !empty($requestJson['remove_equipment_attributes']))
-                {
-                    foreach($requestJson['remove_equipment_attributes'] as $removeTarget)
-                    {
-                        $result = $this->dao->removeEquipmentAttribute($requestJson['_id'], $removeTarget);
-                    }
-                }
+        if(isset($requestJson['update_equipment']) && !empty($requestJson['update_equipment']))
+        {
+            $result = $this->dao->updateEquipment($requestJson['_id'], $requestJson['update_equipment']);
+        }
+        
+        if(isset($requestJson['update_equipment_attributes']) && !empty($requestJson['update_equipment_attributes']))
+        {
+            foreach ($requestJson['update_equipment_attributes'] as $updateTarget)
+            {
+                $result = $this->dao->updateEquipmentAttriubte($updateTarget['_id'], $updateTarget);
+            }
+        }
+        
+        if(isset($requestJson['add_equipment_attributes']) && !empty($requestJson['add_equipment_attributes']))
+        {
+            foreach($requestJson['add_equipment_attributes'] as $newAttribute)
+            {
+                $result = $this->dao->addEquipmentAttribute($requestJson['_id'], $newAttribute);
+            }
+        }
+        
+        if(isset($requestJson['remove_equipment_attributes']) && !empty($requestJson['remove_equipment_attributes']))
+        {
+            foreach($requestJson['remove_equipment_attributes'] as $removeTarget)
+            {
+                $result = $this->dao->removeEquipmentAttribute($requestJson['_id'], $removeTarget);
+            }
+        }
 
 		return $result;
 	}

@@ -18,14 +18,10 @@ class EquipmentController extends AbstractController{
     protected $validator;
     protected $authValidator;
 
-    // private $rm;
-
     public function __construct(ContainerInterface $c) {
         parent::__construct($c);
         $this->validator = $this->ci->get('EquipmentValidator');
         $this->authValidator = $this->ci->get('AuthValidator');
-        // $this->rm = $this->ci->get('rm');
-        // $this->rm->setRepo(Equipment::class);
     }
 
 
@@ -45,8 +41,6 @@ class EquipmentController extends AbstractController{
         $user = $authValidator->getAuthUser();
         // $this->authValidator->isAccessible($user["user_type"], )
 
-
-
         // TESTED THIS CODE, params works don't mess with it.
         $params = $request->getQueryParams();
         if ($params) {
@@ -62,36 +56,14 @@ class EquipmentController extends AbstractController{
         } else {
             return $response->withStatus(404)->write("Something went wrong with the find function in EquipmentController.");
         }
-
-
-        // $params = $request->getQueryParams();
-
-        // if (empty($params)) {
-        //     $cursor = $this->dm->getRepository(Equipment::class)->getAllEquipment();
-        //     // return $response->withStatus(200);
-        //     return $response->withJson(iterator_to_array($cursor));
-        // }
-
-        // // $returnValue = $this->rm->findAllByCriteria($params);
-        // $returnValue = $this->dm->getRepository(Equipment::class)->findByParams($params);
-
-        // if ($returnValue) {
-        //     // 200 status
-        //     return $response->withJson($returnValue);
-        // }
-
-        // return $response->withStatus(404)->write("No equipment by those params.");
     }
-
-
-
 
 // -----------------------------------------------------------------
 // POST functions
 // -----------------------------------------------------------------
 
     /**
-     *
+     * input criteria are in the body of the request
      */
     public function create($request, $response) {
 
@@ -111,10 +83,10 @@ class EquipmentController extends AbstractController{
 			return $response->withStatus(400)->withJson($result);
 		}
     }
+    
 // -----------------------------------------------------------------
 // PUT functions
 // -----------------------------------------------------------------
-
 //  update/replace item by ID
     public function updateOne($request, $response, $args) {
         if(is_null($request)) {
