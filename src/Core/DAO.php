@@ -190,6 +190,7 @@ class DAO
 	{
 		$mongo = new MongoClient(DAO::$connectionString);
 		$attrsDB = $mongo->inventorytracking->equipmenttypeattributes;
+                $logsDB = $mongo->inventorytracking->logs;
 
 		//This is an associative array, which doesn't convert to JSON array.
 		$attrs =  iterator_to_array($attrsDB->find(array('equipment_type_id' => $equipmentType['_id'])));
@@ -201,6 +202,18 @@ class DAO
 		}
 
 		$equipmentType['equipment_type_attributes'] = $array;
+                
+                $logs = iterator_to_array($logsDB->find(array('reference_id' => $equipmentType['_id'])));
+                $array = array();
+                
+                foreach($logs as $log)
+                {
+                    $log['timestamp'] = date('Y-m-d H:i:s', $log['timestamp']->sec);
+                    $array[] = $log;
+                }
+                
+                $equipmentType['logs'] = $array;
+                
 		$mongo->close();
 		return $equipmentType;
 	}
