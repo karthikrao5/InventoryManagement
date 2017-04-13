@@ -46,6 +46,7 @@ class Validator
 
 	public function authenticateToken($token) {
 
+
 		$settings = $this->c->get('settings');
 
 		$secretKey = $settings["jwtSecretKey"];
