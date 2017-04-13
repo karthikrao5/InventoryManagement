@@ -38,7 +38,7 @@ class EquipmentController extends AbstractController{
             return $response->write("Invalid request.")->withStatus(400);
         }
 
-        $user = $authValidator->getAuthUser();
+        // $user = $authValidator->getAuthUser();
         // $this->authValidator->isAccessible($user["user_type"], )
 
         // TESTED THIS CODE, params works don't mess with it.
