@@ -10,21 +10,33 @@ use \App\core\CoreService as CoreService;
 // http://www.restapitutorial.com/lessons/httpmethods.html
 // REST API routes
 
-$app->get('/', 'ViewController:index')->setName("root");
 
-$app->get('/add-equipment', 'ViewController:getEquipmentForm')->setName("get-add-equipment");
-$app->post("/add-equipment", 'ViewController:postEquipmentForm');
+// this is the angular route to pull the index page.
+$app->get('/', function($request, $response) {
+    $this->view->render($response, 'index.html');
+});
 
-$app->get('/add-equipment-type', 'ViewController:getEquipmentTypeForm')->setName("get-add-equipment-type");
-$app->post('/add-equipment-type', 'ViewController:postEquipmentTypeForm');
+$app->group('/frontend', function() {
 
-$app->get("/show-all-equipmenttypes", "ViewController:showAllEquipmentTypes")->setName("all-equipment-types");
+    // $this->get('/', 'ViewController:index')->setName("root");
 
-$app->get("/edit-equipment[/{params:.*}]", "ViewController:editEquipment")->setName("edit-equipment");
-$app->put("/edit-equipment", "ViewController:updateEquipment");
+    // $this->get('/add-equipment', 'ViewController:getEquipmentForm')->setName("get-add-equipment");
+    // $this->post("/add-equipment", 'ViewController:postEquipmentForm');
+
+    // $this->get('/add-equipment-type', 'ViewController:getEquipmentTypeForm')->setName("get-add-equipment-type");
+    // $this->post('/add-equipment-type', 'ViewController:postEquipmentTypeForm');
+
+    // $this->get("/show-all-equipmenttypes", "ViewController:showAllEquipmentTypes")->setName("all-equipment-types");
+
+    // $this->get("/edit-equipment[/{params:.*}]", "ViewController:editEquipment")->setName("edit-equipment");
+    // $this->put("/edit-equipment", "ViewController:updateEquipment");
 
 
-$app->delete('/delete-equipment[/{params:.*}]', 'ViewController:deleteEquipment')->setName("delete-equipment");
+    // $this->delete('/delete-equipment[/{params:.*}]', 'ViewController:deleteEquipment')->setName("delete-equipment");
+
+});
+
+
 
 $app->get("/test", function($request, $response) {
     return $this->view->render($response, "hp.html", array());
@@ -66,6 +78,11 @@ $app->get('/addequipmenttype', function($request, $response) {
 
 // Backend routes.
 $app->group('/v1', function() {
+
+    $this->group('/api', function() {
+        $this->post('/newkey[/{params:.*}]', 'ApiKeyController:generateNewKey');
+    });
+
     // equipment routes
     $this->group('/equipments', function() {
         $this->post('', 'EquipmentController:create');
