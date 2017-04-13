@@ -12,63 +12,7 @@ class DAO
 {
 	private static $connectionString = null; // Null is equivalent to "mongodb://localhost:27017".
 
-	public function createEquipmentType($equipmentType)
-	{
-		$mongo = new MongoClient(DAO::$connectionString);
-		$equipmentTypes = $mongo->inventorytracking->equipmenttypes;
-                $equipmentType['logs'] = array();
-		$result = $equipmentTypes->insert($equipmentType);
-
-		$attributes = array(); //one with '_id's
-		$attributeIds = array(); //only '_id's
-		foreach($equipmentType['equipment_type_attributes'] as $attribute)
-		{
-			$attribute['equipment_type_id'] = $equipmentType['_id'];
-			$updatedAttribute = $this->createEquipmentTypeAttribute($attribute);
-			$attributes[] = $updatedAttribute;
-			$attributeIds[] = $updatedAttribute['_id'];
-		}
-
-		$equipmentType['equipment_type_attributes'] = $attributeIds;
-		$equipmentTypes->update(array('_id' => $equipmentType['_id']),
-			array('$set' => $equipmentType));
-		$mongo->close();
-                
-                $log = $this->createLog();
-                $log['reference_id'] = $equipmentType['_id'];
-                $log['document_type'] = "equipment_type";
-                $log['action_by'] = "some_user";
-                $log['action_via'] = "hard coded web";
-                $log['action_type'] = "create_equipment_type";
-                $result = $this->updateLog($log);
-                
-                $result = $this->addLogToEquipmentType($equipmentType['_id'], $log['_id']);
-
-                $result = $this->getEquipmentType(array('_id' => $equipmentType['_id']));
-                
-		return $result[0];
-	}
-
-	public function createEquipmentTypeAttribute($equipmentTypeAttribute)
-	{
-		$mongo = new MongoClient(DAO::$connectionString);
-		$equipmentTypesAttributes = $mongo->inventorytracking->equipmenttypeattributes;
-                $equipmentTypeAttribute['logs'] = array();
-		$equipmentTypesAttributes->insert($equipmentTypeAttribute);
-                $mongo->close();
-                
-                $log = $this->createLog();
-                $log['reference_id'] = $equipmentTypeAttribute['_id'];
-                $log['document_type'] = "equipment_type_attribute";
-                $log['action_by'] = "some_user";
-                $log['action_via'] = "hard coded web";
-                $log['action_type'] = "create_equipment_type_attribute";
-                $result = $this->updateLog($log);
-                
-                $result = $this->addLogToEquipmentTypeAttribute($equipmentTypeAttribute['_id'], $log['_id']);
-
-		return $equipmentTypeAttribute;
-	}
+	
 
 	// It is the CoreService's responsibility to find and pass in proper EquipmentType
 	public function createEquipment($equipment, $equipmentType)
@@ -538,9 +482,68 @@ class DAO
 		return $result;
 	}
     
+    
     /*
-     * Updated get functions.
+     * Equipment Type related functions.
      */
+        
+    public function createEquipmentType($equipmentType)
+    {
+        $mongo = new MongoClient(DAO::$connectionString);
+        $equipmentTypes = $mongo->inventorytracking->equipmenttypes;
+        $equipmentType['logs'] = array();
+        $result = $equipmentTypes->insert($equipmentType);
+
+        $attributes = array(); //one with '_id's
+        $attributeIds = array(); //only '_id's
+        foreach($equipmentType['equipment_type_attributes'] as $attribute)
+        {
+            $attribute['equipment_type_id'] = $equipmentType['_id'];
+            $updatedAttribute = $this->createEquipmentTypeAttribute($attribute);
+            $attributes[] = $updatedAttribute;
+            $attributeIds[] = $updatedAttribute['_id'];
+        }
+
+        $equipmentType['equipment_type_attributes'] = $attributeIds;
+        $equipmentTypes->update(array('_id' => $equipmentType['_id']),
+                array('$set' => $equipmentType));
+        $mongo->close();
+
+        $log = $this->createLog();
+        $log['reference_id'] = $equipmentType['_id'];
+        $log['document_type'] = "equipment_type";
+        $log['action_by'] = "some_user";
+        $log['action_via'] = "hard coded web";
+        $log['action_type'] = "create_equipment_type";
+        $result = $this->updateLog($log);
+
+        $result = $this->addLogToEquipmentType($equipmentType['_id'], $log['_id']);
+
+        $result = $this->getEquipmentType(array('_id' => $equipmentType['_id']));
+
+        return $result[0];
+    }
+
+    public function createEquipmentTypeAttribute($equipmentTypeAttribute)
+    {
+        $mongo = new MongoClient(DAO::$connectionString);
+        $equipmentTypesAttributes = $mongo->inventorytracking->equipmenttypeattributes;
+        $equipmentTypeAttribute['logs'] = array();
+        $equipmentTypesAttributes->insert($equipmentTypeAttribute);
+        $mongo->close();
+
+        $log = $this->createLog();
+        $log['reference_id'] = $equipmentTypeAttribute['_id'];
+        $log['document_type'] = "equipment_type_attribute";
+        $log['action_by'] = "some_user";
+        $log['action_via'] = "hard coded web";
+        $log['action_type'] = "create_equipment_type_attribute";
+        $result = $this->updateLog($log);
+
+        $result = $this->addLogToEquipmentTypeAttribute($equipmentTypeAttribute['_id'], $log['_id']);
+
+        return $equipmentTypeAttribute;
+    }
     
     public function getEquipmentType($searchCriteria=null)
     {
@@ -610,7 +613,6 @@ class DAO
         return $equipmentType;
     }
 
-    //joins logs of equipment type attribute document
     public function getEquipmentTypeAttribute($searchCriteria=null)
     {
         $mongo = new MongoClient(DAO::$connectionString);
