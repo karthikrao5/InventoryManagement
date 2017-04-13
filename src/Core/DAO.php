@@ -4,6 +4,7 @@ namespace App\Core;
 
 use \MongoClient;
 use \MongoId;
+use \MongoDate;
 
 // I/O is done with PHP arrays.
 // All functions expect and return fully joined PHP arrays.
@@ -15,6 +16,7 @@ class DAO
 	{
 		$mongo = new MongoClient(DAO::$connectionString);
 		$equipmentTypes = $mongo->inventorytracking->equipmenttypes;
+                $equipmentType['logs'] = array();
 		$result = $equipmentTypes->insert($equipmentType);
 
 		$attributes = array(); //one with '_id's
@@ -55,6 +57,7 @@ class DAO
 
 		// set equipment type id to equipment
 		$equipment['equipment_type_id'] = $equipmentType['_id'];
+                $equipment['logs'] = array();
 		$equipments->insert($equipment);
 
 		// set ids to equipment attributes
@@ -309,16 +312,65 @@ class DAO
 	{
 		$mongo = new MongoClient(DAO::$connectionString);
 		$equipmentTypes = $mongo->inventorytracking->equipmenttypes;
-
-		unset($updateValues['_id']);
+                
+                $log = $this->createLog();
+                
+                unset($updateValues['_id']);
 
 		$result = $equipmentTypes->update(array('_id' => new MongoId($id)),
 			array('$set' => $updateValues));
-
+                
+                $result = $equipmentTypes->update(array('_id' => new MongoId($id)),
+                        array('$addToSet' => array('logs' => $log['_id'])));
+    
+                $log['reference_id'] = new MongoId($id);
+                $log['document_type'] = "equipment_type";
+                $log['action_by'] = "some_user";
+                $log['action_via'] = "hard coded web";
+                
+                foreach($updateValues as $key => $value)
+                {
+                    $temp = array('field_name' => $key, "old_value" => "somehardcodedoldvalue", "new_value" => $value);
+                    $log['changes'][] = (object)$temp; 
+                }
+                
+                $this->updateLog($log);
+                
 		$mongo->close();
 
 		return $result;
 	}
+        
+        // Returns a log array with '_id' as mongo id object.
+        private function createLog()
+        {
+            $log = array();
+            $log['reference_id'] = null;
+            $log['document_type'] = null;
+            $log['timestamp'] = new MongoDate();
+            $log['action_by'] = null;
+            $log['action_via'] = null;
+            $log['changes'] = array();
+
+            $mongo = new MongoClient(DAO::$connectionString);
+            $logs = $mongo->inventorytracking->logs;
+            $result = $logs->insert($log);
+            $mongo->close();
+            
+            return $log;
+        }
+        
+        private function updateLog($log)
+        {
+            $mongo = new MongoClient(DAO::$connectionString);
+            $logs = $mongo->inventorytracking->logs;
+            
+            $result = $logs->update(array('_id' => $log['_id']),
+                array('$set' => $log));
+            
+            $mongo->close();
+            return $result;
+        }
 
 	public function updateEquipmentTypeAttribute($id, $updateValues)
 	{
