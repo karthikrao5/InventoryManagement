@@ -63,7 +63,7 @@ input for Equipment Type edit (change ids based on your data)
 	"update_equipment_type" :
 	{
 		"name" : "laptop2",
-		"comment" : "Changed laptop to laptop2."
+		"comments" : "Changed laptop to laptop2."
 	},
 
 	"update_equipment_type_attributes" :

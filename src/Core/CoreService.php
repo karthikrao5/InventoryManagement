@@ -35,6 +35,7 @@ class CoreService
 		// 	return $resultArray;
 		// }
 
+
 		$result = $this->getEquipmentType(array('name' => $requestJson['equipment_type_name']));
 
 		if(!$result['ok'])
@@ -59,7 +60,6 @@ class CoreService
 		// 	$resultArray['msg'] = $result['msg'];
 		// 	return $resultArray;
 		// }
-
 
 		$added = $this->dao->createEquipmentType($requestJson, $result['equipment_type'][0]);
 
@@ -195,26 +195,26 @@ class CoreService
 
 		if(isset($requestJson['update_equipment_type_attributes']) && !empty($requestJson['update_equipment_type_attributes']))
 		{
-			foreach($requestJson['update_equipment_type_attributes'] as $updateTarget)
-			{
-                            $result = $this->dao->updateEquipmentTypeAttribute($updateTarget['_id'], $updateTarget);
-			}
+                    foreach($requestJson['update_equipment_type_attributes'] as $updateTarget)
+                    {
+                        $result = $this->dao->updateEquipmentTypeAttribute($updateTarget['_id'], $updateTarget);
+                    }
 		}
 
 		if(isset($requestJson['add_equipment_type_attributes']) && !empty($requestJson['add_equipment_type_attributes']))
 		{
-			foreach($requestJson['add_equipment_type_attributes'] as $newAttribute)
-			{
-                            $result = $this->dao->addEquipmentTypeAttribute($requestJson['_id'], $newAttribute);
-			}
+                    foreach($requestJson['add_equipment_type_attributes'] as $newAttribute)
+                    {
+                        $result = $this->dao->addEquipmentTypeAttribute($requestJson['_id'], $newAttribute);
+                    }
 		}
 
 		if(isset($requestJson['remove_equipment_type_attributes']) && !empty($requestJson['remove_equipment_type_attributes']))
 		{
-			foreach($requestJson['remove_equipment_type_attributes'] as $removeTarget)
-			{
-                            $result = $this->dao->removeEquipmentTypeAttribute($requestJson['_id'], $removeTarget);
-			}
+                    foreach($requestJson['remove_equipment_type_attributes'] as $removeTarget)
+                    {
+                        $result = $this->dao->removeEquipmentTypeAttribute($requestJson['_id'], $removeTarget);
+                    }
 		}
 
 		return $result;
