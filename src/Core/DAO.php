@@ -345,7 +345,7 @@ class DAO
         $log['document_type'] = "equipment_type";
         $log['action_by'] = "some_user";
         $log['action_via'] = "hard coded web";
-        $log['action_type'] = "create_equipment_type";
+        $log['action_type'] = "create";
         
         $result = $this->updateLog($log);
 
@@ -369,7 +369,7 @@ class DAO
         $log['document_type'] = "equipment_type_attribute";
         $log['action_by'] = "some_user";
         $log['action_via'] = "hard coded web";
-        $log['action_type'] = "create_equipment_type_attribute";
+        $log['action_type'] = "create";
         $result = $this->updateLog($log);
 
         $result = $this->addLogToEquipmentTypeAttribute($equipmentTypeAttribute['_id'], $log['_id']);
@@ -555,7 +555,7 @@ class DAO
         $log['document_type'] = "equipment_type_attribute";
         $log['action_by'] = "some_user";
         $log['action_via'] = "hard coded web";
-        $log['action_type'] = "update_equipment_type_attribute";
+        $log['action_type'] = "edit";
         
         foreach($updateValues as $key => $value)
         {
@@ -580,7 +580,7 @@ class DAO
         $log['document_type'] = "equipment_type";
         $log['action_by'] = "some_user";
         $log['action_via'] = "hard coded web";
-        $log['action_type'] = "add_equipment_type_attribute";
+        $log['action_type'] = "edit";
 
         $attrRefArray = $this->getEquipmentTypeAttributesArray(new MongoId($equipmentTypeId));
         $attrRefArrayPrev = $attrRefArray;
@@ -645,9 +645,19 @@ class DAO
 
     public function removeEquipmentTypeAttribute($equipmentTypeId, $equipmentTypeAttributeId)
     {
+        if(!($equipmentTypeId instanceof MongoId))
+        {
+            $equipmentTypeId = new MongoId($equipmentTypeId);
+        }
+        
+        if(!($equipmentTypeAttributeId instanceof MongoId))
+        {
+            $equipmentTypeAttributeId = new MongoId($equipmentTypeAttributeId);
+        }
+        
         $mongo = new MongoClient(DAO::$connectionString);
         $equipmentTypeAttributes = $mongo->inventorytracking->equipmenttypeattributes;
-        $equipmentTypeAttributes->remove(array('_id' => new MongoId($equipmentTypeAttributeId)));
+        $equipmentTypeAttributes->remove(array('_id' => $equipmentTypeAttributeId));
         $mongo->close();
 
         //Adding new equipment type to attribute.
@@ -657,23 +667,37 @@ class DAO
         $log['document_type'] = "equipment_type";
         $log['action_by'] = "some_user";
         $log['action_via'] = "hard coded web";
+        $log['action_type'] = "edit";
 
-        $attrRefArray = $this->getEquipmentTypeAttributesArray(new MongoId($equipmentTypeId));
+        $attrRefArray = $this->getEquipmentTypeAttributesArray($equipmentTypeId);
         $attrRefArrayPrev = $attrRefArray;
         foreach($attrRefArray as $key => $value)
         {
-                if($value->{'$id'} == $equipmentTypeAttributeId)
-                {
-                        unset($attrRefArray[$key]);
-                        break;
-                }
+            if($value->{'$id'} == $equipmentTypeAttributeId)
+            {
+                unset($attrRefArray[$key]);
+                $attrRefArray = array_values($attrRefArray); //rebasing array index.
+                break;
+            }
         }
 
         $log['changes'][] = (object)array('field_name' => "equipment_type_attributes", "old_value" => $attrRefArrayPrev, "new_value" => $attrRefArray);
         $this->updateLog($log);
+        
+        $result = $this->addLogToEquipmentType($equipmentTypeId, $log['_id']);
 
-        $result = $this->updateEquipmentTypeAttributesArray(new MongoId($equipmentTypeId), $attrRefArray);
+        $result = $this->updateEquipmentTypeAttributesArray($equipmentTypeId, $attrRefArray);
 
+        // Create a log for deleting this equipment type attribute document.
+        $log = $this->createLog();
+        $log['reference_id'] = $equipmentTypeAttributeId;
+        $log['document_type'] = "equipment_type_attribute";
+        $log['action_by'] = "some_user";
+        $log['action_via'] = "hard coded web";
+        $log['action_type'] = "remove";
+        
+        $this->updateLog($log);
+        
         return $result;
     }
 
@@ -707,7 +731,7 @@ class DAO
         $log['document_type'] = "equipment_type";
         $log['action_by'] = "some_user";
         $log['action_via'] = "hard coded web";
-        $log['action_type'] = "create_equipment_type";
+        $log['action_type'] = "edit";
         
         foreach($updateValues as $key => $value)
         {
@@ -724,19 +748,51 @@ class DAO
     
     public function deleteEquipmentType($equipmentTypeIds)
     {
-        $mongoIdArr = array();
-
-        foreach($equipmentTypeIds as $idStr)
+        foreach($equipmentTypeIds as $key => $value)
         {
-            $mongoIdArr[] = new MongoId($idStr);
+            if(!($value instanceof MongoId))
+            {
+                $equipmentTypeIds[$key] = new MongoId($value);
+            }
         }
 
         $mongo = new MongoClient(DAO::$connectionString);
         $equipmentTypes = $mongo->inventorytracking->equipmenttypes;
         $equipmentTypeAttributes = $mongo->inventorytracking->equipmenttypeattributes;
-
-        $result = $equipmentTypeAttributes->remove(array('equipment_type_id' => array( '$in' => $mongoIdArr)));
-        $result = $equipmentTypes->remove(array('_id' => array( '$in' => $mongoIdArr)));
+        
+        //get all ids to make logs
+        $targetAttrs = iterator_to_array($equipmentTypeAttributes->find(array('equipment_type_id' => array('$in' => $equipmentTypeIds))));
+        $targetAttrIds = array();
+        
+        foreach($targetAttrs as $attr)
+        {
+            $targetAttrIds[] = $attr['_id'];
+            
+            //create remove log for each attribute
+            $log = $this->createLog();
+            $log['reference_id'] = $attr['_id'];
+            $log['document_type'] = "equipment_type_attribute";
+            $log['action_by'] = "some user";
+            $log['action_via'] = "hard coded web";
+            $log['action_type'] = "remove";
+            $this->updateLog($log);
+        }
+        
+        $result = $equipmentTypeAttributes->remove(array('_id' => array( '$in' => $targetAttrIds)));
+        
+        foreach($equipmentTypeIds as $equipmentTypeId)
+        {
+            //create remove log for each equipment type document.
+            $log = $this->createLog();
+            $log['reference_id'] = $equipmentTypeId;
+            $log['document_type'] = "equipment_type";
+            $log['action_by'] = "some user";
+            $log['action_via'] = "hard coded web";
+            $log['action_type'] = "remove";
+            $this->updateLog($log);
+        }
+        
+        $result = $equipmentTypes->remove(array('_id' => array( '$in' => $equipmentTypeIds)));
 
         $mongo->close();
 
