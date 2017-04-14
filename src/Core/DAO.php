@@ -52,6 +52,8 @@ class DAO
      * Equipment related functions.
      */
 
+    // Create
+    
     // It is the CoreService's responsibility to find and pass in proper EquipmentType
     public function createEquipment($equipment, $equipmentType)
     {
@@ -107,6 +109,8 @@ class DAO
 
         return $attribute;
     }
+    
+    // Read
 
     public function getEquipment($searchCriteria=null)
     {
@@ -171,30 +175,10 @@ class DAO
             $mongo->close();
             return $equipment;
     }
-
-    public function deleteEquipment($equipmentIds)
-    {
-            $mongoIdArr = array();
-
-            foreach($equipmentIds as $idStr)
-            {
-                    $mongoIdArr[] = new MongoId($idStr);
-            }
-
-            $mongo = new MongoClient(DAO::$connectionString);
-            $equipments = $mongo->inventorytracking->equipments;
-            $attributes = $mongo->inventorytracking->equipmentattributes;
-
-            $result = $attributes->remove(array('equipment_id' => array('$in' => $mongoIdArr)));
-            $result = $equipments->remove(array('_id' => array('$in' => $mongoIdArr)));
-
-            $mongo->close();
-
-            return $result;
-    }
     
-
-    public function updateEquipment($id, $updateValues)
+    // Update
+    
+        public function updateEquipment($id, $updateValues)
     {
             $mongo = new MongoClient(DAO::$connectionString);
             $equipments = $mongo->inventorytracking->equipments;
@@ -310,13 +294,34 @@ class DAO
             return $result;
     }
     
+    // Delete
+
+    public function deleteEquipment($equipmentIds)
+    {
+            $mongoIdArr = array();
+
+            foreach($equipmentIds as $idStr)
+            {
+                    $mongoIdArr[] = new MongoId($idStr);
+            }
+
+            $mongo = new MongoClient(DAO::$connectionString);
+            $equipments = $mongo->inventorytracking->equipments;
+            $attributes = $mongo->inventorytracking->equipmentattributes;
+
+            $result = $attributes->remove(array('equipment_id' => array('$in' => $mongoIdArr)));
+            $result = $equipments->remove(array('_id' => array('$in' => $mongoIdArr)));
+
+            $mongo->close();
+
+            return $result;
+    }
     
     /*
      * Equipment Type related functions.
      */
     
     // Create
-    
        
     public function createEquipmentType($equipmentType)
     {
