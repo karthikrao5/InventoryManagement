@@ -1,16 +1,21 @@
 var ctrl = angular.module('app.controllers', []);
 
-ctrl.controller('EquipmentsController', ["$scope", "$http",
-	function($scope, $http) {
+ctrl.controller('EquipmentsController', ["$scope", "$http", "$location", 
+	function($scope, $http, $location) {
 		var endpoint = 'http://localhost:8080/v1/equipments';
 
 	    $http.get(endpoint).then(function (response) {
 	        $scope.equipments = response.data.equipments;
+	        console.log(angular.toJson(response.data.equipments, true));
 	    });
+
+	    $scope.go = function(route) {
+			$location.path( route );
+		};
 	}
 ]);
-ctrl.controller("NewEquipmentController", ["$scope", "$http", 
-	function($scope, $http) {
+ctrl.controller("NewEquipmentController", ["$scope", "$http", "$location", 
+	function($scope, $http, $location) {
 		$scope.equipmentTypeList = [];
 		$scope.formObj = {};
 
@@ -68,6 +73,31 @@ ctrl.controller("NewEquipmentController", ["$scope", "$http",
 			}
 		};
 
-	}
+		$scope.go = function(route) {
+			$location.path( route );
+		};
 
+	}
 ]);
+
+
+ctrl.controller("HomeController", ["$http", "$scope", "$location", 
+	function($http, $location, $scope) {
+		$scope.go = function(route) {
+			$location.path( route );
+		};
+	}
+]);
+
+
+
+
+
+
+
+
+
+
+
+
+

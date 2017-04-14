@@ -10,14 +10,18 @@ var app = angular.module("app", ['ngRoute', 'app.controllers'])
     .when('/equipments/new', {
         templateUrl: 'templates/create-equipment.html',
         controller: 'NewEquipmentController'
+    })
+    .when('/', {
+        templateUrl: 'templates/home.html',
+        controller: "HomeController"
     });
-    
+
     // .when('/equipmenttypes', {
     // 	templateUrl: 'templates/equipmenttypes-list.html',
     // 	controller: 'EquipmentTypesController'
     // });
 
 
-    $routeProvider.otherwise({redirectTo : '/equipments'}); 
+    $routeProvider.otherwise({redirectTo : '/'}); 
 });
 
