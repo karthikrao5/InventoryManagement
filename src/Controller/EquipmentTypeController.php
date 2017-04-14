@@ -24,13 +24,15 @@ class EquipmentTypeController extends AbstractController{
     }
 
     // -----------------------------------------------------------------
-	// GET functions
-	// -----------------------------------------------------------------
-	public function find($request, $response) {
-
-        if(is_null($request)) {
+    // GET functions
+    // -----------------------------------------------------------------
+    public function find($request, $response) 
+    {
+        if(is_null($request)) 
+        {
             return $response->write("Invalid request.")->withStatus(400);
         }
+        
         // TESTED THIS CODE, params works don't mess with it.
         $params = $request->getQueryParams();
         if ($params) {
@@ -39,39 +41,12 @@ class EquipmentTypeController extends AbstractController{
             $array = $this->core->getEquipmentType();
         }
 
-        // return null;
-
         if($array) {
             return $response->withJson($array);
         } else {
             return $response->withStatus(404)->write("Something went wrong with the find function in EquipmentTypeController.");
         }
-
-		// if(is_null($request)) {
-  //           return $response->write("Invalid request.")->withStatus(400);
-  //       }
-
-  //       $params = $request->getQueryParams();
-
-  //       if (empty($params)) {
-		// 	$cursor = $this->dm->createQueryBuilder(EquipmentType::class)
-		// 		->hydrate(false)
-		// 		->getQuery()
-		// 		->execute();
-
-		// 	return $response->withJson(iterator_to_array($cursor));
-  //       }
-
-  //       // $returnValue = $this->rm->findAllByCriteria($params);
-  //       $returnValue = $this->dm->getRepository(EquipmentType::class)->findBy($params);
-
-  //       if ($returnValue) {
-  //           // 200 status
-  //           return $response->withJson($returnValue);
-  //       }
-
-  //       return $response->withStatus(404)->write("No equipment by those params.");
-	}
+    }
 
 	// -----------------------------------------------------------------
 	// POST functions

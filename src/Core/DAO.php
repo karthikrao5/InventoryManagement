@@ -62,6 +62,8 @@ class DAO
 
         // set equipment type id to equipment
         $equipment['equipment_type_id'] = $equipmentType['_id'];
+        $equipment['created_on'] = new MongoDate();
+        $equipment['last_updated'] = new MongoDate();
         $equipment['logs'] = array();
         $equipments->insert($equipment);
 
@@ -183,6 +185,8 @@ class DAO
         {
             foreach($result as $equipment)
             {
+                $equipment['created_on'] = date('Y-m-d H:i:s', $equipment['created_on']->sec);
+                $equipment['last_updated'] = date('Y-m-d H:i:s', $equipment['last_updated']->sec);
                 $newArr[] = $this->joinEquipment($equipment);
             }
         }
@@ -301,17 +305,64 @@ class DAO
     }
     
     // Update
-    
+ 
     public function updateEquipment($id, $updateValues)
     {
+        unset($updateValues['_id']); // To avoid updating equipment id.
+        
+        // Create mongo id object if given id is not.
+        if(!($id instanceof MongoId))
+        {
+            $id = new MongoId($id);
+        }
+        
+        $log = $this->createLog();
+        
         $mongo = new MongoClient(DAO::$connectionString);
         $equipments = $mongo->inventorytracking->equipments;
+        
+        $equipment = $equipments->findOne(array('_id' => $id));
 
-        $result = $equipments->update(array('_id' => new MongoId($id)),
+        $result = $equipments->update(array('_id' => $id),
                 array('$set' => $updateValues));
-
         $mongo->close();
+        
+        $result = $this->addLogToEquipment($id, $log['_id']);
 
+        // set changes in the log
+        $log['reference_id'] = $id;
+        $log['document_type'] = "equipment";
+        $log['action_by'] = "some_user";
+        $log['action_via'] = "hard coded web";
+        $log['action_type'] = "edit";
+        
+        foreach($updateValues as $key => $value)
+        {
+            $temp = array('field_name' => $key, "old_value" => $equipment[$key], "new_value" => $value);
+            $log['changes'][] = (object)$temp; 
+        }
+
+        $this->updateLog($log);
+        $this->updateEquipmentLastUpdated($id);
+
+        return $result;
+    }
+    
+    private function updateEquipmentLastUpdated($id)
+    {
+        if(!($id instanceof MongoId))
+        {
+            $id = new MongoId($id);
+        }
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $equipments = $mongo->inventorytracking->equipments;
+        
+        $result = $equipments->update(array('_id' => $id),
+                array('$currentDate' => array('last_updated' => true)));
+        
+        $mongo->close();
+        
         return $result;
     }
 
