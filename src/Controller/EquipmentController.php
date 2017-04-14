@@ -20,8 +20,8 @@ class EquipmentController extends AbstractController{
 
     public function __construct(ContainerInterface $c) {
         parent::__construct($c);
-        $this->validator = $this->ci->get('EquipmentValidator');
-        $this->authValidator = $this->ci->get('AuthValidator');
+        //$this->validator = $this->ci->get('EquipmentValidator');
+        //$this->authValidator = $this->ci->get('AuthValidator');
     }
 
 
@@ -38,7 +38,7 @@ class EquipmentController extends AbstractController{
             return $response->write("Invalid request.")->withStatus(400);
         }
 
-        $user = $authValidator->getAuthUser();
+        //$user = $authValidator->getAuthUser();
         // $this->authValidator->isAccessible($user["user_type"], )
 
         // TESTED THIS CODE, params works don't mess with it.

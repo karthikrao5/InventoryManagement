@@ -66,7 +66,6 @@ class DAO
         $equipments->insert($equipment);
 
         // set ids to equipment attributes
-
         foreach($equipmentType['equipment_type_attributes'] as $equipTypeAttr)
         {
             foreach($equipment['attributes'] as &$equipAttr)
@@ -90,13 +89,24 @@ class DAO
         }
 
         $equipment['attributes'] = $attributes;
-
         $equipments->update(array("_id" => $equipment['_id']),
                 array('$set'=> array('attributes' => $attributeIds)));
-
         $mongo->close();
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $equipment['_id'];
+        $log['document_type'] = "equipment";
+        $log['action_by'] = "some_user";
+        $log['action_via'] = "hard coded web";
+        $log['action_type'] = "create";
+        
+        $result = $this->updateLog($log);
+        
+        $result = $this->addLogToEquipment($equipment['_id'], $log['_id']);
+        
+        $result = $this->getEquipment(array('_id' => $equipment['_id']));
 
-        return $equipment;
+        return $result[0];
     }
 
     public function createEquipmentAttribute($attribute)
@@ -106,8 +116,40 @@ class DAO
         $attribute['logs'] = array();
         $attributes->insert($attribute);
         $mongo->close();
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $attribute['_id'];
+        $log['document_type'] = "equipment_attribute";
+        $log['action_by'] = "some_user";
+        $log['action_via'] = "hard coded web";
+        $log['action_type'] = "create";
+        $result = $this->updateLog($log);
+        
+        $result = $this->addLogToEquipmentAttribute($attribute['_id'], $log['_id']);
 
         return $attribute;
+    }
+    
+    private function addLogToEquipmentAttribute($attributeId, $logId)
+    {
+        $mongo = new MongoClient(DAO::$connectionString);
+        $equipmentAttributes = $mongo->inventorytracking->equipmentattributes;
+
+        $result = $equipmentAttributes->update(array('_id' => $attributeId),
+                    array('$addToSet' => array('logs' => $logId)));
+        $mongo->close();
+        return $result;
+    }
+    
+    private function addLogToEquipment($equipmentId, $logId)
+    {
+        $mongo = new MongoClient(DAO::$connectionString);
+        $equipments = $mongo->inventorytracking->equipments;
+
+        $result = $equipments->update(array('_id' => $equipmentId),
+                    array('$addToSet' => array('logs' => $logId)));
+        $mongo->close();
+        return $result;
     }
     
     // Read
@@ -155,7 +197,8 @@ class DAO
         $logsDB = $mongo->inventorytracking->logs;
 
         //This is an associative array, which doesn't convert to JSON array.
-        $attrs =  iterator_to_array($attributes->find(array('equipment_id' => $equipment['_id'])));
+        $attrResult =  $this->getEquipmentAttribute(array('equipment_id' => $equipment['_id']));
+        $attrs = $attrResult['equipment_attributes'];
         $array = array();
 
         foreach($attrs as $attr)
