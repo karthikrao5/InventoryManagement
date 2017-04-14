@@ -114,81 +114,162 @@ class DAO
 
     public function getEquipment($searchCriteria=null)
     {
-            $mongo = new MongoClient(DAO::$connectionString);
-            $equipments = $mongo->inventorytracking->equipments;
+        $mongo = new MongoClient(DAO::$connectionString);
+        $equipments = $mongo->inventorytracking->equipments;
 
-            $result = null;
-            if(is_null($searchCriteria) || empty($searchCriteria))
+        $result = null;
+        if(is_null($searchCriteria) || empty($searchCriteria))
+        {
+            $result = iterator_to_array($equipments->find());
+        } 
+        else 
+        {
+            if(isset($searchCriteria['_id']))
             {
-                    $result = iterator_to_array($equipments->find());
-            } else {
-                    if(isset($searchCriteria['_id']))
-                    {
-                            $searchCriteria['_id'] = new MongoId($searchCriteria['_id']);
-                    }
-
-                    $result = iterator_to_array($equipments->find($searchCriteria));
+                if(!($searchCriteria['_id'] instanceof MongoId))
+                {
+                    $searchCriteria['_id'] = new MongoId($searchCriteria['_id']);
+                }
             }
 
-            $newArr = array();
-            if(!is_null($result) && !empty($result))
-            {
-                    foreach($result as $equipment)
-                    {
-                            $newArr[] = $this->joinEquipment($equipment);
-                    }
-            }
+            $result = iterator_to_array($equipments->find($searchCriteria));
+        }
+        $mongo->close();
 
-            $mongo->close();
-            return $newArr;
+        $newArr = array();
+        if(!is_null($result) && !empty($result))
+        {
+            foreach($result as $equipment)
+            {
+                $newArr[] = $this->joinEquipment($equipment);
+            }
+        }
+        
+        return $newArr;
     }
 
     private function joinEquipment($equipment)
     {
-            $mongo = new MongoClient(DAO::$connectionString);
-            $attributes = $mongo->inventorytracking->equipmentattributes;
-            $logsDB = $mongo->inventorytracking->logs;
+        $mongo = new MongoClient(DAO::$connectionString);
+        $attributes = $mongo->inventorytracking->equipmentattributes;
+        $logsDB = $mongo->inventorytracking->logs;
 
-            //This is an associative array, which doesn't convert to JSON array.
-            $attrs =  iterator_to_array($attributes->find(array('equipment_id' => $equipment['_id'])));
-            $array = array();
+        //This is an associative array, which doesn't convert to JSON array.
+        $attrs =  iterator_to_array($attributes->find(array('equipment_id' => $equipment['_id'])));
+        $array = array();
 
-            foreach($attrs as $attr)
+        foreach($attrs as $attr)
+        {
+                $array[] = $attr;
+        }
+
+        $equipment['attributes'] = $array;
+
+        $logs = iterator_to_array($logsDB->find(array('reference_id' => $equipment['_id'])));
+        $array = array();
+
+        foreach($logs as $log)
+        {
+            $log['timestamp'] = date('Y-m-d H:i:s', $log['timestamp']->sec);
+            $array[] = $log;
+        }
+
+        $equipment['logs'] = $array;
+
+        $mongo->close();
+        return $equipment;
+    }
+    
+    public function getEquipmentAttribute($searchCriteria=null)
+    {
+        $mongo = new MongoClient(DAO::$connectionString);
+        $equipmentAttributesCol = $mongo->inventorytracking->equipmentattributes;
+        
+        $result = array('ok' => false, 'msg' => null, 'n' => 0,'equipment_attributes' => null);
+        
+        if(is_null($searchCriteria) || empty($searchCriteria))
+        {
+            //search all
+            $attrs = iterator_to_array($equipmentAttributesCol->find());
+            
+            if(is_null($attrs) || empty($attrs))
             {
-                    $array[] = $attr;
+                $result['msg'] = "Equipment Attribute Collection is empty.";
+                return $result;
             }
-
-            $equipment['attributes'] = $array;
-
-
-            $logs = iterator_to_array($logsDB->find(array('reference_id' => $equipment['_id'])));
-            $array = array();
-
-            foreach($logs as $log)
+            
+            $result['equipment_attributes'] = $attrs;
+        }
+        else
+        {
+            if(isset($searchCriteria['_id']))
             {
-                $log['timestamp'] = date('Y-m-d H:i:s', $log['timestamp']->sec);
-                $array[] = $log;
+                if(!($searchCriteria['_id'] instanceof MongoId))
+                {
+                    $searchCriteria['_id'] = new MongoId($searchCriteria['_id']);
+                }
             }
-
-            $equipment['logs'] = $array;
-
-            $mongo->close();
-            return $equipment;
+            
+            //search specific
+            $attrs = iterator_to_array($equipmentAttributesCol->find($searchCriteria));
+            
+            if(is_null($attrs) || empty($attrs))
+            {
+                $result['msg'] = "Equipment Attributes not found with given search criteria.";
+                $result['search_criteria'] = $searchCriteria;
+                return $result;
+            }
+            
+            $result['equipment_attributes'] = $attrs;
+        }
+        $mongo->close();
+        
+        $joinedAttributesArr = array();
+        foreach($result['equipment_attributes'] as $attr)
+        {
+            $joinedAttributesArr[] = $this->joinEquipmentAttributeLog($attr);
+        }
+        
+        $result['equipment_attributes'] = $joinedAttributesArr;
+        $result['ok'] = true;
+        $result['msg'] = "Successfully fetched Equipment Attributes with given search criteria.";
+        $result['n'] = count($joinedAttributesArr);
+        
+        return $result;
+    }
+    
+    private function joinEquipmentAttributeLog($attribute)
+    {
+        $mongo = new MongoClient(DAO::$connectionString);
+        $logsCol = $mongo->inventorytracking->logs;
+        
+        $joinedLogsArr = array();
+        foreach($attribute['logs'] as $logId)
+        {
+            $log = $logsCol->findOne(array('_id' => $logId));
+            $log['timestamp'] = date('Y-m-d H:i:s', $log['timestamp']->sec);
+            $joinedLogsArr[] = $log;
+        }
+        
+        $mongo->close();
+        $attribute['logs'] = $joinedLogsArr;
+        
+        return $attribute;
     }
     
     // Update
     
-        public function updateEquipment($id, $updateValues)
+    public function updateEquipment($id, $updateValues)
     {
-            $mongo = new MongoClient(DAO::$connectionString);
-            $equipments = $mongo->inventorytracking->equipments;
+        $mongo = new MongoClient(DAO::$connectionString);
+        $equipments = $mongo->inventorytracking->equipments;
 
-            $result = $equipments->update(array('_id' => new MongoId($id)),
-                    array('$set' => $updateValues));
+        $result = $equipments->update(array('_id' => new MongoId($id)),
+                array('$set' => $updateValues));
 
-            $mongo->close();
+        $mongo->close();
 
-            return $result;
+        return $result;
     }
 
     public function addEquipmentAttribute($equipmentId, $attribute)
@@ -274,24 +355,6 @@ class DAO
 
         $mongo->close();
         return $result;
-    }
-
-    public function getEquipmentAttribute($searchCriteria=null)
-    {
-            $mongo = new MongoClient(DAO::$connectionString);
-            $equipmentAttributes = $mongo->inventorytracking->equipmentattributes;
-
-            $result = null;
-            if(is_null($searchCriteria) || empty($searchCriteria))
-            {
-                    $result = iterator_to_array($equipmentAttributes->find());
-            }
-            else
-            {
-                    $result = iterator_to_array($equipmentAttributes->find($searchCriteria));
-            }
-
-            return $result;
     }
     
     // Delete
@@ -392,7 +455,7 @@ class DAO
         $result = null;
         if(is_null($searchCriteria) || empty($searchCriteria))
         {
-                $result = iterator_to_array($equipmentTypes->find());
+            $result = iterator_to_array($equipmentTypes->find());
         } 
         else 
         {
