@@ -1,19 +1,12 @@
 <?php
 namespace App\Controller;
 
-
-use App\Models\Equipment;
-use App\Models\EquipmentType;
-use App\Models\Log;
-use App\Models\Attribute;
-use App\Models\EquipmentTypeAttribute;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use Interop\Container\ContainerInterface;
-use Doctrine\ODM\MongoDB\DocumentManager;
 
 
-class EquipmentController extends AbstractController{
+class EquipmentController extends AbstractController {
 
     protected $validator;
     protected $authValidator;
@@ -28,12 +21,7 @@ class EquipmentController extends AbstractController{
 // -----------------------------------------------------------------
 // GET functions
 // -----------------------------------------------------------------
-    /**
-     * @return json of document
-     */
     public function find($request, $response) {
-
-
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }
@@ -78,10 +66,10 @@ class EquipmentController extends AbstractController{
         $result = $this->core->createEquipment($request->getParsedBody());
 
         if ($result["ok"]) {
-			return $response->withStatus(200)->withJson($result);
-		} else {
-			return $response->withStatus(400)->withJson($result);
-		}
+            return $response->withStatus(200)->withJson($result);
+        } else {
+            return $response->withStatus(400)->withJson($result);
+        }
     }
     
 // -----------------------------------------------------------------
@@ -117,12 +105,12 @@ class EquipmentController extends AbstractController{
             return $response->write("No body recieved.")->withStatus(400);
         }
 
-		$result = $this->core->deleteEquipment($request->getParsedBody());
+        $result = $this->core->deleteEquipment($request->getParsedBody());
 
-		if ($result["ok"]) {
-			return $response->withStatus(200)->write("Successfully deleted ".$result['n']." Equipments!");
-		} else {
-			return $response->withStatus(404)->write("Something went wrong, Equipments are not deleted.");
-		}
+        if ($result["ok"]) {
+            return $response->withStatus(200)->write("Successfully deleted ".$result['n']." Equipments!");
+        } else {
+            return $response->withStatus(404)->write("Something went wrong, Equipments are not deleted.");
+        }
     }
 }
