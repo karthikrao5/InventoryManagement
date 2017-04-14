@@ -404,23 +404,55 @@ class DAO
 
     public function deleteEquipment($equipmentIds)
     {
-            $mongoIdArr = array();
-
-            foreach($equipmentIds as $idStr)
+        foreach($equipmentIds as $key => $value)
+        {
+            if(!($value instanceof MongoId))
             {
-                    $mongoIdArr[] = new MongoId($idStr);
+                $equipmentIds[$key] = new MongoId($value);
             }
+        }
 
-            $mongo = new MongoClient(DAO::$connectionString);
-            $equipments = $mongo->inventorytracking->equipments;
-            $attributes = $mongo->inventorytracking->equipmentattributes;
+        $mongo = new MongoClient(DAO::$connectionString);
+        $equipments = $mongo->inventorytracking->equipments;
+        $attributes = $mongo->inventorytracking->equipmentattributes;
+        
+        //get all ids to make logs
+        $targetAttrs = iterator_to_array($attributes->find(array('equipment_id' => array('$in' => $equipmentIds))));
+        $targetAttrIds = array();
+        
+        foreach($targetAttrs as $attr)
+        {
+            $targetAttrIds[] = $attr['_id'];
+            
+            //create remove log for each attribute
+            $log = $this->createLog();
+            $log['reference_id'] = $attr['_id'];
+            $log['document_type'] = "equipment_attribute";
+            $log['action_by'] = "some user";
+            $log['action_via'] = "hard coded web";
+            $log['action_type'] = "remove";
+            $this->updateLog($log);
+        }
 
-            $result = $attributes->remove(array('equipment_id' => array('$in' => $mongoIdArr)));
-            $result = $equipments->remove(array('_id' => array('$in' => $mongoIdArr)));
+        $result = $attributes->remove(array('_id' => array('$in' => $targetAttrIds)));
+        
+        foreach($equipmentIds as $equipmentId)
+        {
+            //create remove log for each equipment type document.
+            $log = $this->createLog();
+            $log['reference_id'] = $equipmentId;
+            $log['document_type'] = "equipment";
+            $log['action_by'] = "some user";
+            $log['action_via'] = "hard coded web";
+            $log['action_type'] = "remove";
+            $this->updateLog($log);
+        }
+        
+        $result = $equipments->remove(array('_id' => array('$in' => $equipmentIds)));
 
-            $mongo->close();
+        $mongo->close();
 
-            return $result;
+        return $result;
     }
     
     /*
