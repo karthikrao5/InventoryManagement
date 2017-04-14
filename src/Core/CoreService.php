@@ -27,15 +27,14 @@ class CoreService
 		$returnArray = array('ok' => false, 'msg' => null, 'equipment' => null);
 		//todo - requestJson validation
 		
-                /*
-		$result = $this->equipmentValidator->validateJSON($requestJson);
+		// $result = $this->equipmentValidator->validateJSON($requestJson);
 
-		if(!$result['ok']) {
-			$returnArray['ok'] = false;
-			$resultArray['msg'] = $result['msg'];
-			return $resultArray;
-		}
-                 */
+		// if(!$result['ok']) {
+		// 	$returnArray['ok'] = false;
+		// 	$resultArray['msg'] = $result['msg'];
+		// 	return $resultArray;
+		// }
+
 
 		$result = $this->getEquipmentType(array('name' => $requestJson['equipment_type_name']));
 
@@ -54,16 +53,13 @@ class CoreService
 
 	public function createEquipmentType($requestJson)
 	{
-                /*
-		$result = $this->equipmentTypeValidator->validateJSON($requestJson);
+		// $result = $this->equipmentTypeValidator->validateJSON($requestJson);
 
-		if(!$result['ok']) {
-			$returnArray['ok'] = false;
-			$resultArray['msg'] = $result['msg'];
-			return $resultArray;
-		}
-                 * 
-                 */
+		// if(!$result['ok']) {
+		// 	$returnArray['ok'] = false;
+		// 	$resultArray['msg'] = $result['msg'];
+		// 	return $resultArray;
+		// }
 
 		$added = $this->dao->createEquipmentType($requestJson, $result['equipment_type'][0]);
 

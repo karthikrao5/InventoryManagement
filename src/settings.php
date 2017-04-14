@@ -1,6 +1,7 @@
 <?php
 return [
     'settings' => [
+        'serverName' => 'cos-iv',
         // Slim Settings
         'determineRouteBeforeAppMiddleware' => false,
         'displayErrorDetails' => true,
@@ -22,5 +23,7 @@ return [
             'errorPath' => __DIR__."/../../log/slimError.log",
             'infoPath' => __DIR__."/../../log/slimInfo.log"
         ],
+        'jwtSecretKey' => 'someprivatekey',
+        'encryptionAlgo' => 'HS256',
     ],
 ];

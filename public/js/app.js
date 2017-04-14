@@ -1,23 +1,27 @@
-var app = angular.module("app", ['ngRoute', 'app.controllers']).config(function($routeProvider){
+var app = angular.module("app", ['ngRoute', 'app.controllers'])
+.config(function($routeProvider){
 
-    $routeProvider.
+    $routeProvider
 
-    when('/equipments', {
+    .when('/equipments', {
         templateUrl: 'templates/equipments-list.html',
         controller: 'EquipmentsController'
-    }).
-    when('/equipmenttypes', {
-    	templateUrl: 'templates/equipmenttypes-list.html',
-    	controller: 'EquipmentTypesController'
+    })
+    .when('/equipments/new', {
+        templateUrl: 'templates/create-equipment.html',
+        controller: 'NewEquipmentController'
+    })
+    .when('/', {
+        templateUrl: 'templates/home.html',
+        controller: "HomeController"
     });
 
-    $routeProvider.otherwise({redirectTo : '/equipments'}); 
+    // .when('/equipmenttypes', {
+    // 	templateUrl: 'templates/equipmenttypes-list.html',
+    // 	controller: 'EquipmentTypesController'
+    // });
+
+
+    $routeProvider.otherwise({redirectTo : '/'}); 
 });
 
-// app.controller('EquipmentsController', function ($scope, $http){  
-//     var endpoint = 'http://localhost:8080/v1/equipments';
-//     // console.log(endpoint);
-//     $http.get(endpoint).then(function (response) {
-//         $scope.equipments = response.data.equipments;
-//     });
-// });

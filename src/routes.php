@@ -79,8 +79,9 @@ $app->get('/addequipmenttype', function($request, $response) {
 // Backend routes.
 $app->group('/v1', function() {
 
-    $this->group('/api', function() {
-        $this->post('/newkey[/{params:.*}]', 'ApiKeyController:generateNewKey');
+    $this->group('/auth', function() {
+        $this->get('', 'AuthController:authorize');
+        $this->post('/decode', 'AuthController:testDecode');
     });
 
     // equipment routes

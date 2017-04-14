@@ -78,8 +78,8 @@ $container['EquipmentTypeController'] = function ($c) {
     return new App\Controller\EquipmentTypeController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
-$container['ApiKeyController'] = function ($c) {
-    return new App\Controller\ApiKeyController(App\Helper\Container\ContainerHelper::getContainer());
+$container['AuthController'] = function ($c) {
+    return new App\Controller\AuthController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
 // $container["DummyController"] = function($c) {
