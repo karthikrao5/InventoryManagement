@@ -11,10 +11,8 @@ ctrl.controller('EquipmentsController', ["$scope", "$http",
 ]);
 ctrl.controller("NewEquipmentController", ["$scope", "$http", 
 	function($scope, $http) {
-
-		// $scope.equipmentTypeList = [];
 		$scope.equipmentTypeList = [];
-		$scope.selectedItem;
+		$scope.formObj = {};
 
 		$http.get('http://localhost:8080/v1/equipmenttypes').then(function(response) {
 
@@ -24,44 +22,50 @@ ctrl.controller("NewEquipmentController", ["$scope", "$http",
 				// $scope.equipmentTypeList.push(item['name']);
 				temp = {};
 				temp['name'] = item['name'];
-				temp['id'] = item['_id']['$id'];
 				$scope.equipmentTypeList.push(temp);
 			});
 		});
 
 		$scope.labels = ['department_tag', "gt_tag", "status", "comment"];
 
-		$scope.values = {};
-
 		$scope.submitEquipmentCreation = function() {
-			// console.log("button clicked");
-			// console.log($scope.values);
-			console.log($scope.selectedItem.name);
+			// console.log($scope.attrList.attributes);
+			// console.log($scope.formObj);
+			var returnThis = angular.extend($scope.formObj, $scope.attrList);
+			console.log(angular.toJson(returnThis, true));
+
+			$http.post('http://localhost:8080/v1/equipments', returnThis).then(function(data, status, headers, config) {
+				alert(data.msg);
+			});
+
 
 		}
-
+		
  		// $scope.attributes = [];
-		$scope.attributes = [];
-		$scope.attributeKey;
-		$scope.attributeValue;
+		$scope.attrList = {
 
-		$scope.addNewAttribute = function() {
-			var attr = {};
-			attr['name'] = $scope.attributeKey;
-			attr['value'] = $scope.attributeValue;
-			$scope.attributes.push(attr);
-			console.log($scope.attributes);
-			// $scope.attributes.push("{\"key\" : \" " + $scope.attribute.value + "\"}");
-			// var newItemNo = $scope.attributes.length+1;
-			// $scope.choices.push({'id':'choice'+newItemNo});
+			"attributes": [
+				{
+					"key": "",
+					"value": ""
+				}
+			]
+		}
+
+		$scope.addNewAttribute = function(index) {
+			var newAttr = {"key": "", "value": ""};
+
+			// if($scope.attrList.attributes.length <= index + 1) {
+				$scope.attrList.attributes.splice(index+1,0,newAttr);
+			// }
+			
 		};
 
-		$scope.removeAttribute = function() {
-			$scope.attributes.pop();
-			console.log($scope.attributes);
-			// var lastItem = $scope.attributes.length-1;
-			// $scope.attributes.length-1;
-			// $scope.attributes.splice("{\"key\" : \" " + $scope.attribute.value + "\"");
+		$scope.removeAttribute = function($event, key) {
+			var index = $scope.attrList.attributes.indexOf(key);
+			if($event.which == 1) {
+				$scope.attrList.attributes.splice(index,1);
+			}
 		};
 
 	}

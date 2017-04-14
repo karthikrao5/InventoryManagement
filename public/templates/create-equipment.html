@@ -1,26 +1,25 @@
 <div ng-controller="EquipmentsController">
 
-   <form ng-submit="submitEquipmentCreation()">
-      <!-- <select ng-model="selectedEquipmentType">
-         <option ng-repeat="x in equipmentTypeList" value="{{x}}">{{ x }}</option>
-      </select> -->
-      <select ng-model="selectedItem" ng-options="item.name for item in equipmentTypeList"></select>
-      <p>{{selectedItem}}</p>
+   <form class="equipment-form" ng-submit="submitEquipmentCreation()">
+
+      <select ng-model="formObj.equipment_type_name" ng-options="item.name as item.name for item in equipmentTypeList"></select>
+
       <div ng-repeat="label in labels">
          <label>{{ label }}</label>
-         <input type="text" ng-model="values[label]" placeholder="Enter">
+         <input type="text" ng-model="formObj[label]" placeholder="Enter">
       </div>
 
-      <fieldset ng-repeat="attribute in attributes">
-         <input type="text" ng-model="attributeKey" placeholder="Key">
-         <input type="text" ng-model="attributeValue" placeholder="Value">
-         <button class="remove" ng-show="$last" ng-click="removeAttribute()">-</button>
+      <fieldset ng-repeat="attribute in attrList.attributes track by $index">
+         <input type="text" ng-model="attrList.attributes[$index].key" placeholder="Key">
+         <input type="text" ng-model="attrList.attributes[$index].value" placeholder="Value">
+         <input type="button" class="remove" ng-show="$index != 0" ng-click="removeAttribute($event, key)">-</input>
       </fieldset>
-      <button class="addfields" ng-click="addNewAttribute()">Add fields</button>
+      <input type="button" class="addfields" ng-click="addNewAttribute($index, key)">Add fields</input>
+      
+      <p>{{attrList|json}}</p>
 
 
-
-      <button type="submit" class="btn btn-primary" ng-click="addEquipmentType=(selectedItem)">Submit</button>
+      <button type="submit"></button>
    </form>
 
 
