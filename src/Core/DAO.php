@@ -408,9 +408,15 @@ class DAO
     
     public function addEquipmentAttribute($equipmentId, $attribute)
     {
+        if(!($equipmentId instanceof MongoId))
+        {
+            $equipmentId = new MongoId($equipmentId);
+        }
+        
         $equipment = $this->getEquipment(array('_id' => $equipmentId))[0];
         $equipmentType = $this->getEquipmentType(array('_id' => $equipment['equipment_type_id']))[0];
 
+        //setting reference ids on attribute.
         $attribute['equipment_id'] = $equipment['_id'];
         $attribute['equipment_type_id'] = $equipmentType['_id'];
 
@@ -424,33 +430,81 @@ class DAO
         }
 
         $updatedAttribute = $this->createEquipmentAttribute($attribute);
-        $attrRefArray = $this->getEquipmentAttributesArray(new MongoId($equipmentId));
+        $attrRefArray = $this->getEquipmentAttributesArray($equipmentId);
+        $attrRefArrayPrev = $attrRefArray;
 
         $attrRefArray[] = $updatedAttribute['_id'];
-        $result = $this->updateEquipmentAttributesArray(new MongoId($equipmentId), $attrRefArray);
+        $result = $this->updateEquipmentAttributesArray($equipmentId, $attrRefArray);
+        
+        //log for adding new attribute to equipment document.
+        $log = $this->createLog();
+        $log['reference_id'] = $equipmentId;
+        $log['document_type'] = "equipment";
+        $log['action_by'] = "some_user";
+        $log['action_via'] = "hard coded web";
+        $log['action_type'] = "edit";
+        
+        $log['changes'][] = (object)array('field_name' => "attributes", "old_value" => $attrRefArrayPrev, "new_value" => $attrRefArray);
+        $this->updateLog($log);
+        
+        $result = $this->addLogToEquipment($equipmentId, $log['_id']);
+        $this->updateEquipmentLastUpdated($equipmentId);
 
         return $result;
     }
 
     public function removeEquipmentAttribute($equipmentId, $attributeId)
     {
+        if(!($equipmentId instanceof MongoId))
+        {
+            $equipmentId = new MongoId($equipmentId);
+        }
+        
+        if(!($attributeId instanceof MongoId))
+        {
+            $attributeId = new MongoId($attributeId);
+        }
+        
         $mongo = new MongoClient(DAO::$connectionString);
         $equipmentAttributes = $mongo->inventorytracking->equipmentattributes;
-        $result = $equipmentAttributes->remove(array('_id' => new MongoId($attributeId)));
+        $result = $equipmentAttributes->remove(array('_id' => $attributeId));
         $mongo->close();
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $equipmentId;
+        $log['document_type'] = "equipment";
+        $log['action_by'] = "some_user";
+        $log['action_via'] = "hard coded web";
+        $log['action_type'] = "edit";
 
-        $attrRefArray = $this->getEquipmentAttributesArray(new MongoId($equipmentId));
-
+        $attrRefArray = $this->getEquipmentAttributesArray($equipmentId);
+        $attrRefArrayPrev = $attrRefArray;
         foreach($attrRefArray as $key => $value)
         {
             if($value->{'$id'} == $attributeId)
             {
                 unset($attrRefArray[$key]);
+                $attrRefArray = array_values($attrRefArray); //rebasing array index.
                 break;
             }
         }
+        
+        $log['changes'][] = (object)array('field_name' => "attributes", "old_value" => $attrRefArrayPrev, "new_value" => $attrRefArray);
+        $this->updateLog($log);
 
-        $result = $this->updateEquipmentAttributesArray(new MongoId($equipmentId), $attrRefArray);
+        $result = $this->updateEquipmentAttributesArray($equipmentId, $attrRefArray);
+        $result = $this->addLogToEquipment($equipmentId, $log['_id']);
+        
+        // Create a log for deleting this equipment attribute document.
+        $log = $this->createLog();
+        $log['reference_id'] = $attributeId;
+        $log['document_type'] = "equipment_attribute";
+        $log['action_by'] = "some_user";
+        $log['action_via'] = "hard coded web";
+        $log['action_type'] = "remove";
+        $this->updateLog($log);
+        
+        $this->updateEquipmentLastUpdated($equipmentId);
 
         return $result;
     }
@@ -882,7 +936,7 @@ class DAO
         //Adding new equipment type to attribute.
         //Therefore this log belongs to equipment type document.
         $log = $this->createLog();
-        $log['reference_id'] = new MongoId($equipmentTypeId);
+        $log['reference_id'] = $equipmentTypeId;
         $log['document_type'] = "equipment_type";
         $log['action_by'] = "some_user";
         $log['action_via'] = "hard coded web";
