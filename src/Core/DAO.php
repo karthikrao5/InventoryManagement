@@ -15,6 +15,40 @@ class DAO
     /*
      * Log related functions.
      */
+    
+    public function getLog($searchCriteria=null)
+    {
+        $mongo = new MongoClient(DAO::$connectionString);
+        $logs = $mongo->inventorytracking->logs;
+        
+        $result = null;
+        if(is_null($searchCriteria) || empty($searchCriteria))
+        {
+            //search all
+            //probably not a good idea in terms of performance.
+            $result = iterator_to_array($logs->find());
+        }
+        else
+        {
+            if(isset($searchCriteria['_id']))
+            {
+                if(!($searchCriteria['_id'] instanceof MongoId))
+                {
+                    $searchCriteria['_id'] = new MongoId($searchCriteria['_id']);
+                }
+            }
+            
+            $result = iterator_to_array($logs->find($searchCriteria));
+        }
+        
+        
+        if(!is_null($result) && !empty($result))
+        {
+            $result = array_values($result);
+        }
+        
+        return $result;
+    }
 
     // Returns a log array with '_id' as mongo id object.
     private function createLog()

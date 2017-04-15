@@ -27,7 +27,23 @@ class CoreService
     
     public function getLog($requestJson)
     {
+        $result = array('ok' => false, 'msg' => null, 'n' => 0,'logs' => null);
         
+        $logs = $this->dao->getLog($requestJson);
+        
+        if(is_null($logs) || empty($logs))
+        {
+            $result['msg'] = 'Log not found.';
+        }
+        else
+        {
+            $result['ok'] = true;
+            $result['msg'] = "Successfully found logs.";
+            $result['n'] = count($logs);
+            $result['logs'] = $logs;
+        }
+        
+        return $result;
     }
 
     /*

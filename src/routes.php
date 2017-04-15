@@ -105,4 +105,9 @@ $app->group('/v1', function() {
 
         $this->put('', 'EquipmentTypeController:updateOne');
     });
+    
+    // log routes
+    $this->group('/logs', function() {
+        $this->get('[/{params:.*}]', 'LogController:find');
+    });
 });

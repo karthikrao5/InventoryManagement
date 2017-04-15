@@ -14,7 +14,6 @@ class EquipmentTypeController extends AbstractController{
         parent::__construct($c);
 	$this->validator = $this->ci->get('EquipmentTypeValidator');
         $this->rm = $this->ci->get('rm');
-        $this->rm->setRepo(EquipmentType::class);
     }
 
     // -----------------------------------------------------------------

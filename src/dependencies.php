@@ -82,6 +82,10 @@ $container['AuthController'] = function ($c) {
     return new App\Controller\AuthController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
+$container['LogController'] = function ($c) {
+    return new App\Controller\LogController(App\Helper\Container\ContainerHelper::getContainer());
+};
+
 // $container["DummyController"] = function($c) {
 //     return new \App\Controller\DummyController($c->get('db'));
 // };
