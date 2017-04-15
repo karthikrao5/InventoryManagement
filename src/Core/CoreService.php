@@ -52,22 +52,22 @@ class CoreService
 
     public function createUser($requestJson)
     {
-
+        return $this->dao->createUser($requestJson);
     }
 
     public function getUser($requestJson)
     {
-
+        return $this->dao->getUser($requestJson);
     }
 
     public function updateUser($requestJson)
     {
-
+        return $this->dao->updateUser($requestJson['_id'], $requestJson['updateValues']);
     }
 
     public function deleteUser($requestJson)
     {
-
+        return $this->dao->removeUser($requestJson['_id']);
     }
 
     /*

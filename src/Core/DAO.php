@@ -13,6 +13,165 @@ class DAO
     private static $connectionString = null; // Null is equivalent to "mongodb://localhost:27017".
 
     /*
+     * Loan related functions.
+     */
+    
+    /*
+     *  User related functions.
+     */
+    
+    public function createUser($user)
+    {
+        $mongo = new MongoClient(DAO::$connectionString);
+        $users = $mongo->inventorytracking->users;
+        
+        $user['logs'] = array();
+        $result = $users->insert($user);
+        $mongo->close();
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $user['_id'];
+        $log['document_type'] = "user";
+        $log['action_type'] = "create";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        $this->updateLog($log);
+        
+        $this->addLogToUser($user['_id'], $log['_id']);
+        
+        return $this->getUser(array('_id' => $user['_id']))[0];
+    }
+    
+    private function addLogToUser($userId, $logId)
+    {
+        if(!($userId instanceof MongoId))
+        {
+            $userId = new MongoId($userId);
+        }
+        
+        if(!($logId instanceof MongoId))
+        {
+            $logId = new MongoId($logId);
+        }
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $users = $mongo->inventorytracking->users;
+        
+        $result = $users->update(array('_id' => $userId),
+            array('$addToSet' => array('logs' => $logId)));
+        
+        $mongo->close();
+        return $result;
+    }
+
+    public function getUser($searchCriteria=null)
+    {
+        $mongo = new MongoClient(DAO::$connectionString);
+        $users = $mongo->inventorytracking->users;
+        
+        $result = null;
+        if(is_null($searchCriteria) || empty($searchCriteria))
+        {
+            //search all
+            //probably not a good idea in terms of performance.
+            $result = iterator_to_array($users->find());
+        }
+        else
+        {
+            if(isset($searchCriteria['_id']))
+            {
+                if(!($searchCriteria['_id'] instanceof MongoId))
+                {
+                    $searchCriteria['_id'] = new MongoId($searchCriteria['_id']);
+                }
+            }
+            
+            $result = iterator_to_array($users->find($searchCriteria));
+        }
+        $mongo->close();
+        
+        if(!is_null($result) && !empty($result))
+        {            
+            $joinedUsers = array();
+            foreach($result as $user)
+            {
+                $joinedUsers[] = $this->joinUser($user);
+            }
+            
+            return $joinedUsers;
+        }
+        
+        return $result;
+    }
+    
+    //join logs and loans
+    private function joinUser($user)
+    {
+        $mongo = new MongoClient(DAO::$connectionString);
+        
+        $logs = $this->getLog(array('reference_id' => $user['_id']));
+        
+        $user['logs'] = $logs;
+        
+        return $user;
+    }
+    
+    public function updateUser($id, $updateValues)
+    {
+        if(!($id instanceof MongoId))
+        {
+            $id = new MongoId($id);
+        }
+        unset($updateValues['_id']);
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $users = $mongo->inventorytracking->users;
+        
+        $user = $users->findOne(array('_id' => $id));
+        $result = $users->update(array('_id' => $id),
+                array('$set' => $updateValues));
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $user['_id'];
+        $log['document_type'] = "user";
+        $log['action_type'] = "edit";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        
+        foreach($updateValues as $key => $value)
+        {
+            $log['changes'][] = (object)array('field_name' => $key, 'old_value' => $user[$key], 'new_value' => $value);
+        }
+        
+        $this->updateLog($log);
+        
+        return $result;
+    }
+    
+    public function removeUser($id)
+    {
+        if(!($id instanceof MongoId))
+        {
+            $id = new MongoId($id);
+        }
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $users = $mongo->inventorytracking->users;
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $user['_id'];
+        $log['document_type'] = "user";
+        $log['action_type'] = "remove";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        $this->updateLog($log);
+        
+        $result = $users->remove(array('_id' => $id));
+        
+        return $result;
+    }
+    
+    /*
      * Log related functions.
      */
     
@@ -40,7 +199,7 @@ class DAO
             
             $result = iterator_to_array($logs->find($searchCriteria));
         }
-        
+        $mongo->close();
         
         if(!is_null($result) && !empty($result))
         {

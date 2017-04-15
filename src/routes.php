@@ -110,4 +110,15 @@ $app->group('/v1', function() {
     $this->group('/logs', function() {
         $this->get('[/{params:.*}]', 'LogController:find');
     });
+    
+    // user routes
+    $this->group('/users', function() {
+        $this->post('', 'UserController:create');
+        
+        $this->get('[/{params:.*}]', 'UserController:find');
+        
+        $this->delete('', 'UserController:delete');
+
+        $this->put('', 'UserController:update');
+    });
 });
