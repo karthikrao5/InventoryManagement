@@ -111,6 +111,12 @@ class DAO
         
         $logs = $this->getLog(array('reference_id' => $user['_id']));
         
+        foreach($logs as $key => $log)
+        {
+            $log['timestamp'] = date('Y-m-d H:i:s', $log['timestamp']->sec);
+            $logs[$key] = $log;
+        }
+        
         $user['logs'] = $logs;
         
         return $user;

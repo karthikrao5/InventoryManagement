@@ -52,12 +52,43 @@ class CoreService
 
     public function createUser($requestJson)
     {
-        return $this->dao->createUser($requestJson);
+        $result = array('ok' => false, 'msg' => null, 'user' => null);
+        
+        $user = $this->dao->createUser($requestJson);
+        
+        if(is_null($user))
+        {
+            $result['msg'] = "Failed to create a user.";
+        }
+        else
+        {
+            $result['ok'] = true;
+            $result['msg'] = "Successfully created user.";
+            $result['user'] = $user;
+        }
+        
+        return $result;
     }
 
     public function getUser($requestJson)
     {
-        return $this->dao->getUser($requestJson);
+        $result = array('ok' => false, 'msg' => null, 'users' => null);
+        
+        $users = $this->dao->getUser($requestJson);
+        
+        if(is_null($users) || empty($users))
+        {
+            $result['msg'] = "Failed to find users.";
+        }
+        else
+        {
+            $result['ok'] = true;
+            $result['msg'] = "Successfully found users.";
+            $result['users'] = $users;
+            $result['n'] = count($users);
+        }
+        
+        return $result;
     }
 
     public function updateUser($requestJson)
