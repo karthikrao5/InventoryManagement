@@ -16,6 +16,167 @@ class DAO
      * Loan related functions.
      */
     
+    public function createLoan($loan)
+    {
+        $mongo = new MongoClient(DAO::$connectionString);
+        $loans = $mongo->inventorytracking->loans;
+        
+        $loan['loaned_date'] = new MongoDate(strtotime($loan['loaned_date']));
+        $loan['due_date'] = new MongoDate(strtotime($loan['due_date']));
+        
+        foreach($loan['equipments'] as $key => $value)
+        {
+            if(!($value instanceof MongoId))
+            {
+                $loan['equipments'][$key] = new MongoId($value);
+            }
+        }
+        
+        $result = $loans->insert($loan);
+        
+        return $loan;
+    }
+    
+    public function getLoan($searchCriteria=null)
+    {
+        $mongo = new MongoClient(DAO::$connectionString);
+        $loans = $mongo->inventorytracking->loans;
+        
+        $result = null;
+        if(is_null($searchCriteria) || empty($searchCriteria))
+        {
+            //search all
+            //probably not a good idea in terms of performance.
+            $result = iterator_to_array($loans->find());
+        }
+        else
+        {
+            if(isset($searchCriteria['_id']))
+            {
+                if(!($searchCriteria['_id'] instanceof MongoId))
+                {
+                    $searchCriteria['_id'] = new MongoId($searchCriteria['_id']);
+                }
+            }
+            
+            $result = iterator_to_array($loans->find($searchCriteria));
+        }
+        $mongo->close();
+        
+        if(!is_null($result) && !empty($result))
+        {            
+            $joinedLoans = array();
+            foreach($result as $loan)
+            {
+                $loan['loaned_date'] = date('Y-m-d H:i:s', $loan['loaned_date']->sec);
+                $loan['due_date'] = date('Y-m-d H:i:s', $loan['due_date']->sec);
+                $joinedLoans[] = $this->joinLoan($loan);
+            }
+            
+            return $joinedLoans;
+        }
+        
+        return $result;
+    }
+    
+    private function joinLoan($loan)
+    {
+        if(is_null($loan['equipments']) || empty($loan['equipments']))
+        {
+            $loan['equipments'] = array();
+        }
+        else
+        {
+            $equipments = $this->getEquipment(array('_id' => array('$in' => $loan['equipments'])));
+            $loan['equipments'] = $equipments;
+        }
+        
+        $logs = $this->getLog(array('reference_id' => $loan['_id']));
+        $loan['logs'] = $logs;
+        
+        return $loan;
+    }
+    
+    public function updateLoan($loanId, $updateValues)
+    {
+        if(!($loanId instanceof MongoId))
+        {
+            $loanId = new MongoId($loanId);
+        }
+        
+        unset($updateValues['_id']);
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $loans = $mongo->inventorytracking->loans;
+        
+        $result = $loans->update(array('_id' => $loanId),
+            array('$set' => $updateValues));
+        
+        $loan = $loans->findOne(array('_id' => $loanId));
+        
+        $log = $this->getLog();
+        $log['reference_id'] = $id;
+        $log['document_type'] = "loan";
+        $log['action_type'] = "edit";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        
+        foreach($updateValues as $key => $value)
+        {
+            $log['changes'][] = (object)array("field_name" => $key, "old_value" =>$loan[$key] , "new_value" => $value);
+        }
+        
+        $result = $this->updateLog($log);
+        $result = $this->addLogToLoan($loanId, $log['_id']);
+        
+        return $result;
+    }
+    
+    public function deleteLoan($id)
+    {
+        if(!($id instanceof MongoId))
+        {
+            $id = new MongoId($id);
+        }
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $loans = $mongo->inventorytracking->loans;
+        
+        $result = $loans->remove(array('_id' => $id));
+        $mongo->close();
+        
+        $log = $this->getLog();
+        $log['reference_id'] = $id;
+        $log['document_type'] = "loan";
+        $log['action_type'] = "remove";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        $this->updateLog($log);
+    }
+    
+    private function addLogToLoan($loanId, $logId)
+    {
+        if(!($loanId instanceof MongoId))
+        {
+            $loanId = new MongoId($loanId);
+        }
+        
+        if(!($logId instanceof MongoId))
+        {
+            $logId = new MongoId($logId);
+        }
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $loans = $mongo->inventorytracking->loans;
+        
+        $result = $loans->update(array('_id' => $loanId),
+            array('$addToSet' => array('logs' => $logId)));
+        
+        $mongo->close();
+        
+        return $result;
+    }
+    
     /*
      *  User related functions.
      */
