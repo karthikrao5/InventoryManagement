@@ -19,7 +19,7 @@ abstract class AbstractValidator {
 		$this->ci = $ci;
 		$this->dm = $ci->get('dm');
 		$this->logger = $ci->get('logger');
-                $this->core = $c->get("core");
+                $this->core = $ci->get("core");
 	}
 
 }
