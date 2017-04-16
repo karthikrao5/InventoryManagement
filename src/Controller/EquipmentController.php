@@ -96,10 +96,10 @@ class EquipmentController extends AbstractController{
         $result = $this->core->createEquipment($request->getParsedBody());
 
         if ($result["ok"]) {
-			return $response->withStatus(200)->withJson($result);
-		} else {
-			return $response->withStatus(400)->withJson($result);
-		}
+            return $response->withStatus(200)->withJson($result);
+        } else {
+            return $response->withStatus(400)->withJson($result);
+        }
     }
     
 // -----------------------------------------------------------------
@@ -135,12 +135,12 @@ class EquipmentController extends AbstractController{
             return $response->write("No body recieved.")->withStatus(400);
         }
 
-		$result = $this->core->deleteEquipment($request->getParsedBody());
+        $result = $this->core->deleteEquipment($request->getParsedBody());
 
-		if ($result["ok"]) {
-			return $response->withStatus(200)->write("Successfully deleted ".$result['n']." Equipments!");
-		} else {
-			return $response->withStatus(404)->write("Something went wrong, Equipments are not deleted.");
-		}
+        if ($result["ok"]) {
+            return $response->withStatus(200)->write("Successfully deleted ".$result['n']." Equipments!");
+        } else {
+            return $response->withStatus(404)->write("Something went wrong, Equipments are not deleted.");
+        }
     }
 }

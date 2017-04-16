@@ -63,7 +63,7 @@ input for Equipment Type edit (change ids based on your data)
 	"update_equipment_type" :
 	{
 		"name" : "laptop2",
-		"comment" : "Changed laptop to laptop2."
+		"comments" : "Changed laptop to laptop2."
 	},
 
 	"update_equipment_type_attributes" :
@@ -141,4 +141,13 @@ input for equipment edit (change ids based on your data)
 	[
 		"58e81cc37f8b9ac4571ef7c7"
 	]
+}
+
+Input for create user
+
+{
+	"username" : "bkang61",
+	"email" : "bkang61@gatech.edu",
+	"current_loans" : [],
+	"past_loans" : []
 }

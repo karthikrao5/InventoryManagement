@@ -162,7 +162,7 @@ class CoreService
                 $result = $this->dao->updateEquipmentAttriubte($updateTarget['_id'], $updateTarget);
             }
         }
-        
+
         if(isset($requestJson['add_equipment_attributes']) && !empty($requestJson['add_equipment_attributes']))
         {
             foreach($requestJson['add_equipment_attributes'] as $newAttribute)
@@ -170,7 +170,7 @@ class CoreService
                 $result = $this->dao->addEquipmentAttribute($requestJson['_id'], $newAttribute);
             }
         }
-        
+
         if(isset($requestJson['remove_equipment_attributes']) && !empty($requestJson['remove_equipment_attributes']))
         {
             foreach($requestJson['remove_equipment_attributes'] as $removeTarget)
@@ -179,44 +179,121 @@ class CoreService
             }
         }
 
-		return $result;
-	}
+        return $result;
+    }
 
-	public function updateEquipmentType($requestJson)
-	{
-		$result = array("ok" => false, "msg" => null, "updated_equipment_type" => null);
+    public function deleteEquipment($requestJson)
+    {
+        $result = array("ok" => false, "msg" => null);
 
-		//do not trust DAO in terms of semantics.
-		//update equipment type document itself (not its attributes).
-		if(isset($requestJson['update_equipment_type']))
-		{
-                    $result = $this->dao->updateEquipmentType($requestJson['_id'], $requestJson['update_equipment_type']);
-		}
+        if(is_null($requestJson) || empty($requestJson))
+        {
+            $result['msg'] = "Json is empty or null.";
+            return $result;
+        }
 
-		if(isset($requestJson['update_equipment_type_attributes']) && !empty($requestJson['update_equipment_type_attributes']))
-		{
-			foreach($requestJson['update_equipment_type_attributes'] as $updateTarget)
-			{
-                            $result = $this->dao->updateEquipmentTypeAttribute($updateTarget['_id'], $updateTarget);
-			}
-		}
+        $daoResult = $this->dao->deleteEquipment($requestJson['ids']);
 
-		if(isset($requestJson['add_equipment_type_attributes']) && !empty($requestJson['add_equipment_type_attributes']))
-		{
-			foreach($requestJson['add_equipment_type_attributes'] as $newAttribute)
-			{
-                            $result = $this->dao->addEquipmentTypeAttribute($requestJson['_id'], $newAttribute);
-			}
-		}
+        $result['ok'] = $daoResult['ok'];
+        $result['n'] = $daoResult['n'];
 
-		if(isset($requestJson['remove_equipment_type_attributes']) && !empty($requestJson['remove_equipment_type_attributes']))
-		{
-			foreach($requestJson['remove_equipment_type_attributes'] as $removeTarget)
-			{
-                            $result = $this->dao->removeEquipmentTypeAttribute($requestJson['_id'], $removeTarget);
-			}
-		}
+        return $result;
+    }
+    
+    /*
+     * EquipmentType functions
+     */
 
-		return $result;
-	}
+    public function createEquipmentType($requestJson)
+    {
+        // $result = $this->equipmentTypeValidator->validateJSON($requestJson);
+
+        // if(!$result['ok']) {
+        // 	$returnArray['ok'] = false;
+        // 	$resultArray['msg'] = $result['msg'];
+        // 	return $resultArray;
+        // }
+
+        $added = $this->dao->createEquipmentType($requestJson, $result['equipment_type'][0]);
+
+        return array("ok" => true, "message" => "Successfully created EquipmentType '".$requestJson['name']."' !",
+                'equipment_type' => $added);
+    }
+
+    public function getEquipmentType($requestJson=NULL)
+    {
+        $result = array('ok' => false, 'msg' => null, 'n' => 0, 'equipment_types' => null);
+
+        $equipmentTypes = $this->dao->getEquipmentType($requestJson);
+
+        if(is_null($equipmentTypes) || empty($equipmentTypes))
+        {
+            $result['msg'] = "Equipment Type not found with given search criteria.";
+            return $result;
+        }
+        else
+        {
+            $result['ok'] = true;
+            $result['msg'] = "Successfully found Equipment Types.";
+            $result['n'] = count($equipmentTypes);
+            $result['equipment_types'] = $equipmentTypes;
+            return $result;
+        }
+    }
+    
+    public function updateEquipmentType($requestJson)
+    {
+        $result = array("ok" => false, "msg" => null, "updated_equipment_type" => null);
+
+        //do not trust DAO in terms of semantics.
+        //update equipment type document itself (not its attributes).
+        if(isset($requestJson['update_equipment_type']))
+        {
+            $result = $this->dao->updateEquipmentType($requestJson['_id'], $requestJson['update_equipment_type']);
+        }
+
+        if(isset($requestJson['update_equipment_type_attributes']) && !empty($requestJson['update_equipment_type_attributes']))
+        {
+            foreach($requestJson['update_equipment_type_attributes'] as $updateTarget)
+            {
+                $result = $this->dao->updateEquipmentTypeAttribute($updateTarget['_id'], $updateTarget);
+            }
+        }
+
+        if(isset($requestJson['add_equipment_type_attributes']) && !empty($requestJson['add_equipment_type_attributes']))
+        {
+            foreach($requestJson['add_equipment_type_attributes'] as $newAttribute)
+            {
+                $result = $this->dao->addEquipmentTypeAttribute($requestJson['_id'], $newAttribute);
+            }
+        }
+
+        if(isset($requestJson['remove_equipment_type_attributes']) && !empty($requestJson['remove_equipment_type_attributes']))
+        {
+            foreach($requestJson['remove_equipment_type_attributes'] as $removeTarget)
+            {
+                $result = $this->dao->removeEquipmentTypeAttribute($requestJson['_id'], $removeTarget);
+            }
+        }
+
+        return $result;
+    }
+
+    public function deleteEquipmentType($requestJson)
+    {
+        $result = array("ok" => false, "msg" => null);
+
+        if(is_null($requestJson) || empty($requestJson))
+        {
+            $result['msg'] = "Json is empty or null.";
+            return $result;
+        }
+
+        $daoResult = $this->dao->deleteEquipmentType($requestJson['ids']);
+
+        $result['ok'] = $daoResult['ok'];
+        $result['n'] = $daoResult['n'];
+
+        return $result;
+    }
 }
