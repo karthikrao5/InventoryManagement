@@ -90,6 +90,10 @@ $container['UserController'] = function ($c) {
     return new App\Controller\UserController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
+$container['LoanController'] = function ($c) {
+    return new App\Controller\LoanController(App\Helper\Container\ContainerHelper::getContainer());
+};
+
 // $container["DummyController"] = function($c) {
 //     return new \App\Controller\DummyController($c->get('db'));
 // };

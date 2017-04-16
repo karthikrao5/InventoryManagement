@@ -121,4 +121,15 @@ $app->group('/v1', function() {
 
         $this->put('', 'UserController:update');
     });
+    
+    // loan routes
+    $this->group('/loans', function() {
+        $this->post('', 'LoanController:create');
+        
+        $this->get('[/{params:.*}]', 'LoanController:get');
+        
+        $this->delete('', 'LoanController:delete');
+
+        $this->put('', 'LoanController:update');
+    });
 });
