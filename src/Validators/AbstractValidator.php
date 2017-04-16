@@ -12,11 +12,14 @@ abstract class AbstractValidator {
 	protected $ci;
 
 	protected $logger;
+        
+        protected $core;
 
 	public function __construct(ContainerInterface $ci) {
 		$this->ci = $ci;
 		$this->dm = $ci->get('dm');
 		$this->logger = $ci->get('logger');
+                $this->core = $c->get("core");
 	}
 
 }

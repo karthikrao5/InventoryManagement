@@ -11,6 +11,7 @@ class CoreService
     private $container;
     private $equipmentValidator;
     private $equipmentTypeValidator;
+    private $userValidator;
 
     public function __construct(ContainerInterface $c)
     {
@@ -19,6 +20,7 @@ class CoreService
         $this->logger = $c->get("logger");
         $this->equipmentValidator = $c->get("EquipmentValidator");
         $this->equipmentTypeValidator = $c->get('EquipmentTypeValidator');
+        $this->userValidator = $c->get('UserValidator');
     }
     
     /*
@@ -33,7 +35,8 @@ class CoreService
         
         if(is_null($logs) || empty($logs))
         {
-            $result['msg'] = 'Log not found.';
+            $result['msg'] = 'Log not found with given search criteria.';
+            $result['search_criteria'] = $requestJson;
         }
         else
         {
@@ -54,6 +57,19 @@ class CoreService
     {
         $result = array('ok' => false, 'msg' => null, 'user' => null);
         
+        $validationResult = $this->userValidator->isValidJson($requestJson);
+        
+        if(!$validationResult['ok'])
+        {
+            return $validationResult;
+        }
+        
+        if($this->userValidator->isUsernameExist($requestJson))
+        {
+           $result['msg'] = "Username '".$requestJson['username']."' already exists.";
+           return $result;
+        }
+        
         $user = $this->dao->createUser($requestJson);
         
         if(is_null($user))
@@ -63,7 +79,7 @@ class CoreService
         else
         {
             $result['ok'] = true;
-            $result['msg'] = "Successfully created user.";
+            $result['msg'] = "Successfully created new user.";
             $result['user'] = $user;
         }
         
