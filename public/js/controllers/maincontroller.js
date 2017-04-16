@@ -1,9 +1,10 @@
 var ctrl = angular.module('app.controllers', []);
 
-ctrl.controller('EquipmentsController', ["$scope", "$http", "$location", 
-	function($scope, $http, $location) {
-		var endpoint = 'http://localhost:8080/v1/equipments';
+ctrl.controller('EquipmentsController', ["$scope", "$http", "$location", "$window", 
+	function($scope, $http, $location, $window) {
 
+		var endpoint = 'http://localhost:8080/v1/equipments';
+		$scope.token = $window.localStorage.jwt;
 	    $http.get(endpoint).then(function (response) {
 	        $scope.equipments = response.data.equipments;
 	        console.log(angular.toJson(response.data.equipments, true));
@@ -31,7 +32,7 @@ ctrl.controller("NewEquipmentController", ["$scope", "$http", "$location",
 			});
 		});
 
-		$scope.labels = ['department_tag', "gt_tag", "status", "comment"];
+		$scope.labels = ['department_tag', "gt_tag", "status", "comment", "loaned_to"];
 
 		$scope.submitEquipmentCreation = function() {
 			// console.log($scope.attrList.attributes);
@@ -89,15 +90,22 @@ ctrl.controller("HomeController", ["$http", "$scope", "$location",
 	}
 ]);
 
+ctrl.controller("AuthController", ["$http", "$scope", "$location", "$window",
+	function($http, $location, $scope, $window) {
+		$scope.authToken;
 
+		$http.get('http://localhost:8080/v1/auth').then(function(response) {
+			console.log("Response from /auth" + response.data);
+			$scope.authToken = response.data;
+			$window.localStorage.setItem(response.data.jwt);
+		});
 
-
-
-
-
-
-
-
-
+		if ($window.localStorage.jwt) {
+			$location.path("/equipments");
+		} else {
+			alert("No auth token");
+		}
+	}
+]);
 
 

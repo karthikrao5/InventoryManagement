@@ -40,7 +40,7 @@ class CoreService
 		if(!$result['ok'])
 		{
 			$returnArray['ok'] = false;
-			$returnArray['msg'] = "EquipmentType '".$requestJson['equipment_type_name']."' not found.";
+			$returnArray['msg'] = "EquipmentType ".$requestJson['equipment_type_name']." not found.";
 			return $returnArray;
 		}
 

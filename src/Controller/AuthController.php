@@ -18,12 +18,13 @@ class AuthController extends AbstractController {
 	}
 
 	/**
+	 * /auth GET
 	 *	Function returns JWY token with user information
 	 * @return JWT string
 	 */
 	public function authorize($request, $response) {
 		$token = $this->authValidator->generateTokenForUser();
-		return json_encode($token);
+		return $response->withJson($token);
 	}
 
 
@@ -35,5 +36,4 @@ class AuthController extends AbstractController {
 
 		return json_encode(['decodedVal' => $val]);
 	}
-
 }
