@@ -107,22 +107,23 @@ class CoreService
 
     public function createLoan($requestJson)
     {
-
+        // Creating loan automatically adds this loan to user's current loans
+        return $this->dao->createLoan($loan);
     }
 
     public function getLoan($requestJson)
     {
-
+        return $this->dao->getLoan($requestJson);
     }
 
     public function updateLoan($requestJson)
     {
-
+        return $this->dao->updateLoan($requestJson['_id'], $updateValues);
     }
 
     public function deleteLoan($requestJson)
     {
-
+        return $this->dao->deleteLoan($requestJson['_id']);
     }
     
     /*
@@ -132,16 +133,6 @@ class CoreService
     public function createEquipment($requestJson)
     {
         $returnArray = array('ok' => false, 'msg' => null, 'equipment' => null);
-        //todo - requestJson validation
-
-        // $result = $this->equipmentValidator->validateJSON($requestJson);
-
-        // if(!$result['ok']) {
-        //  $returnArray['ok'] = false;
-        //  $resultArray['msg'] = $result['msg'];
-        //  return $resultArray;
-        // }
-
 
         $result = $this->getEquipmentType(array('name' => $requestJson['equipment_type_name']));
 
