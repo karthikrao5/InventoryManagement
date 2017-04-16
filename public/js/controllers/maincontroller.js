@@ -56,15 +56,7 @@ ctrl.controller("NewEquipmentController", ["$scope", "$http", "$location",
 		}
 		
  		// $scope.attributes = [];
-		$scope.attrList = {
-
-			"attributes": [
-				{
-					"key": "",
-					"value": ""
-				}
-			]
-		}
+		$scope.attrList = {"attributes": [{"key": "","value": ""}]}
 
 		$scope.addNewAttribute = function(index) {
 			var newAttr = {"key": "", "value": ""};
@@ -98,7 +90,7 @@ ctrl.controller("HomeController", ["$http", "$scope", "$location",
 	}
 ]);
 
-ctrl.controller("AuthController", ["$http", "$scope", "$location", "$window",
+ctrl.controller("AuthController", ["$http", "$location", "$scope", "$window",
 	function($http, $location, $scope, $window) {
 		$scope.authToken;
 
@@ -106,6 +98,7 @@ ctrl.controller("AuthController", ["$http", "$scope", "$location", "$window",
 			console.log("Response from /auth" + response.data.jwt);
 			$scope.authToken = response.data.jwt;
 			$window.localStorage.setItem("jwt", response.data.jwt);
+			console.log("New jwt: " + $window.localStorage.getItem("jwt"));
 		});
 
 		if ($window.localStorage.getItem("jwt")) {

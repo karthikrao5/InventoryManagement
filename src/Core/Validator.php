@@ -9,38 +9,29 @@ class Validator
 {
 	private $c;
 
+
 	public function __construct(ContainerInterface $ci) {
 		$this->c = $ci;
 	}
 
 	// TODO User authentication through apache env variable
-	public function getAuthUser() {
-		// TODO return current authenticated user
-		// $envArray = $_SERVER;
+	public function getAuthToken($input=null) {
+		if ($input["isHook"]) {
+			// generate a token whose body is hookname and email address
+			return $this->generateTokenForHook($input);
+		} else {
+			// input is not a hook, generate regular user token
+			return $this->generateTokenForUser();
+		}
 
-		// $userGroups = array("cos-renter" => "renter",
-		// 					'cos-it-admin' => "it-admin",
-		// 					'cos-sys-admin' => 'sys-admin',
-		// 					"cos-prop-coord" => 'prop-coord');
-
-		// $authenticatedUser = $envArray["REMOTE_USER"];
-		// $userEmail = $envArray["REMOTE_USER_EMAIL"];
-
-		// // go thru each user group and find one for on of our groups
-		// // and set local var for it
-		// foreach ($envArray as $key=>$value) {
-		// 	if ($value == "some-user-group") {
-		// 		$userType = $userGroups[$value];
-		// 	}
-		// }
-
-		// return array("user"=>$authenticatedUser, "user_email"=>$userEmail,
-		// 			 "user_type"=>$userType);
-		return array("user"=>'krao34', "user_email"=>'kraoEmail@hotmail.com',
-					 "user_type"=>'it-admin');
+		// should not get here
+		return null;
 	}
 
-	public function authenticateToken($token) {
+	/**
+	 * @return array(isHook, hookname, username) otherwise return 
+	 */
+	public function decodeToken($token) {
 
 
 		$settings = $this->c->get('settings');
@@ -56,16 +47,19 @@ class Validator
 		}
 	}
 
-	public function generateTokenForUser() {
-		// gets authenticated user from CAS (apache env variable)
-		$userArray = $this->getAuthUser();
-		$encryptionAlgo = $this->c->get('settings')['encryptionAlgo'];
+	/**
+	 * @return JSON with key "jwt" and value with the jwt string
+	 */
+	public function generateTokenForHook($data) {
+		$settings = $this->get('settings');
 
-		$tokenID 	= $userArray['user'];	 
+		$encryptionAlgo = $settings['encryptionAlgo'];
+
+		$tokenID 	= $data['hookname'];	 
 		$issuedAt   = time();				 // current time
 		$notBefore  = $issuedAt + 10;		 // Token valid after 10 seconds
 		$expire     = $notBefore + 300;      // expires after 5 minutes
-		$serverName = $this->c->get('settings')['serverName']; // Retrieve the server name from config file
+		$serverName = $settings['serverName']; // Retrieve the server name from config file
 
 		$tokenArray  = [
 				'iat' => time(),
@@ -73,17 +67,67 @@ class Validator
 				'nbf' => $notBefore,
 				'exp' => $expire,
 				'data'=> [
-						'userName' => $userArray['user']
+						'hookname' => $data['hookname'],
+						'username' => $data['username']
 					]
 			];
 
 		$generatedToken = JWT::encode(
 				$tokenArray,
-				$this->c->get('settings')['jwtSecretKey'],
+				$settings['jwtSecretKey'],
 				$encryptionAlgo
 			);
 
 		$return = ['jwt' => $generatedToken];
 		return $return;
 	}
+
+	/**
+	 * @return JSON with key "jwt" and value with the jwt string
+	 */
+	public function generateTokenForUser() {
+		// gets authenticated user from CAS (apache env variable)
+		// $userArray = $this->getAuthUser();
+		$userArray = null;
+		$envArray = $_SERVER;
+		$settings = $this->get('settings');
+
+		// if the authenticated user is part of the CAS user gruup
+		// give authorization
+		foreach ($envArray as $key=>$value) {
+			if ($value == $settings['CAS-group-name']) {
+				$userArray["user"] = $envArray["REMOTE_USER"];
+				$$userArray["user_email"] = $envArray["REMOTE_USER_EMAIL"];
+			}
+		}
+
+		$encryptionAlgo = $settings['encryptionAlgo'];
+
+		$tokenID 	= $userArray['user'];	 
+		$issuedAt   = time();				 							// current time
+		$notBefore  = $issuedAt + 10;		 							// Token valid after 10 seconds
+		$expire     = $notBefore + $settings["token-expiration-time"];  // expires after 5 minutes (default) Edit in settings.php
+		$serverName = $settings['serverName']; 							// Retrieve the server name from config file
+
+		$tokenArray  = [
+				'iat' => time(),
+				'iss' => $serverName,
+				'nbf' => $notBefore,
+				'exp' => $expire,
+				'data'=> [
+						'user_name' => $userArray['user'],
+						'user_email' => $userArray['user_email']
+					]
+			];
+
+		$generatedToken = JWT::encode(
+				$tokenArray,
+				$settings['jwtSecretKey'],
+				$encryptionAlgo
+			);
+
+		$return = ['jwt' => $generatedToken];
+		return $return;
+	}
+
 }
