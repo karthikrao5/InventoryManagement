@@ -2,9 +2,7 @@
 
 namespace App\Validators;
 
-use Doctrine\ODM\MongoDB\DocumentManager;
 use Interop\Container\ContainerInterface;
-use App\Models\Equipment;
 
 class EquipmentValidator extends AbstractValidator {
 

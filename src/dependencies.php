@@ -114,6 +114,9 @@ $container["AuthValidator"] = function($c) {
     return new App\Core\Validator(App\Helper\Container\ContainerHelper::getContainer());
 };
 
+$container["UserValidator"] = function($c) {
+    return new App\Core\UserValidator(App\Helper\Container\ContainerHelper::getContainer());
+};
 
 $container["core"] = function($c) {
     return new App\Core\CoreService(App\Helper\Container\ContainerHelper::getContainer());
