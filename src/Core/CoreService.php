@@ -4,157 +4,190 @@ namespace App\Core;
 use App\Core\DAO;
 use Interop\Container\ContainerInterface;
 
-
 class CoreService
 {
-	private $dao;
-	private $logger;
-	private $container;
-	private $equipmentValidator;
-	private $equipmentTypeValidator;
+    private $dao;
+    private $logger;
+    private $container;
+    private $equipmentValidator;
+    private $equipmentTypeValidator;
 
-	public function __construct(ContainerInterface $c)
-	{
-		$this->dao = new DAO();
-		$this->container = $c;
-		$this->logger = $c->get("logger");
-		$this->equipmentValidator = $c->get("EquipmentValidator");
-		$this->equipmentTypeValidator = $c->get('EquipmentTypeValidator');
-	}
+    public function __construct(ContainerInterface $c)
+    {
+        $this->dao = new DAO();
+        $this->container = $c;
+        $this->logger = $c->get("logger");
+        $this->equipmentValidator = $c->get("EquipmentValidator");
+        $this->equipmentTypeValidator = $c->get('EquipmentTypeValidator');
+    }
+    
+    /*
+     * Log function (CUD operations are not allowed.)
+     */
+    
+    public function getLog($requestJson)
+    {
+        $result = array('ok' => false, 'msg' => null, 'n' => 0,'logs' => null);
+        
+        $logs = $this->dao->getLog($requestJson);
+        
+        if(is_null($logs) || empty($logs))
+        {
+            $result['msg'] = 'Log not found.';
+        }
+        else
+        {
+            $result['ok'] = true;
+            $result['msg'] = "Successfully found logs.";
+            $result['n'] = count($logs);
+            $result['logs'] = $logs;
+        }
+        
+        return $result;
+    }
 
-	public function createEquipment($requestJson)
-	{
-		$returnArray = array('ok' => false, 'msg' => null, 'equipment' => null);
-		//todo - requestJson validation
-		
-		// $result = $this->equipmentValidator->validateJSON($requestJson);
+    /*
+     * User functions
+     */
 
-		// if(!$result['ok']) {
-		// 	$returnArray['ok'] = false;
-		// 	$resultArray['msg'] = $result['msg'];
-		// 	return $resultArray;
-		// }
+    public function createUser($requestJson)
+    {
+        $result = array('ok' => false, 'msg' => null, 'user' => null);
+        
+        $user = $this->dao->createUser($requestJson);
+        
+        if(is_null($user))
+        {
+            $result['msg'] = "Failed to create a user.";
+        }
+        else
+        {
+            $result['ok'] = true;
+            $result['msg'] = "Successfully created user.";
+            $result['user'] = $user;
+        }
+        
+        return $result;
+    }
 
-		$result = $this->getEquipmentType(array('name' => $requestJson['equipment_type_name']));
+    public function getUser($requestJson)
+    {
+        $result = array('ok' => false, 'msg' => null, 'users' => null);
+        
+        $users = $this->dao->getUser($requestJson);
+        
+        if(is_null($users) || empty($users))
+        {
+            $result['msg'] = "Failed to find users.";
+        }
+        else
+        {
+            $result['ok'] = true;
+            $result['msg'] = "Successfully found users.";
+            $result['users'] = $users;
+            $result['n'] = count($users);
+        }
+        
+        return $result;
+    }
 
-		if(!$result['ok'])
-		{
-			$returnArray['ok'] = false;
-			$returnArray['msg'] = "EquipmentType ".$requestJson['equipment_type_name']." not found.";
-			return $returnArray;
-		}
+    public function updateUser($requestJson)
+    {
+        return $this->dao->updateUser($requestJson['_id'], $requestJson['updateValues']);
+    }
 
-		$updated = $this->dao->createEquipment($requestJson, $result['equipment_types'][0]);
+    public function deleteUser($requestJson)
+    {
+        return $this->dao->removeUser($requestJson['_id']);
+    }
 
-		return array("ok" => true, "message" => "Successfully created Equipment '".$requestJson['department_tag']."' !",
-			'equipment' => $updated);
-	}
+    /*
+     * Loan functions
+     */
 
-	public function createEquipmentType($requestJson)
-	{
-		// $result = $this->equipmentTypeValidator->validateJSON($requestJson);
+    public function createLoan($requestJson)
+    {
 
-		// if(!$result['ok']) {
-		// 	$returnArray['ok'] = false;
-		// 	$resultArray['msg'] = $result['msg'];
-		// 	return $resultArray;
-		// }
+    }
+
+    public function getLoan($requestJson)
+    {
+
+    }
+
+    public function updateLoan($requestJson)
+    {
+
+    }
+
+    public function deleteLoan($requestJson)
+    {
+
+    }
+    
+    /*
+     * Equipment functions
+     */
+
+    public function createEquipment($requestJson)
+    {
+        $returnArray = array('ok' => false, 'msg' => null, 'equipment' => null);
+        //todo - requestJson validation
+
+        // $result = $this->equipmentValidator->validateJSON($requestJson);
+
+        // if(!$result['ok']) {
+        //  $returnArray['ok'] = false;
+        //  $resultArray['msg'] = $result['msg'];
+        //  return $resultArray;
+        // }
 
 
-		$added = $this->dao->createEquipmentType($requestJson, $result['equipment_type'][0]);
+        $result = $this->getEquipmentType(array('name' => $requestJson['equipment_type_name']));
 
-		return array("ok" => true, "message" => "Successfully created EquipmentType '".$requestJson['name']."' !",
-			'equipment_type' => $added);
-	}
+        if(!$result['ok'])
+        {
+            $returnArray['ok'] = false;
+            $returnArray['msg'] = "EquipmentType '".$requestJson['equipment_type_name']."' not found.";
+            return $returnArray;
+        }
 
-	public function getEquipment($requestJson=NULL)
-	{
-		$result = array('ok' => false, 'msg' => null, 'n' => 0, 'equipments' => null);
+        $updated = $this->dao->createEquipment($requestJson, $result['equipment_types'][0]);
 
-		$equipments = $this->dao->getEquipment($requestJson);
+        return array("ok" => true, "message" => "Successfully created Equipment '".$requestJson['department_tag']."' !",
+                'equipment' => $updated);
+    }
 
-		if(is_null($equipments) || empty($equipments))
-		{
-			$result['msg'] = "Equipment not found with given search criteria.";
-			return $result;
-		}
-		else
-		{
-			$result['ok'] = true;
-			$result['msg'] = "Successfully found Equipments.";
-			$result['n'] = count($equipments);
-			$result['equipments'] = $equipments;
-			return $result;
-		}
-	}
+    public function getEquipment($requestJson=NULL)
+    {
+        $result = array('ok' => false, 'msg' => null, 'n' => 0, 'equipments' => null);
 
+        $equipments = $this->dao->getEquipment($requestJson);
 
-	public function getEquipmentType($requestJson=NULL)
-	{
-		$result = array('ok' => false, 'msg' => null, 'n' => 0, 'equipment_types' => null);
+        if(is_null($equipments) || empty($equipments))
+        {
+            $result['msg'] = "Equipment not found with given search criteria.";
+            return $result;
+        }
+        else
+        {
+            $result['ok'] = true;
+            $result['msg'] = "Successfully found Equipments.";
+            $result['n'] = count($equipments);
+            $result['equipments'] = $equipments;
+            return $result;
+        }
+    }
 
-		$equipmentTypes = $this->dao->getEquipmentType($requestJson);
+    public function updateEquipment($requestJson)
+    {
+        $result = array("ok" => false, "msg" => null, "updated_equipment" => null);
 
-		if(is_null($equipmentTypes) || empty($equipmentTypes))
-		{
-			$result['msg'] = "Equipment Type not found with given search criteria.";
-			return $result;
-		}
-		else
-		{
-			$result['ok'] = true;
-			$result['msg'] = "Successfully found Equipment Types.";
-			$result['n'] = count($equipmentTypes);
-			$result['equipment_types'] = $equipmentTypes;
-			return $result;
-		}
-	}
-
-	public function deleteEquipment($requestJson)
-	{
-		$result = array("ok" => false, "msg" => null);
-
-		if(is_null($requestJson) || empty($requestJson))
-		{
-			$result['msg'] = "Json is empty or null.";
-			return $result;
-		}
-
-		$daoResult = $this->dao->deleteEquipment($requestJson['ids']);
-
-		$result['ok'] = $daoResult['ok'];
-		$result['n'] = $daoResult['n'];
-
-		return $result;
-	}
-
-	public function deleteEquipmentType($requestJson)
-	{
-		$result = array("ok" => false, "msg" => null);
-
-		if(is_null($requestJson) || empty($requestJson))
-		{
-			$result['msg'] = "Json is empty or null.";
-			return $result;
-		}
-
-		$daoResult = $this->dao->deleteEquipmentType($requestJson['ids']);
-
-		$result['ok'] = $daoResult['ok'];
-		$result['n'] = $daoResult['n'];
-
-		return $result;
-	}
-
-	public function updateEquipment($requestJson)
-	{
-		$result = array("ok" => false, "msg" => null, "updated_equipment" => null);
-                
         if(isset($requestJson['update_equipment']) && !empty($requestJson['update_equipment']))
         {
             $result = $this->dao->updateEquipment($requestJson['_id'], $requestJson['update_equipment']);
         }
-        
+
         if(isset($requestJson['update_equipment_attributes']) && !empty($requestJson['update_equipment_attributes']))
         {
             foreach ($requestJson['update_equipment_attributes'] as $updateTarget)
@@ -209,9 +242,9 @@ class CoreService
         // $result = $this->equipmentTypeValidator->validateJSON($requestJson);
 
         // if(!$result['ok']) {
-        // 	$returnArray['ok'] = false;
-        // 	$resultArray['msg'] = $result['msg'];
-        // 	return $resultArray;
+        //  $returnArray['ok'] = false;
+        //  $resultArray['msg'] = $result['msg'];
+        //  return $resultArray;
         // }
 
         $added = $this->dao->createEquipmentType($requestJson, $result['equipment_type'][0]);

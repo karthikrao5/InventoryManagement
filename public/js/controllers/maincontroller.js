@@ -4,7 +4,15 @@ ctrl.controller('EquipmentsController', ["$scope", "$http", "$location", "$windo
 	function($scope, $http, $location, $window) {
 
 		var endpoint = 'http://localhost:8080/v1/equipments';
-		$scope.token = $window.localStorage.jwt;
+		// $scope.token = $window.localStorage.jwt;
+		function parseJWT(token) {
+			var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+		}
+
+		$scope.token = parseJWT($window.localStorage.jwt)["exp"];
+
 	    $http.get(endpoint).then(function (response) {
 	        $scope.equipments = response.data.equipments;
 	        console.log(angular.toJson(response.data.equipments, true));
@@ -95,13 +103,14 @@ ctrl.controller("AuthController", ["$http", "$scope", "$location", "$window",
 		$scope.authToken;
 
 		$http.get('http://localhost:8080/v1/auth').then(function(response) {
-			console.log("Response from /auth" + response.data);
-			$scope.authToken = response.data;
-			$window.localStorage.setItem(response.data.jwt);
+			console.log("Response from /auth" + response.data.jwt);
+			$scope.authToken = response.data.jwt;
+			$window.localStorage.setItem("jwt", response.data.jwt);
 		});
 
-		if ($window.localStorage.jwt) {
-			$location.path("/equipments");
+		if ($window.localStorage.getItem("jwt")) {
+			console.log("redirectign to equipments");
+			$location.path('/equipments');
 		} else {
 			alert("No auth token");
 		}

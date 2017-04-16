@@ -34,13 +34,9 @@ class Validator
 		// 	}
 		// }
 
-		// call dao function to check if this use exists in our
-		// db. If not, create one.
-		// if user exists, set php global var for this user and user type
-
 		// return array("user"=>$authenticatedUser, "user_email"=>$userEmail,
 		// 			 "user_type"=>$userType);
-		return array("user"=>'krao34', "user_email"=>'krao34@gatech.edu',
+		return array("user"=>'krao34', "user_email"=>'kraoEmail@hotmail.com',
 					 "user_type"=>'it-admin');
 	}
 
@@ -52,9 +48,12 @@ class Validator
 		$secretKey = $settings["jwtSecretKey"];
 		$encryptionAlgo = $settings['encryptionAlgo'];
 
-		$jwt = JWT::decode($token, $secretKey, array($encryptionAlgo));
-
-		return json_encode($jwt);
+		try {
+			$jwt = JWT::decode($token, $secretKey, array($encryptionAlgo));
+			return json_encode($jwt);
+		} catch(\Firebase\JWT\JWT\ExpiredException $e) {
+			return $response->write("Expired Token")->withStatus(401);
+		}
 	}
 
 	public function generateTokenForUser() {
@@ -62,10 +61,10 @@ class Validator
 		$userArray = $this->getAuthUser();
 		$encryptionAlgo = $this->c->get('settings')['encryptionAlgo'];
 
-		$tokenID 	= $userArray['user'];
-		$issuedAt   = time();
-		$notBefore  = $issuedAt + 10;		// Token valid after 10 seconds
-		$expire     = $notBefore + 300;      // Adding 5 mins
+		$tokenID 	= $userArray['user'];	 
+		$issuedAt   = time();				 // current time
+		$notBefore  = $issuedAt + 10;		 // Token valid after 10 seconds
+		$expire     = $notBefore + 300;      // expires after 5 minutes
 		$serverName = $this->c->get('settings')['serverName']; // Retrieve the server name from config file
 
 		$tokenArray  = [

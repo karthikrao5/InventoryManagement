@@ -37,8 +37,22 @@ app.factory('authInterceptor', ["$window", "$q", "$location",
             request: function (config) {
                 config.headers = config.headers || {};
 
-                if($window,localStorage.jwt) {
-                    config.headers.Authorization = 'Bearer' + $window.localStorage.jwt;
+                if($window,localStorage.getItem("jwt")) {
+                    function parseJWT(token) {
+                        var base64Url = token.split('.')[1];
+                        var base64 = base64Url.replace('-', '+').replace('_', '/');
+                        return JSON.parse(window.atob(base64));
+                    }
+
+                    var expirationEpoch = parseJWT($window.localStorage.jwt)["exp"];
+
+                    var currTime = new Date().getTime() / 1000;
+
+                    if (expirationEpoch < currTime) {
+                        console.log("Current time: " + currTime + ". Expired token " + expirationEpoch + ". Redirecting to auth.");
+                        $location.path("/auth");
+                    }
+                    config.headers.Authorization = 'Bearer ' + $window.localStorage.getItem("jwt");
                 }
                 return config;
             },

@@ -40,7 +40,7 @@ class EquipmentController extends AbstractController{
             $token = str_replace("Bearer ", "", $authHeader[0]);
             // return print_r($authHeader);
             // return print_r($this->authValidator->authenticateToken($token));
-            $decodedToken = $this->authenticateToken($token);
+            $decodedToken = $this->authValidator->authenticateToken($token);
 
             if($decodedToken['userName'] != "krao34") {
                 return $response->write("Unauthorized")->withStatus(401);
