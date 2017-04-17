@@ -100,6 +100,11 @@ class Validator
 	public function generateTokenForHook($data) {
 		$settings = $this->c->get('settings');
 
+		$username = null;
+		if($data["user_name"]) {
+			$username = $data["user_name"];
+		}
+
 		$encryptionAlgo = $settings['encryptionAlgo'];
 
 		$tokenID 	= $data['hook_name'];	 
@@ -115,7 +120,7 @@ class Validator
 				'exp' => $expire,
 				'data'=> [
 						'hook_name' => $data['hook_name'],
-						'user_name' => $data['user_name']
+						'user_name' => $username
 					]
 			];
 

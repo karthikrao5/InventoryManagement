@@ -2,7 +2,7 @@
 
    <form class="equipment-form" ng-submit="submitEquipmentCreation()">
 
-      <select ng-model="formObj.equipment_type_name" ng-options="item.name as item.name for item in equipmentTypeList"></select>
+      <select ng-change="updateEqType()" ng-model="formObj.equipment_type_name" ng-options="item.name as item.name for item in equipmentTypeList"></select>
 
       <div ng-repeat="label in labels">
          <label>{{ label }}</label>

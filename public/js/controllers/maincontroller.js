@@ -1,18 +1,15 @@
 var ctrl = angular.module('app.controllers', []);
 
-ctrl.controller('EquipmentsController', ["$scope", "$http", "$location", "$window", 
-	function($scope, $http, $location, $window) {
+ctrl.controller('EquipmentsController', ["$scope", "$http", "$location", "$window", "Auth", 
+	function($scope, $http, $location, $window, Auth) {
 
-		var endpoint = 'http://localhost:8080/v1/equipments';
-		// $scope.token = $window.localStorage.jwt;
-		function parseJWT(token) {
-			var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace('-', '+').replace('_', '/');
-            return JSON.parse(window.atob(base64));
+		// if token in localstorage is expired, redirect to auth
+		if (Auth.isExpired()) {
+			$location.path("/auth");
 		}
 
-		$scope.token = parseJWT($window.localStorage.jwt)["exp"];
-
+		var endpoint = 'http://localhost:8080/v1/equipments';
+		
 	    $http.get(endpoint).then(function (response) {
 	        $scope.equipments = response.data.equipments;
 	        console.log(angular.toJson(response.data.equipments, true));
@@ -25,19 +22,32 @@ ctrl.controller('EquipmentsController', ["$scope", "$http", "$location", "$windo
 ]);
 ctrl.controller("NewEquipmentController", ["$scope", "$http", "$location", 
 	function($scope, $http, $location) {
+
 		$scope.equipmentTypeList = [];
 		$scope.formObj = {};
+		$scope.defaultEquipmentTypes = {};
+		$scope.currEqType;
 
 		$http.get('http://localhost:8080/v1/equipmenttypes').then(function(response) {
 
 			$scope.equipmenttypes = response.data.equipment_types;
-			var count = 0;
+
 			angular.forEach($scope.equipmenttypes, function(item) {
 				// $scope.equipmentTypeList.push(item['name']);
 				temp = {};
 				temp['name'] = item['name'];
 				$scope.equipmentTypeList.push(temp);
+
+				//===============================
+				// create default attribute list to populate keys
+				$scope.defaultEquipmentTypes[item["name"]] = []
+				angular.forEach(item.equipment_type_attributes, function(attr) {
+					$scope.defaultEquipmentTypes[item["name"]].push(attr["name"]);					
+				});
+
 			});
+			// console.log($scope.defaultEquipmentTypes);
+
 		});
 
 		$scope.labels = ['department_tag', "gt_tag", "status", "comment", "loaned_to"];
@@ -53,14 +63,22 @@ ctrl.controller("NewEquipmentController", ["$scope", "$http", "$location",
 			});
 
 
-		}
+		};
 		
- 		// $scope.attributes = [];
-		$scope.attrList = {"attributes": [{"key": "","value": ""}]}
+		// $scope.attrList = {
+		// 	"attributes": [
+		// 		{
+		// 			"key": "",
+		// 			"value": ""
+		// 		}
+		// 	]
+		// }
+
+		$scope.attrList = {};
+		$scope.attrList["attributes"] = [];
 
 		$scope.addNewAttribute = function(index) {
 			var newAttr = {"key": "", "value": ""};
-
 			// if($scope.attrList.attributes.length <= index + 1) {
 				$scope.attrList.attributes.splice(index+1,0,newAttr);
 			// }
@@ -77,6 +95,19 @@ ctrl.controller("NewEquipmentController", ["$scope", "$http", "$location",
 		$scope.go = function(route) {
 			$location.path( route );
 		};
+
+		$scope.updateEqType = function() {
+			$scope.attrList.attributes = [];
+			var currentSelectedType = $scope.formObj.equipment_type_name;
+			var something = $scope.defaultEquipmentTypes[currentSelectedType];
+
+			for(var i = 0; i < something.length; i++) {
+				val = {};
+				val["key"] = something[i];
+				val["value"] = "";
+				$scope.attrList.attributes.push(val);
+			}
+		}
 
 	}
 ]);
@@ -95,16 +126,14 @@ ctrl.controller("AuthController", ["$http", "$location", "$scope", "$window", "A
 
 		function successAuth(response) {
 			$window.localStorage.setItem("jwt", response.data.jwt);
-			window.location = "/";
+			console.log($window.localStorage.getItem("jwt"));
+			// window.location = "/";
 		}
 
 		var body = {"isHook": true, "hook_name" : "front-endAngular"};
-
-		if (Auth.isExpired()) {
-			Auth.authorize(JSON.stringify(body), successAuth, function() {
-				console.log("Some auth error");
-			});
-		}		
+		Auth.authorize(JSON.stringify(body), successAuth, function() {
+			console.log("Some auth error");
+		});
 	}
 ]);
 
