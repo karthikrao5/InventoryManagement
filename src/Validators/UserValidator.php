@@ -10,16 +10,6 @@ class UserValidator extends AbstractValidator
             parent::__construct($ci);
     }
     
-    public function isMongoIdString($string)
-    {
-        return preg_match('/^[a-f\d]{24}$/i', $string);
-    }
-    
-    public function isMongoIdObject($object)
-    {
-        return $object instanceof \MongoId;
-    }
-    
     public function isUsernameExist($username)
     {
         return $this->core->getUser(array('username' => $username))['ok'];
