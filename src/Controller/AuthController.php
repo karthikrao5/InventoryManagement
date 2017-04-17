@@ -71,7 +71,10 @@ class AuthController extends AbstractController {
 			return $response->write($val["msg"])->withStatus($val["status"]);
 		}
 		if ($val["ok"]) {
+			// return $response->withJson($val["msg"]);
 			return $response->withJson($val["data"]);
+		} else {
+			return $response->withJson($val["msg"])->withStatus($val["status"]);
 		}
 	}
 }

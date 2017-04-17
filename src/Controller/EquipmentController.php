@@ -37,9 +37,12 @@ class EquipmentController extends AbstractController{
         $token = str_replace("Bearer ", "", $authHeader[0]);
         $result = $this->authValidator->decodeToken($token);
 
-        // if($result["ok"]) {
-            
-        // }
+        
+
+        if(!$result["ok"]) {
+            // decode messed up. Look into src\Core\Validator.php
+            return $response->write($result["msg"])->withStatus($result["status"]);
+        }
 
 
         if(is_null($request)) {

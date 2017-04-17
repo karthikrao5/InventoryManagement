@@ -40,6 +40,10 @@ class Validator
 	 */
 	public function decodeToken($token) {
 
+		if(!$token) {
+			return array("ok"=>false, "msg"=>"no token recieved.", "status"=>404);
+		}
+
 
 		$settings = $this->c->get('settings');
 
@@ -72,15 +76,21 @@ class Validator
 			$returnArray["hook_name"] = $jwt->data->hook_name;
 			$returnArray["user_name"] = $jwt->data->user_name;
 		
-			$result = array("ok"=>true, "msg"=>"Successful hook token decoded.", "data"=>$returnArray);
+			$result = array("ok"=>true, "msg"=>"Successful hook token decoded.", "data"=>$returnArray, "status"=>200);
 			return $result;
 		} else {
-			$this->logger->debug("Decoding token for user ".$jwt->data->user_name.".");
+			if($jwt->data->user_name) {
+				$this->logger->debug("Decoding token for user ".$jwt->data->user_name.".");
 
-			$return = array("user"=>$jwt->data->user_name, 
-						    "user_email"=>$jwt->data->user_email);
+				$return = array("user"=>$jwt->data->user_name, 
+							    "user_email"=>$jwt->data->user_email);
 
-			return array("ok"=>true, "msg"=>"Successful user token decoded.", "data"=>$return);
+				return array("ok"=>true, "msg"=>"Successful user token decoded.", "data"=>$return, "status"=>200);
+			} else {
+				// should not get down here. make sure of it. still untested (april 17th 2017)
+				return array("ok"=>false,"msg"=>"something went wrong with decode", "status"=>404);
+			}
+			
 		}
 	}
 
