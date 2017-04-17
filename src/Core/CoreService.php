@@ -18,9 +18,13 @@ class CoreService
         $this->dao = new DAO();
         $this->container = $c;
         $this->logger = $c->get("logger");
+        
         $this->equipmentValidator = $c->get("EquipmentValidator");
+        $this->equipmentValidator->setCore($this);
         $this->equipmentTypeValidator = $c->get('EquipmentTypeValidator');
+        $this->equipmentTypeValidator->setCore($this);
         $this->userValidator = $c->get('UserValidator');
+        $this->userValidator->setCore($this);
     }
     
     /*
@@ -57,7 +61,7 @@ class CoreService
     {
         $result = array('ok' => false, 'msg' => null, 'user' => null);
         
-        $validationResult = $this->userValidator->isValidJson($requestJson);
+        $validationResult = $this->userValidator->isValidCreateJson($requestJson);
         
         if(!$validationResult['ok'])
         {
@@ -94,7 +98,8 @@ class CoreService
         
         if(is_null($users) || empty($users))
         {
-            $result['msg'] = "Failed to find users.";
+            $result['msg'] = "Failed to find user with given search criteria.";
+            $result['search_criteria'] = $requestJson;
         }
         else
         {

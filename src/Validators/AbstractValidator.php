@@ -2,7 +2,6 @@
 
 namespace App\Validators;
 
-use Doctrine\ODM\MongoDB\DocumentManager;
 use Interop\Container\ContainerInterface;
 
 abstract class AbstractValidator {
@@ -16,10 +15,13 @@ abstract class AbstractValidator {
         protected $core;
 
 	public function __construct(ContainerInterface $ci) {
-		$this->ci = $ci;
-		$this->dm = $ci->get('dm');
-		$this->logger = $ci->get('logger');
-                $this->core = $ci->get("core");
+            $this->ci = $ci;
+            $this->dm = $ci->get('dm');
+            $this->logger = $ci->get('logger');
 	}
-
+        
+        public function setCore($core)
+        {
+            $this->core = $core;
+        }
 }
