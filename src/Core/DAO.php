@@ -134,12 +134,86 @@ class DAO
     
     public function addEquipmentToLoan($loanId, $equipmentId)
     {
+        if(!($loanId instanceof MongoId))
+        {
+            $loanId = new MongoId($loanId);
+        }
         
+        if(!($equipmentId instanceof MongoId))
+        {
+            $equipmentId = new MongoId($equipmentId);
+        }
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $loans = $mongo->inventorytracking->loans;
+        
+        $loan = $loans->findOne(array('_id' => $loanId));
+        $equipmentsPrev = $loan['equipments'];
+        
+        $result = $loans->update(array('_id' => $loanId),
+            array('$addToSet' => array('equipments' => $equipmentId)));
+        
+        $loan['equipments'][] = $loanId;
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $loanId;
+        $log['document_type'] = "loan";
+        $log['action_type'] = "edit";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        $log['changes'][] = (object)array('field_name' => 'equipments', 'old_value' => $equipmentsPrev, 'new_value' => $loan['equipments']);
+        $this->updateLog($log);
+        
+        $result = $loans->update(array('_id' => $loanId),
+            array('$addToSet' => array('logs' => $log['_id'])));
+        
+        return $result;
     }
     
     public function removeEquipmentFromLoan($loanId, $equipmentId)
     {
+        if(!($loanId instanceof MongoId))
+        {
+            $loanId = new MongoId($loanId);
+        }
         
+        if(!($equipmentId instanceof MongoId))
+        {
+            $equipmentId = new MongoId($equipmentId);
+        }
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $loans = $mongo->inventorytracking->loans;
+        
+        $loan = $loans->findOne(array('_id' => $loanId));
+        $equipmentsPrev = $loan['equipments'];
+        
+        $result = $loans->update(array('_id' => $loanId),
+            array('$pull' => array('equipments' => $equipmentId)));
+        
+        foreach($loan['equipments'] as $key => $value)
+        {
+            if($value->{'$id'} == $equipmentId->{'$id'})
+            {
+                unset($loan['equipments'][$key]);
+                $loan['equipments'] = array_values($loan['equipments']);
+                break;
+            }
+        }
+              
+        $log = $this->createLog();
+        $log['reference_id'] = $loanId;
+        $log['document_type'] = "loan";
+        $log['action_type'] = "edit";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        $log['changes'][] = (object)array('field_name' => 'equipments', 'old_value' => $equipmentsPrev, 'new_value' => $loan['equipments']);
+        $this->updateLog($log);
+        
+        $result = $loans->update(array('_id' => $loanId),
+            array('$addToSet' => array('logs' => $log['_id'])));
+        
+        return $result;
     }
     
     public function deleteLoan($id)
