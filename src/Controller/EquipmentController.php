@@ -37,8 +37,6 @@ class EquipmentController extends AbstractController{
         $token = str_replace("Bearer ", "", $authHeader[0]);
         $result = $this->authValidator->decodeToken($token);
 
-        
-
         if(!$result["ok"]) {
             // decode messed up. Look into src\Core\Validator.php
             return $response->write($result["msg"])->withStatus($result["status"]);
@@ -75,6 +73,15 @@ class EquipmentController extends AbstractController{
      */
     public function create($request, $response) {
 
+        $authHeader = $request->getHeader("Authorization");
+        $token = str_replace("Bearer ", "", $authHeader[0]);
+        $result = $this->authValidator->decodeToken($token);
+        
+        if(!$result["ok"]) {
+            // decode messed up. Look into src\Core\Validator.php
+            return $response->write($result["msg"])->withStatus($result["status"]);
+        }
+
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }
@@ -97,6 +104,15 @@ class EquipmentController extends AbstractController{
 // -----------------------------------------------------------------
 //  update/replace item by ID
     public function updateOne($request, $response, $args) {
+        $authHeader = $request->getHeader("Authorization");
+        $token = str_replace("Bearer ", "", $authHeader[0]);
+        $result = $this->authValidator->decodeToken($token);
+        
+        if(!$result["ok"]) {
+            // decode messed up. Look into src\Core\Validator.php
+            return $response->write($result["msg"])->withStatus($result["status"]);
+        }
+
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }
@@ -115,6 +131,16 @@ class EquipmentController extends AbstractController{
 // -----------------------------------------------------------------
 
     public function delete($request, $response, $args) {
+
+        $authHeader = $request->getHeader("Authorization");
+        $token = str_replace("Bearer ", "", $authHeader[0]);
+        $result = $this->authValidator->decodeToken($token);
+        
+        if(!$result["ok"]) {
+            // decode messed up. Look into src\Core\Validator.php
+            return $response->write($result["msg"])->withStatus($result["status"]);
+        }
+
         if(is_null($request))
 		{
             return $response->write("Invalid request.")->withStatus(400);

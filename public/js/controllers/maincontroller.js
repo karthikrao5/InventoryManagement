@@ -94,14 +94,16 @@ ctrl.controller("AuthController", ["$http", "$location", "$scope", "$window",
 	function($http, $location, $scope, $window) {
 		$scope.authToken;
 
-		$http.get('http://localhost:8080/v1/auth').then(function(response) {
+		var body = {"isHook": true, "hook_name" : "front-endAngular"};
+
+		$http.post('http://localhost:8080/v1/auth', JSON.stringify(body)).then(function(response) {
 			console.log("Response from /auth" + response.data.jwt);
 			$scope.authToken = response.data.jwt;
 			$window.localStorage.setItem("jwt", response.data.jwt);
 			console.log("New jwt: " + $window.localStorage.getItem("jwt"));
 		});
 
-		if ($window.localStorage.getItem("jwt")) {
+		if ($window.localStorage.getItem("jwt") == $scope.authToken) {
 			console.log("redirectign to equipments");
 			$location.path('/equipments');
 		} else {
