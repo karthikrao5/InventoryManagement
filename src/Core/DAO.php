@@ -132,6 +132,16 @@ class DAO
         return $result;
     }
     
+    public function addEquipmentToLoan($loanId, $equipmentId)
+    {
+        
+    }
+    
+    public function removeEquipmentFromLoan($loanId, $equipmentId)
+    {
+        
+    }
+    
     public function deleteLoan($id)
     {
         if(!($id instanceof MongoId))
@@ -310,6 +320,146 @@ class DAO
             $log['changes'][] = (object)array('field_name' => $key, 'old_value' => $user[$key], 'new_value' => $value);
         }
         
+        $this->updateLog($log);
+        
+        return $result;
+    }
+    
+    public function addCurrentLLoanToUser($userId, $loanId)
+    {
+        if(!($userId instanceof MongoId))
+        {
+            $userId = new MongoId($userId);
+        }
+        
+        if(!($loanId instanceof MongoId))
+        {
+            $loanId = new MongoId($loanId);
+        }
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $users = $mongo->inventorytracking->users;
+        
+        $user = $users->findOne(array('_id' => $userId));
+        $currentLoanPrev = $user['current_loans'];
+        
+        $result = $users->update(array('_id' => $userId),
+            array('$addToSet' => array('current_loans' => $loanId)));
+        
+        $user['current_loans'][] = $userId;
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $userId;
+        $log['document_type'] = "user";
+        $log['action_type'] = "edit";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        $log['changes'][] = (object)array('field_name' => 'current_loans', 'old_value' => $currentLoanPrev, 'new_value' => $user['current_loans']);
+        $this->updateLog($log);
+        
+        return $result;
+    }
+    
+    public function addPastLoanToUser($userId, $loanId)
+    {
+        if(!($userId instanceof MongoId))
+        {
+            $userId = new MongoId($userId);
+        }
+        
+        if(!($loanId instanceof MongoId))
+        {
+            $loanId = new MongoId($loanId);
+        }
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $users = $mongo->inventorytracking->users;
+        
+        $user = $users->findOne(array('_id' => $userId));
+        $pastLoanPrev = $user['past_loans'];
+        
+        $result = $users->update(array('_id' => $userId),
+            array('$addToSet' => array('past_loans' => $loanId)));
+        
+        $user['past_loans'][] = $userId;
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $userId;
+        $log['document_type'] = "user";
+        $log['action_type'] = "edit";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        $log['changes'][] = (object)array('field_name' => 'past_loans', 'old_value' => $pastLoanPrev, 'new_value' => $user['current_loans']);
+        $this->updateLog($log);
+        
+        return $result;
+    }
+    
+    public function removeCurrentLoanFromUser($userId, $loanId)
+    {
+        if(!($userId instanceof MongoId))
+        {
+            $userId = new MongoId($userId);
+        }
+        
+        if(!($loanId instanceof MongoId))
+        {
+            $loanId = new MongoId($loanId);
+        }
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $users = $mongo->inventorytracking->users;
+        
+        $user = $users->findOne(array('_id' => $userId));
+        $currentLoanPrev = $user['current_loans'];
+        
+        $result = $users->update(array('_id' => $userId),
+            array('$pull' => array('current_loans' => $loanId)));
+        
+        $user['current_loans'][] = $userId;
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $userId;
+        $log['document_type'] = "user";
+        $log['action_type'] = "edit";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        $log['changes'][] = (object)array('field_name' => 'current_loans', 'old_value' => $currentLoanPrev, 'new_value' => $user['current_loans']);
+        $this->updateLog($log);
+        
+        return $result;
+    }
+    
+    public function removePastLoanFromUser($userId, $loanId)
+    {
+        if(!($userId instanceof MongoId))
+        {
+            $userId = new MongoId($userId);
+        }
+        
+        if(!($loanId instanceof MongoId))
+        {
+            $loanId = new MongoId($loanId);
+        }
+        
+        $mongo = new MongoClient(DAO::$connectionString);
+        $users = $mongo->inventorytracking->users;
+        
+        $user = $users->findOne(array('_id' => $userId));
+        $currentLoanPrev = $user['past_loans'];
+        
+        $result = $users->update(array('_id' => $userId),
+            array('$pull' => array('past_loans' => $loanId)));
+        
+        $user['past_loans'][] = $userId;
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $userId;
+        $log['document_type'] = "user";
+        $log['action_type'] = "edit";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        $log['changes'][] = (object)array('field_name' => 'past_loans', 'old_value' => $currentLoanPrev, 'new_value' => $user['past_loans']);
         $this->updateLog($log);
         
         return $result;

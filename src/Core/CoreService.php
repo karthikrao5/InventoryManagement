@@ -131,6 +131,43 @@ class CoreService
     {
         $result = array('ok' => false, 'msg' => null, 'user' => null);
         
+        if(isset($requestJson['edit_user']))
+        {
+            $daoResult = $this->dao->updateUser($requestJson['_id'], $requestJson['edit_user']);
+        }
+        
+        if(isset($requestJson['add_current_loans']))
+        {
+            foreach($requestJson['add_current_loans'] as $loanId)
+            {
+                $daoResult = $this->dao->addCurrentLLoanToUser($requestJson['_id'], $loanId);
+            }
+        }
+        
+        if(isset($requestJson['add_past_loans']))
+        {
+            foreach($requestJson['add_past_loans'] as $loanId)
+            {
+                $daoResult = $this->dao->addPastLoanToUser($requestJson['_id'], $loanId);
+            }
+        }
+        
+        if(isset($requestJson['remove_current_loans']))
+        {
+            foreach($requestJson['remove_current_loans'] as $loanId)
+            {
+                $daoResult = $this->dao->removeCurrentLoanFromUser($requestJson['_id'], $loanId);
+            }
+        }
+        
+        if(isset($requestJson['remove_past_loans']))
+        {
+            foreach($requestJson['remove_past_loans'] as $loanId)
+            {
+                $daoResult = $this->dao->removePastLoanFromUser($requestJson['_id'], $loanId);
+            }
+        }
+        
         return $result;
     }
 

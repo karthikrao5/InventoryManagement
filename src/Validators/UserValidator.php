@@ -20,9 +20,19 @@ class UserValidator extends AbstractValidator
         return $object instanceof \MongoId;
     }
     
-    public function isUsernameExist($json)
+    public function isUsernameExist($username)
     {
-        return $this->core->getUser(array('username' => $json['username']))['ok'];
+        return $this->core->getUser(array('username' => $username))['ok'];
+    }
+    
+    public function isUserIdExist($id)
+    {
+        if(!($id instanceof \MongoId))
+        {
+            $id = new \MongoId($id);
+        }
+        
+        return $this->core->getUser(array('_id' => $id))['ok'];
     }
     
     public function isValidDeleteJson($json)
