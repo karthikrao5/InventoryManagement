@@ -4,7 +4,7 @@ angular.module("app.controllers").controller("AuthController", ["$http", "$locat
 		function successAuth(response) {
 			$window.localStorage.setItem("jwt", response.data.jwt);
 			console.log($window.localStorage.getItem("jwt"));
-			// window.location = "/";
+			window.location = "/";
 		}
 
 		var body = {"isHook": true, "hook_name" : "front-endAngular"};
