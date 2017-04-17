@@ -10,13 +10,13 @@ angular.module("app.controllers").controller('EquipmentsController', ["$scope", 
 
 
 
-	    $scope.columns = [{field: "department_tag", enableHiiding: false},
-	    				  {field: "gt_tag", enableHiiding: false},
-	    				  {field: "status", enableHiiding: false},
-	    				  {field: "loaned_to", enableHiiding: false},
-	    				  {field: "equipment_type_name", enableHiiding: false},
+	    $scope.columns = [{field: "department_tag", enableHiding: false},
+	    				  {field: "gt_tag", enableHiding: false},
+	    				  {field: "status", enableHiding: false},
+	    				  {field: "loaned_to", enableHiding: false},
+	    				  {field: "equipment_type_name", enableHiding: false},
 	    				  {field: "attributes"},
-	    				  {field: "created_on", enableHiiding: false},
+	    				  {field: "created_on", enableHiding: false}
 	    			];
 
 	    $scope.gridOptions = {

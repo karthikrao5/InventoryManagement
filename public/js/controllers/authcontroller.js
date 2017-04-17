@@ -1,9 +1,15 @@
-// angular.module("app.controllers").controller('AuthController', ["$scope", "$http", "$window", 
-// 	function($scope, $http, $window) {
-// 		var endpoint = "http://localhost:8080/v1/auth";
+angular.module("app.controllers").controller("AuthController", ["$http", "$location", "$scope", "$window", "Auth",
+	function($http, $location, $scope, $window, Auth) {
 
-// 		$http.get(endpoint).then(function(response) {
-// 			$window.localStorage["jwt"] = response.data.jwt;
-// 		});
-// 	}
-// ]);
+		function successAuth(response) {
+			$window.localStorage.setItem("jwt", response.data.jwt);
+			console.log($window.localStorage.getItem("jwt"));
+			// window.location = "/";
+		}
+
+		var body = {"isHook": true, "hook_name" : "front-endAngular"};
+		Auth.authorize(JSON.stringify(body), successAuth, function() {
+			console.log("Some auth error");
+		});
+	}
+]);

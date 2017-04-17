@@ -22,7 +22,7 @@ angular.module("app").factory("Auth", ["$window", "$http", function($window, $ht
 
     return {
         authorize : function(data, success, error) {
-            $http.post('http://localhost:8080/v1/auth', data).then(success).error(error)
+            $http.post('http://localhost:8080/v1/auth', data).then(success).error(error);
         },
 
         isExpired : function() {
