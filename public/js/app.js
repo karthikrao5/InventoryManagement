@@ -10,6 +10,10 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid"])
             templateUrl: 'templates/create-equipment.html',
             controller: 'NewEquipmentController'
         })
+        .when('/equipments/:id', {
+            templateUrl: 'templates/edit-equipment.html',
+            controller: 'EditEquipmentController'
+        })
         .when('/', {
             templateUrl: 'templates/home.html',
             controller: "HomeController"
