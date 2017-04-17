@@ -32,26 +32,26 @@ class AuthController extends AbstractController {
 		if (!$body) {
 			// if body is not there, generate user token and return
 			$token = $this->authValidator->getAuthToken();
-			$returnArray = array("jwt"=> json_encode($token));
-			return $response->withJson($returnArray);
+			return $response->withJson($token);
 		} else {
-			if (!$body["isHook"] && $body["hookname"]) {
+			if ($body["isHook"] && $body["hook_name"]) {
 				$arr["isHook"] = true;
-				$arr["hookname"] = $body["hookname"];
-			} else if ($body["username"]) {
-				$arr["username"] = $body["username"];
+				$arr["hook_name"] = $body["hook_name"];
+				if($body["user_name"]) {
+					$arr["user_name"] = $body["user_name"];
+				}
+
+				// pass in array of 3 things for hook. if all 3 are unset,
+				// assume user is authenticating and access apache env var
+				// for CAS information
+
+				// isHook : boolean
+				// hookame : string
+				// username : optional
+				$token = $this->authValidator->getAuthToken($arr);
+				// $returnArray = array("jwt"=> json_encode($token));
+				return $response->withJson($token);
 			}
-
-			// pass in array of 3 things for hook. if all 3 are unset,
-			// assume user is authenticating and access apache env var
-			// for CAS information
-
-			// isHook : boolean
-			// hookame : string
-			// username : optional
-			$token = $this->authValidator->getAuthToken($arr);
-			$returnArray = array("jwt"=> json_encode($token));
-			return $response->withJson($returnArray);
 		}
 
 		// should not get here
@@ -65,8 +65,13 @@ class AuthController extends AbstractController {
 	public function testDecode($request, $response) {
 		$body = $request->getParsedBody();
 
-		$val = $this->authValidator->authenticateToken($body['jwt']);
+		$val = $this->authValidator->decodeToken($body['jwt']);
 
-		return $val;
+		if ($val["status"] == 401) {
+			return $response->write($val["msg"])->withStatus($val["status"]);
+		}
+		if ($val["ok"]) {
+			return $response->withJson($val["data"]);
+		}
 	}
 }

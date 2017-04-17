@@ -80,7 +80,7 @@ $app->get('/addequipmenttype', function($request, $response) {
 $app->group('/v1', function() {
 
     $this->group('/auth', function() {
-        $this->get('', 'AuthController:authorize');
+        $this->post('', 'AuthController:authorize');
         $this->post('/decode', 'AuthController:testDecode');
     });
 

@@ -33,6 +33,15 @@ class EquipmentController extends AbstractController{
      */
     public function find($request, $response) {
 
+        $authHeader = $request->getHeader("Authorization");
+        $token = str_replace("Bearer ", "", $authHeader[0]);
+        $result = $this->authValidator->decodeToken($token);
+
+        // if($result["ok"]) {
+            
+        // }
+
+
         if(is_null($request)) {
             return $response->write("Invalid request.")->withStatus(400);
         }
