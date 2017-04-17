@@ -100,9 +100,11 @@ ctrl.controller("AuthController", ["$http", "$location", "$scope", "$window", "A
 
 		var body = {"isHook": true, "hook_name" : "front-endAngular"};
 
-		Auth.authorize(JSON.stringify(body), successAuth, function() {
-			console.log("Some auth error");
-		});
+		if (Auth.isExpired()) {
+			Auth.authorize(JSON.stringify(body), successAuth, function() {
+				console.log("Some auth error");
+			});
+		}		
 	}
 ]);
 
