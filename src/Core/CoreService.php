@@ -74,6 +74,9 @@ class CoreService
            return $result;
         }
         
+        $requestJson['current_loans'] = array();
+        $requestJson['past_loans'] = array();
+        
         $user = $this->dao->createUser($requestJson);
         
         if(is_null($user))
@@ -114,12 +117,42 @@ class CoreService
 
     public function updateUser($requestJson, $username, $isHook, $hookname)
     {
-        return $this->dao->updateUser($requestJson['_id'], $requestJson['updateValues']);
+        $validationResult = $this->userValidator->isValidUpdateJson($requestJson);
+        
+        if(!$validationResult['ok'])
+        {
+            return $validationResult;
+        }
+        
+        return $this->updateUserHelper($requestJson);
+    }
+    
+    private function updateUserHelper($requestJson)
+    {
+        $result = array('ok' => false, 'msg' => null, 'user' => null);
+        
+        return $result;
     }
 
     public function deleteUser($requestJson, $username, $isHook, $hookname)
     {
-        return $this->dao->removeUser($requestJson['_id']);
+        $validationResult = $this->userValidator->isValidDeleteJson($requestJson);
+        
+        if(!$validationResult['ok'])
+        {
+            return $validationResult;
+        }
+        
+        if(isset($json['_id']) && $this->userValidator->isMongoIdString($json['_id']))
+        {
+            $daoResult = $this->dao->removeUser($requestJson['_id']);
+        }
+        else
+        {
+            $daoResult = $this->dao->removeUser($requestJson['username']);
+        }
+        
+        return $daoResult;
     }
 
     /*
