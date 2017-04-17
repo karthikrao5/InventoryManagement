@@ -82,33 +82,27 @@ ctrl.controller("NewEquipmentController", ["$scope", "$http", "$location",
 ]);
 
 
-ctrl.controller("HomeController", ["$http", "$scope", "$location", 
-	function($http, $location, $scope) {
+ctrl.controller("HomeController", ["$scope", "$location", 
+	function($location, $scope) {
 		$scope.go = function(route) {
 			$location.path( route );
 		};
 	}
 ]);
 
-ctrl.controller("AuthController", ["$http", "$location", "$scope", "$window",
-	function($http, $location, $scope, $window) {
-		$scope.authToken;
+ctrl.controller("AuthController", ["$http", "$location", "$scope", "$window", "Auth",
+	function($http, $location, $scope, $window, Auth) {
+
+		function successAuth(response) {
+			$window.localStorage.setItem("jwt", response.data.jwt);
+			window.location = "/";
+		}
 
 		var body = {"isHook": true, "hook_name" : "front-endAngular"};
 
-		$http.post('http://localhost:8080/v1/auth', JSON.stringify(body)).then(function(response) {
-			console.log("Response from /auth" + response.data.jwt);
-			$scope.authToken = response.data.jwt;
-			$window.localStorage.setItem("jwt", response.data.jwt);
-			console.log("New jwt: " + $window.localStorage.getItem("jwt"));
+		Auth.authorize(JSON.stringify(body), successAuth, function() {
+			console.log("Some auth error");
 		});
-
-		if ($window.localStorage.getItem("jwt") == $scope.authToken) {
-			console.log("redirectign to equipments");
-			$location.path('/equipments');
-		} else {
-			alert("No auth token");
-		}
 	}
 ]);
 
