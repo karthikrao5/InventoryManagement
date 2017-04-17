@@ -147,7 +147,48 @@ Input for create user
 
 {
 	"username" : "bkang61",
-	"email" : "bkang61@gatech.edu",
-	"current_loans" : [],
-	"past_loans" : []
+	"email" : "bkang61@gatech.edu"
 }
+
+input for update user
+
+either _id (mongoid string) or username needs to be provided.
+username will be ignored if id is provided.
+username is used as identifier. It cannot be changed.
+
+{
+	"_id" : "idstring",
+	"username" : "bkang61",
+	
+	"edit_user" :
+	{
+		"email" : "new-email"
+	},
+	
+	"add_current_loans" : [
+		"loan ids"
+	],
+	
+	"add_past_loans" : [
+		"loan ids"
+	],
+	
+	"remove_current_loans" : [
+		"loan ids"
+	],
+	
+	"remove_past_loans" : [
+		"loan ids"
+	]
+}
+
+input for delete user
+accepts id (mongoid string) or username.
+username will be ignored if id is provided.
+
+{
+	"_id" : "idstring",
+	"username" : "bkang61"
+}
+
+
