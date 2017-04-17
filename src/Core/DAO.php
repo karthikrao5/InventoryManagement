@@ -113,6 +113,7 @@ class DAO
             array('$set' => $updateValues));
         
         $loan = $loans->findOne(array('_id' => $loanId));
+        $mongo->close();
         
         $log = $this->getLog();
         $log['reference_id'] = $id;
@@ -166,6 +167,7 @@ class DAO
         
         $result = $loans->update(array('_id' => $loanId),
             array('$addToSet' => array('logs' => $log['_id'])));
+        $mongo->close();
         
         return $result;
     }
@@ -212,6 +214,8 @@ class DAO
         
         $result = $loans->update(array('_id' => $loanId),
             array('$addToSet' => array('logs' => $log['_id'])));
+        
+        $mongo->close();
         
         return $result;
     }
@@ -395,6 +399,7 @@ class DAO
         }
         
         $this->updateLog($log);
+        $this->addLogToUser($id, $log['_id']);
         
         return $result;
     }
@@ -419,6 +424,7 @@ class DAO
         
         $result = $users->update(array('_id' => $userId),
             array('$addToSet' => array('current_loans' => $loanId)));
+        $mongo->close();
         
         $user['current_loans'][] = $userId;
         
@@ -430,6 +436,7 @@ class DAO
         $log['action_via'] = "hardcodedweb";
         $log['changes'][] = (object)array('field_name' => 'current_loans', 'old_value' => $currentLoanPrev, 'new_value' => $user['current_loans']);
         $this->updateLog($log);
+        $this->addLogToUser($userId, $log['_id']);
         
         return $result;
     }
@@ -454,6 +461,7 @@ class DAO
         
         $result = $users->update(array('_id' => $userId),
             array('$addToSet' => array('past_loans' => $loanId)));
+        $mongo->close();
         
         $user['past_loans'][] = $userId;
         
@@ -465,6 +473,7 @@ class DAO
         $log['action_via'] = "hardcodedweb";
         $log['changes'][] = (object)array('field_name' => 'past_loans', 'old_value' => $pastLoanPrev, 'new_value' => $user['current_loans']);
         $this->updateLog($log);
+        $this->addLogToUser($userId, $log['_id']);
         
         return $result;
     }
@@ -489,6 +498,7 @@ class DAO
         
         $result = $users->update(array('_id' => $userId),
             array('$pull' => array('current_loans' => $loanId)));
+        $mongo->close();
         
         $user['current_loans'][] = $userId;
         
@@ -500,6 +510,7 @@ class DAO
         $log['action_via'] = "hardcodedweb";
         $log['changes'][] = (object)array('field_name' => 'current_loans', 'old_value' => $currentLoanPrev, 'new_value' => $user['current_loans']);
         $this->updateLog($log);
+        $this->addLogToUser($userId, $log['_id']);
         
         return $result;
     }
@@ -524,6 +535,7 @@ class DAO
         
         $result = $users->update(array('_id' => $userId),
             array('$pull' => array('past_loans' => $loanId)));
+        $mongo->close();
         
         $user['past_loans'][] = $userId;
         
@@ -535,6 +547,7 @@ class DAO
         $log['action_via'] = "hardcodedweb";
         $log['changes'][] = (object)array('field_name' => 'past_loans', 'old_value' => $currentLoanPrev, 'new_value' => $user['past_loans']);
         $this->updateLog($log);
+        $this->addLogToUser($userId, $log['_id']);
         
         return $result;
     }
@@ -558,6 +571,7 @@ class DAO
         $this->updateLog($log);
         
         $result = $users->remove(array('_id' => $id));
+        $mongo->close();
         
         return $result;
     }
