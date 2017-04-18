@@ -238,7 +238,7 @@ class CoreService
 
         $updated = $this->dao->createEquipment($requestJson, $result['equipment_types'][0]);
 
-        return array("ok" => true, "message" => "Successfully created Equipment '".$requestJson['department_tag']."' !",
+        return array("ok" => true, "message" => "Successfully created Equipment '".$requestJson['department_tag']."'.",
                 'equipment' => $updated);
     }
 
@@ -299,7 +299,7 @@ class CoreService
         return $result;
     }
 
-    public function deleteEquipment($requestJson, $username, $isHook, $hookname)
+    public function deleteEquipment($requestJson, $auth)
     {
         $result = array("ok" => false, "msg" => null);
 
@@ -308,12 +308,51 @@ class CoreService
             $result['msg'] = "Json is empty or null.";
             return $result;
         }
+        
+        $validationResult = $this->equipmentValidator->isValidDeleteJSON($requestJson);
+        
+        if(!$validationResult['ok'])
+        {
+            return $validationResult;
+        }
+        
+        if(!isset($requestJson['_id']))
+        {
+            if(isset($requestJson['department_tag']))
+            {
+                $idArr = $this->equipmentValidator->getIdByDepartmentTag($requestJson['department_tag']);
+                
+                if($idArr['ok'])
+                {
+                    $requestJson['_id'] = $idArr['_id'];
+                }
+                else
+                {
+                    $result['msg'] = "Given 'department_tag' value is not found.";
+                    return $result;
+                }
+            }
+            else
+            {
+                $idArr = $this->equipmentValidator->getIdByGtTag($requestJson['gt_tag']);
+                
+                if($idArr['ok'])
+                {
+                    $requestJson['_id'] = $idArr['_id'];
+                }
+                else
+                {
+                    $result['msg'] = "Given 'gt_tag' value is not found.";
+                    return $result;
+                }
+            }
+        }
 
-        $daoResult = $this->dao->deleteEquipment($requestJson['ids']);
+        $daoResult = $this->dao->deleteEquipment($requestJson['_id']);
 
         $result['ok'] = $daoResult['ok'];
-        $result['n'] = $daoResult['n'];
-
+        $result['msg'] = "Successfully deleted Equipment.";
+        
         return $result;
     }
     

@@ -6,84 +6,148 @@ use Interop\Container\ContainerInterface;
 
 class EquipmentValidator extends AbstractValidator {
 
-	public function __construct(ContainerInterface $ci) {
-		parent::__construct($ci);
-	}
+    public function __construct(ContainerInterface $ci) {
+            parent::__construct($ci);
+    }
+    
+    public function isDepartmentTagExist($tag)
+    {
+        return $this->core->getEquipment(array('department_tag' => $tag))['ok'];
+    }
+    
+    public function isGtTagExist($tag)
+    {
+        return $this->core->getEquipment(array('gt_tag' => $tag))['ok'];
+    }
+    
+    public function getIdByDepartmentTag($tag)
+    {   
+        $result = $this->core->getEquipment(array('department_tag' => $tag));
+        
+        if($result['ok'])
+        {
+            $result = array('ok' => true, '_id' => $result['equipments'][0]['_id']);
+        }
+        
+        return $result;
+    }
+    
+    public function getIdByGtTag($tag)
+    {
+        $result = $this->core->getEquipment(array('gt_tag' => $tag));
+        
+        if($result['ok'])
+        {
+            $result = array('ok' => true, '_id' => $result['equipments'][0]['_id']);
+        }
+        
+        return $result;
+    }
 
-	public function validateID($id) {
-		if ($id instanceof \MongoDB\BSON\ObjectID || preg_match('/^[a-f\d]{24}$/i', $id)) {
-			return true;
-		}
-		return false;
-	}
+    public function isValidDeleteJSON($json)
+    {
+        $result = array('ok' => false, 'msg' => null);
+        
+        if(isset($json['_id']))
+        {
+            if(!$this->isMongoIdString($json['_id']))
+            {
+                $result['msg'] = "Field '_id' contains invalid ID string.";
+                return $result;
+            }
+        }
+        else if(isset($json['department_tag']))
+        {
+            //Do nothing
+        }
+        else if(isset($json['gt_tag']))
+        {
+            //Do nothing
+        }
+        else 
+        {
+            $result['msg'] = "At least one unique identifier ('_id', 'department_tag', 'gt_tag') must be present in the request JSON.";
+            return $result;
+        }
+    }
+    
+    public function isEquipmentTypeExist($name)
+    {
+        $dao = $this->core->getDao();
+        
+        return $this->core->getEquipmentType(array('name' => $name))['ok'];
+    }
 
-	// param $json is a string, not php array
-	public function isJSON($json) {
-		json_decode($json);
-		return (json_last_error() == JSON_ERROR_NONE);
-	}
-
-	public function validateJSON($json) {
-		$result = array();
-		$result['ok'] = false;
-		$result['msg'] = null;
-
-		if(!isset($json['department_tag'])) {
-			$result['msg'] = "Attribute 'department_tag' of Equipment is missing or unset.";
-			return $result;
-		}
-
-		if(isset($json["attributes"])) {
-			$attributes = $json["attributes"];
-
-			$validateAttr = $this->validateAttributes($attributes);
-
-			if(!$validateAttr["ok"]) {
-				return $validateAttr;
-			}
-		}
-
-		// TODO
-		
-		// if(isset($json["logs"])) {
-		// 	$logsArray - $json["logs"];
-
-		// 	$validateLogs = $this->validateLogs($logsArray);
-
-		// 	if(!$validateLogs["ok"]) {
-		// 		return $validateLogs;
-		// 	}
-		// }
-		
-	}
-
-	public function validateAttributes($attributes) {
-		$result = array();
-		$result['ok'] = false;
-		$result['msg'] = null;
-
-		if(!array_key_exists($attribute['equipment_id'], $attributes)) {
-			$result['msg'] = "Attribute 'equipment_id' of Equipmment Attribute is missing or unset.";
-			return $result;
-		}
-		if(!array_key_exists($attribute['equipment_type_id'], $attributes)) {
-			$result['msg'] = "Attribute 'equipment_type_id' of Equipmment Attribute is missing or unset.";
-			return $result;
-		}
-		if(!array_key_exists($attribute['name'], $attributes)) {
-			$result['msg'] = "Attribute 'name' of Equipmment Attribute is missing or unset.";
-			return $result;
-		}
-
-		if(!array_key_exists($attribute['value'], $attributes)) {
-			$result['msg'] = "Attribute 'value' of Equipmment Attribute is missing or unset.";
-			return $result;
-		}
-
-		$result['ok'] = true;
-		return $result;
-	}
-
+    public function isValidCreateJSON($json)
+    {
+        $result = array('ok' => false, 'msg' => null);
+        
+        if(!isset($json['department_tag']))
+        {
+            $result['msg'] = "Field 'department_tag' must be present in request JSON.";
+            return $result;
+        }
+        
+        if(!array_key_exists("gt_tag", $json))
+        {
+            $result['msg'] = "Field 'gt_tag' must be present in request JSON but value can be null.";
+            return $result;
+        }
+        
+        if(!isset($json['equipment_type_name']))
+        {
+            $result['msg'] = "Field 'equipment_type_name' must be present in request JSON.";
+            return $result;
+        }
+        else
+        {
+            if(!$this->isEquipmentTypeExist($name))
+            {
+                $result['msg'] = "Given 'equipment_type_name' not found.";
+                return $result;
+            }
+        }
+        
+        if(!isset($json['status']))
+        {
+            $result['msg'] = "Field 'status' must be present in request JSON.";
+            return $result;
+        }
+        else
+        {
+            if(!$this->isCorrectStatus($json['status']))
+            {
+                $result['msg'] = "Field 'status' is in invalid status.";
+            }
+        }
+        
+        if(!array_key_exists("comments", $array))
+        {
+            $result['msg'] = "Field 'comments' must be present in request JSON but value can be null.";
+            return $result;
+        }
+        
+        if(!isset($json['attributes']))
+        {
+            $result['msg'] = "Field 'attributes' must be present in request JSON.";
+            return $result;
+        }
+        else
+        {
+            $equipmentType = $this->core->getEquipmentType(array('name' => $json['equipment_type_name']))['equipment_types'][0];
+            $validationResult = $this->validateAttributesCreate($equipmentType['equipment_type_attributes'], $json);
+        }
+    }
+    
+    public function validateAttributesCreate($equipmentTypeAttributes, $attributes)
+    {
+        
+    }
+    
+    public function isCorrectStatus($status)
+    {
+        return in_array($status, array("inventory", "loaned", "surplus", "trashed"));
+    }
 }
 
 ?>

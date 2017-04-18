@@ -160,6 +160,17 @@ JSON Formats and examples
 
     http://server_url/v1/equipments
 
+    Bulk delete is not supported. One of the following unique identifiers must be presented in the request JSON.
+
+    Unique identifiers:
+        '_id', 'department_tag', 'gt_tag'
+
+    {
+        "_id" : "58e81cc37f8b9ac4571ef7c6",
+        "department_tag" : "laptop",
+        "gt_tag" : "gttag1234"
+    }
+
 3. User
 
     Create (POST)

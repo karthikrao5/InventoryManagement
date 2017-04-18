@@ -1130,14 +1130,11 @@ class DAO
     
     // Delete
 
-    public function deleteEquipment($equipmentIds)
+    public function deleteEquipment($equipmentId)
     {
-        foreach($equipmentIds as $key => $value)
+        if(!($equipmentId instanceof MongoId))
         {
-            if(!($value instanceof MongoId))
-            {
-                $equipmentIds[$key] = new MongoId($value);
-            }
+            $equipmentId = new MongoId($equipmentId);
         }
 
         $mongo = new MongoClient(DAO::$connectionString);
@@ -1145,7 +1142,7 @@ class DAO
         $attributes = $mongo->inventorytracking->equipmentattributes;
         
         //get all ids to make logs
-        $targetAttrs = iterator_to_array($attributes->find(array('equipment_id' => array('$in' => $equipmentIds))));
+        $targetAttrs = iterator_to_array($attributes->find(array('equipment_id' => $equipmentId)));
         $targetAttrIds = array();
         
         foreach($targetAttrs as $attr)
@@ -1176,7 +1173,7 @@ class DAO
             $this->updateLog($log);
         }
         
-        $result = $equipments->remove(array('_id' => array('$in' => $equipmentIds)));
+        $result = $equipments->remove(array('_id' => $equipmentId));
 
         $mongo->close();
 
