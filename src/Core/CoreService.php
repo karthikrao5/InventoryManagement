@@ -12,19 +12,21 @@ class CoreService
     private $equipmentValidator;
     private $equipmentTypeValidator;
     private $userValidator;
+    private $loanValidator;
 
     public function __construct(ContainerInterface $c)
     {
         $this->dao = new DAO();
         $this->container = $c;
         $this->logger = $c->get("logger");
-        
         $this->equipmentValidator = $c->get("EquipmentValidator");
         $this->equipmentValidator->setCore($this);
         $this->equipmentTypeValidator = $c->get('EquipmentTypeValidator');
         $this->equipmentTypeValidator->setCore($this);
         $this->userValidator = $c->get('UserValidator');
         $this->userValidator->setCore($this);
+        $this->loanValidator = $c->get('LoanValidator');
+        $this->loanValidator->setCore($this);
     }
     
     /*
@@ -319,15 +321,30 @@ class CoreService
      * EquipmentType functions
      */
 
-    public function createEquipmentType($requestJson, $username, $isHook, $hookname)
+    public function createEquipmentType($requestJson, $auth)
     {
-        $added = $this->dao->createEquipmentType($requestJson, $result['equipment_type'][0]);
+        $result = array('ok' => false, 'msg' => null);
+        
+        $validationResult = $this->equipmentTypeValidator->isValidCreateJson($requestJson);
+        
+        if(!$validationResult['ok'])
+        {
+            return $validationResult;
+        }
+        
+        if($this->equipmentTypeValidator->isEquipmentTypeExist($requestJson['name']))
+        {
+            $result['msg'] = "Equipment Type '".$requestJson['name']."' already exists.";
+            return $result;
+        }
+        
+        $equipmentType = $this->dao->createEquipmentType($requestJson, $result['equipment_type'][0]);
 
         return array("ok" => true, "message" => "Successfully created EquipmentType '".$requestJson['name']."' !",
-                'equipment_type' => $added);
+                'equipment_type' => $equipmentType);
     }
 
-    public function getEquipmentType($requestJson=NULL, $username, $isHook, $hookname)
+    public function getEquipmentType($requestJson=NULL, $auth)
     {
         $result = array('ok' => false, 'msg' => null, 'n' => 0, 'equipment_types' => null);
 
@@ -348,7 +365,7 @@ class CoreService
         }
     }
     
-    public function updateEquipmentType($requestJson, $username, $isHook, $hookname)
+    public function updateEquipmentType($requestJson, $auth)
     {
         $result = array("ok" => false, "msg" => null, "updated_equipment_type" => null);
 
@@ -386,7 +403,7 @@ class CoreService
         return $result;
     }
 
-    public function deleteEquipmentType($requestJson, $username, $isHook, $hookname)
+    public function deleteEquipmentType($requestJson, $auth)
     {
         $result = array("ok" => false, "msg" => null);
 
