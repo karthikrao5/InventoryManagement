@@ -419,6 +419,13 @@ class CoreService
             $result['msg'] = "Json is empty or null.";
             return $result;
         }
+        
+        $validationResult = $this->equipmentTypeValidator->isValidDeleteJSON($requestJson);
+        
+        if(!$validationResult['ok'])
+        {
+            return $validationResult;
+        }
 
         $daoResult = $this->dao->deleteEquipmentType($requestJson['ids']);
 
