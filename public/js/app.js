@@ -1,4 +1,4 @@
-var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid"])
+var app = angular.module("app", ["ngRoute", "ngResource", "app.controllers", "ui.grid", "app.services"])
 .config(function($routeProvider, $httpProvider){
 
     $routeProvider
@@ -32,3 +32,5 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid"])
     $httpProvider.interceptors.push("authInterceptor");
     
 });
+
+angular.module("app").constant("APIURL", "https://localhost:8080/v1/");

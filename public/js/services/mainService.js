@@ -1,0 +1,1 @@
+var srvc = angular.module("app.services", []);
