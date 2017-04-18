@@ -286,9 +286,47 @@ class CoreService
         }
     }
 
-    public function updateEquipment($requestJson, $username, $isHook, $hookname)
+    public function updateEquipment($requestJson, $auth)
     {
         $result = array("ok" => false, "msg" => null, "updated_equipment" => null);
+        
+        $validationResult = $this->equipmentValidator->isValidUpdateJSON($requestJson);
+        
+        if(!$validationResult['ok'])
+        {
+            return $validationResult;
+        }
+        
+        //get id
+        if(!isset($requestJson['_id']))
+        {
+            if(isset($requestJson['department_tag']))
+            {
+                $getIdResult = $this->equipmentValidator->getIdByDepartmentTag($requestJson['department_tag']);
+                if($getIdResult['ok'])
+                {
+                    $requestJson['_id'] = $getIdResult['_id'];
+                }
+                else
+                {
+                    $result['msg'] = "Equipment not found with given name.";
+                    return $result;
+                }
+            }
+            else if(isset($requestJson['gt_tag']))
+            {
+                $getIdResult = $this->equipmentValidator->getIdByGtTag($requestJson['gt_tag']);
+                if($getIdResult['ok'])
+                {
+                    $requestJson['_id'] = $getIdResult['_id'];
+                }
+                else
+                {
+                    $result['msg'] = "Equipment not found with given name.";
+                    return $result;
+                }
+            }
+        }
 
         if(isset($requestJson['update_equipment']) && !empty($requestJson['update_equipment']))
         {
@@ -318,6 +356,10 @@ class CoreService
                 $result = $this->dao->removeEquipmentAttribute($requestJson['_id'], $removeTarget);
             }
         }
+        
+        $result['ok'] = true;
+        $result['msg'] = "Update success.";
+        $result['updated_equipment'] = $this->dao->getEquipment(array('_id' => $requestJson['_id']));
 
         return $result;
     }
@@ -483,6 +525,10 @@ class CoreService
                 $result = $this->dao->removeEquipmentTypeAttribute($requestJson['_id'], $removeTarget);
             }
         }
+        
+        $result['ok'] = true;
+        $result['msg'] = "Update success.";
+        $result['updated_equipment_type'] = $this->dao->getEquipmentType(array('_id' => $requestJson['_id']));
 
         return $result;
     }

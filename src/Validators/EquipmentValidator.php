@@ -77,6 +77,51 @@ class EquipmentValidator extends AbstractValidator {
         
         return $this->core->getEquipmentType(array('name' => $name))['ok'];
     }
+    
+    public function isValidUpdateJSON($json)
+    {
+        $result = array('ok' => false, 'msg' => null);
+        
+        if(isset($json['_id']))
+        {
+            if(!$this->isMongoIdString($json['_id']))
+            {
+                $result['msg'] = "Field '_id' has invalid ID string.";
+                return $result;
+            }
+        }
+        else if(isset($json['department_tag']))
+        {
+            if($this->isDepartmentTagExist($json['department_tag']))
+            {
+                $json['_id'] = $this->getIdByDepartmentTag($json['department_tag']);
+            }
+            else
+            {
+                $result['msg'] = "Equipment not found by given 'department_tag'.";
+                return $result;
+            }
+        }
+        else if(isset($json['gt_tag']))
+        {
+            if($this->isGtTagExist($json['gt_tag']))
+            {
+                $json['_id'] = $this->getIdByGtTag($json['gt_tag']);
+            }
+            else
+            {
+                $result['msg'] = "Equipment not found by given 'gt_tag'.";
+                return $result;
+            }
+        }
+        else
+        {
+            $result['msg'] = "At least one unique identifier ('_id', 'department_tag', 'gt_tag') must be present in the request JSON.";
+            return $result;
+        }
+        
+        return $result;
+    }
 
     public function isValidCreateJSON($json)
     {
