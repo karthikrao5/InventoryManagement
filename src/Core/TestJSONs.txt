@@ -6,6 +6,8 @@ JSON Formats and examples
 
     http://server_url/v1/equipmenttypes
 
+    Sample request JSON:
+
     {
       "name" : "laptop",
       "comments" : "some comments here.",
@@ -127,6 +129,8 @@ JSON Formats and examples
 
     Bulk delete is not supported. Either '_id' or 'name' must be present in the request JSON.
 
+    Sample request JSON:
+
     {
         "_id" : "58e81cc37f8b9ac4571ef7c6",
         "name" : "laptop"
@@ -137,7 +141,30 @@ JSON Formats and examples
 
     Create (POST)
 
+    Unique identifiers are "department_tag", "gt_tag", and "_id". "_id" is set by the system and used internally.
+    Attribute's name and value are checked by the system using Equipment Type Attribute information.
+
     http://server_url/v1/equipments
+
+    Sample request JSON:
+
+    {
+    	"department_tag" : "math-12342",
+    	"gt_tag" : null,
+    	"equipment_type_name" : "laptop",
+    	"comments" : "some comment",
+
+    	"attributes" : [
+    		{
+    			"name" : "serial_number",
+    			"value" : "DS6AF5DS4F6-454645DSF"
+    		},
+    		{
+    			"name" : "serial_number1",
+    			"value" : "DS6AF5DS4F6-454645DSF"
+    		}
+    	]
+    }
 
     Read (GET)
 
@@ -198,27 +225,7 @@ JSON Formats and examples
 
 New Equipment input with the type above
 
-{
-	"department_tag" : "math-12342",
-	"gt_tag" : null,
-	"equipment_type_name" : "laptop",
-	"status" : "loaned",
-	"loaned_to" : "bkang61",
-	"created_on" : "2017-01-01 00:00:00",
-	"last_updated" : "2017-01-02 00:00:00",
-	"comment" : "some comment",
 
-	"attributes" : [
-		{
-			"name" : "serial_number",
-			"value" : "DS6AF5DS4F6-454645DSF"
-		},
-		{
-			"name" : "serial_number1",
-			"value" : "DS6AF5DS4F6-454645DSF"
-		}
-	]
-}
 
 input for Equipment Type edit (change ids based on your data)
 

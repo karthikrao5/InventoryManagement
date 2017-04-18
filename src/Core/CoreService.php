@@ -255,6 +255,9 @@ class CoreService
             $returnArray['msg'] = "EquipmentType '".$requestJson['equipment_type_name']."' not found.";
             return $returnArray;
         }
+        
+        $requestJson['status'] = "inventory";
+        $requestJson['loaned_to'] = null;
 
         $updated = $this->dao->createEquipment($requestJson, $result['equipment_types'][0]);
 

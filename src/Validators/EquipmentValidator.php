@@ -87,11 +87,27 @@ class EquipmentValidator extends AbstractValidator {
             $result['msg'] = "Field 'department_tag' must be present in request JSON.";
             return $result;
         }
+        else
+        {
+            if($this->isDepartmentTagExist($json['department_tag']))
+            {
+                $result['msg'] = "'department_tag' value already exists.";
+                return $result;
+            }
+        }
         
         if(!array_key_exists("gt_tag", $json))
         {
             $result['msg'] = "Field 'gt_tag' must be present in request JSON but value can be null.";
             return $result;
+        }
+        else if(isset($json['gt_tag']))
+        {
+            if($this->isGtTagExist($json['gt_tag']))
+            {
+                $result['msg'] = "'gt_tag' value already exists.";
+                return $result;
+            }
         }
         
         if(!isset($json['equipment_type_name']))
@@ -108,17 +124,26 @@ class EquipmentValidator extends AbstractValidator {
             }
         }
         
-        if(!isset($json['status']))
+        if(array_key_exists("status", $json))
         {
-            $result['msg'] = "Field 'status' must be present in request JSON.";
+            $result['msg'] = "Field 'status' cannot be set by user.";
             return $result;
         }
+        
+        /*
         else
         {
             if(!$this->isCorrectStatus($json['status']))
             {
                 $result['msg'] = "Field 'status' is in invalid status.";
             }
+        }
+        */
+        
+        if(array_key_exists("loaned_to", $json))
+        {
+            $result['msg'] = "Field 'loaned_to' cannot be set by user.";
+            return $result;
         }
         
         if(!array_key_exists("comments", $json))
@@ -140,6 +165,23 @@ class EquipmentValidator extends AbstractValidator {
             if(!$validationResult['ok'])
             {
                 return $validationResult;
+            }
+        }
+        
+        if(array_key_exists("logs", $json))
+        {
+            $result['msg'] = "Field 'logs' cannot be set by user.";
+            return $result;
+        }
+        
+        $allowedFields = array("department_tag", "gt_tag", "equipment_type_name", "comments", "attributes");
+        //check for invalid fields present in request JSON
+        foreach($json as $key => $value)
+        {
+            if(!in_array($key, $allowedFields))
+            {
+                $result['msg'] = "Invalid field '".$key."' in request JSON.";
+                return $result;
             }
         }
         
