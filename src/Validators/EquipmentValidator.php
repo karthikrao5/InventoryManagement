@@ -101,7 +101,7 @@ class EquipmentValidator extends AbstractValidator {
         }
         else
         {
-            if(!$this->isEquipmentTypeExist($name))
+            if(!$this->isEquipmentTypeExist($json['equipment_type_name']))
             {
                 $result['msg'] = "Given 'equipment_type_name' not found.";
                 return $result;
@@ -121,7 +121,7 @@ class EquipmentValidator extends AbstractValidator {
             }
         }
         
-        if(!array_key_exists("comments", $array))
+        if(!array_key_exists("comments", $json))
         {
             $result['msg'] = "Field 'comments' must be present in request JSON but value can be null.";
             return $result;
@@ -136,7 +136,15 @@ class EquipmentValidator extends AbstractValidator {
         {
             $equipmentType = $this->core->getEquipmentType(array('name' => $json['equipment_type_name']))['equipment_types'][0];
             $validationResult = $this->validateAttributesCreate($equipmentType['equipment_type_attributes'], $json['attributes']);
+            
+            if(!$validationResult['ok'])
+            {
+                return $validationResult;
+            }
         }
+        
+        $result['ok'] = true;
+        return $result;
     }
     
     public function validateAttributesCreate($equipmentTypeAttributes, $attributes)
