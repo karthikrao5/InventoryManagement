@@ -99,6 +99,19 @@ class CoreService
     {
         $result = array('ok' => false, 'msg' => null, 'users' => null);
         
+        if(isset($requestJson['_id']))
+        {
+            if($this->userValidator->isMongoIdString($requestJson['_id']))
+            {
+                $requestJson['_id'] = new \MongoId($requestJson['_id']);
+            }
+            else 
+            {
+                $result['msg'] = "Invalid ID string given.";
+                return $result;
+            }
+        }
+        
         $users = $this->dao->getUser($requestJson);
         
         if(is_null($users) || empty($users))
