@@ -10,6 +10,11 @@ class EquipmentValidator extends AbstractValidator {
             parent::__construct($ci);
     }
     
+    public function isUserExist($username)
+    {
+        return $this->core->getUser(array('username' => $username))['ok'];
+    }
+    
     public function isDepartmentTagExist($tag)
     {
         return $this->core->getEquipment(array('department_tag' => $tag))['ok'];
@@ -118,6 +123,109 @@ class EquipmentValidator extends AbstractValidator {
         {
             $result['msg'] = "At least one unique identifier ('_id', 'department_tag', 'gt_tag') must be present in the request JSON.";
             return $result;
+        }
+        
+        if(isset($json['update_equipment']))
+        {
+            $allowedFields = array("department_tag", "gt_tag", "status", "loaned_to", "comments");
+            
+            if(isset($json['update_equipment']['department_tag']))
+            {
+                if($this->isDepartmentTagExist($json['update_equipment']['department_tag']))
+                {
+                    $result['msg'] = "Given 'department_tag' value in 'update_equipment' already exists.";
+                    return $result;
+                }
+            }
+            
+            if(isset($json['update_equipment']['gt_tag']))
+            {
+                if($this->isGtTagExist($json['update_equipment']['gt_tag']))
+                {
+                    $result['msg'] = "Given 'gt_tag' value in 'update_equipment' already exists.";
+                    return $result;
+                }
+            }
+            
+            if(isset($json['update_equipment']['status']))
+            {
+                if(!$this->isCorrectStatus($json['update_equipment']['status']))
+                {
+                    $result['msg'] = "Given 'status' value in 'update_equipment' is invalid.";
+                    return $result;
+                }
+            }
+            
+            if(isset($json['update_equipment']['loaned_to']))
+            {
+                if(!$this->isUserExist($json['update_equipment']['loaned_to']))
+                {
+                    $result['msg'] = "Given 'loaned_to' value (username) is not found.";
+                    return $result;
+                }
+            }
+        }
+        
+        if(isset($json['update_equipment_attributes']))
+        {
+            foreach($json['update_equipment_attributes'] as $attr)
+            {
+                $validationResult = $this->validateAttributeUpdate($json['_id'], $attr);
+                
+                if(!$validationResult['ok'])
+                {
+                    return $validationResult;
+                }
+            }
+        }
+        
+        if(isset($json['add_equipment_attributes']))
+        {
+            
+        }
+        
+        if(isset($json['remove_equipment_attributes']))
+        {
+            
+        }
+        
+        return $result;
+    }
+    
+    private function validateAttributeUpdate($equipmentId, $attribute)
+    {
+        $result = array('ok' => false, 'msg' => null);
+        
+        $dao = $this->core->getDao();
+        if(!isset($attribute['_id']))
+        {
+            $daoResult = $dao->getEquipmentAttribute(array('equipment_id' => $equipmentId, 'name' => $attribute['name']));
+            
+            if(!$daoResult['ok'])
+            {
+                $result['msg'] = "Attribute name '".$attribute['name']."' not found in 'update_equipment_attributes'.";
+                return $result;
+            }
+            
+            $attribute['_id'] = $daoResult['equipment_attributes'][0]['_id'];
+        }
+        
+        $daoResult = $dao->getEquipmentTypeAttribute(array('_id' => $attribute['equipment_type_attribute_id']));
+        $equipmentTypeAttribute = $daoResult['equipment_type_attributes'][0];
+        
+        if(isset($equipmentTypeAttribute['regex']))
+        {
+            
+        }
+        
+        if(isset($equipmentTypeAttribute['unique']))
+        {
+            
+        }
+        
+        if($equipmentTypeAttribute['enum'])
+        {
+            
         }
         
         return $result;
