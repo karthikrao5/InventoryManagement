@@ -1,5 +1,5 @@
-angular.module("app.controllers").controller("NewEquipmentController", ["$scope", "$http", "$location", 
-	function($scope, $http, $location) {
+angular.module("app.controllers").controller("NewEquipmentController", ["$scope", "$http", "$location", "APIService", 
+	function($scope, $http, $location, APIService) {
 
 		$scope.equipmentTypeList = [];
 		$scope.formObj = {};
@@ -36,9 +36,18 @@ angular.module("app.controllers").controller("NewEquipmentController", ["$scope"
 			var returnThis = angular.extend($scope.formObj, $scope.attrList);
 			console.log(angular.toJson(returnThis, true));
 
-			$http.post('http://localhost:8080/v1/equipments', returnThis).then(function(data, status, headers, config) {
-				alert(data.msg);
+			function onSuccess(response) {
+				console.log(response.data);
+			}
+
+			APIService.post("equipments", returnThis, onSuccess, function() {
+				console.log("error posting...");
 			});
+			// $http.post('http://localhost:8080/v1/equipments', returnThis).then(function(data, status, headers, config) {
+			// 	alert(data.msg);
+			// });
+
+
 
 
 		};
