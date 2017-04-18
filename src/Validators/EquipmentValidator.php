@@ -135,13 +135,50 @@ class EquipmentValidator extends AbstractValidator {
         else
         {
             $equipmentType = $this->core->getEquipmentType(array('name' => $json['equipment_type_name']))['equipment_types'][0];
-            $validationResult = $this->validateAttributesCreate($equipmentType['equipment_type_attributes'], $json);
+            $validationResult = $this->validateAttributesCreate($equipmentType['equipment_type_attributes'], $json['attributes']);
         }
     }
     
     public function validateAttributesCreate($equipmentTypeAttributes, $attributes)
     {
+        $result = array('ok' => false, 'msg' => null);
         
+        //check for name collision
+        $temp = array();
+        foreach($attributes as $attr)
+        {
+            if(!in_array($attr['name'], $temp))
+            {
+                $temp[] = $attr['name'];
+            }
+            else
+            {
+                $result['msg'] = "Attribute name collision on '".$attr['name']."'.";
+                return $result;
+            }
+        }
+        
+        //check for invalid attribute name
+        $temp = array();
+        foreach($equipmentTypeAttributes as $attr)
+        {
+            $temp[] = $attr['name'];
+        }
+        
+        foreach($attributes as $attr)
+        {
+            if(!in_array($attr['name'], $temp))
+            {
+                $result['msg'] = "Invalid attribute name '".$attr['name']."' is found.";
+                return $result;
+            }
+        }
+        
+        //check for value against regex and enum
+        
+        //check for missing required attributes
+        
+        //check for unique attributes
     }
     
     public function isCorrectStatus($status)
