@@ -1,35 +1,135 @@
-New Equipment type input
+JSON Formats and examples
 
-{
-  "name" : "laptop",
-  "comments" : "some comments here.",
-  "equipment_type_attributes": [
+1. Equipment Type
+
+    Create (POST)
+
     {
-      "name": "serial_number",
-      "required": true,
-      "unique": true,
-      "data_type" : "string",
-      "regex" : "some regex string",
-      "help_comment" : "some comment",
-      "enum" : true,
-      "enum_values" : [
-        "value1", "value2", "value3"
-      ]
-    },
-    {
-      "name": "serial_number1",
-      "required": true,
-      "unique": true,
-      "data_type" : "string",
-      "regex" : "some regex string",
-      "help_comment" : "some comment",
-      "enum" : true,
-      "enum_values" : [
-        "value1", "value2", "value3"
+      "name" : "laptop",
+      "comments" : "some comments here.",
+      "equipment_type_attributes": [
+        {
+          "name": "serial_number",
+          "required": true,
+          "unique": true,
+          "data_type" : "string",
+          "regex" : "some regex string",
+          "help_comment" : "some comment",
+          "enum" : true,
+          "enum_values" : [
+            "value1", "value2", "value3"
+          ]
+        },
+        {
+          "name": "serial_number1",
+          "required": true,
+          "unique": true,
+          "data_type" : "string",
+          "regex" : "some regex string",
+          "help_comment" : "some comment",
+          "enum" : true,
+          "enum_values" : [
+            "value1", "value2", "value3"
+          ]
+        }
       ]
     }
-  ]
-}
+
+    Read (GET)
+
+    http://server_url/v1/equipmenttypes?searchField=value%searchField=value
+
+    This API searches for exact match and does not support nested search.
+    'searchField' cannot be a field in 'equipment_type_attributes'.
+    'searchField' can be '_id', 'name', or 'comments'.
+    More search criteria can be added by using '%' as a separator.
+
+    If query is not given, then API returns all available Equipment Type documents (search all).
+
+    http://server_url/v1/equipmenttypes
+
+    Update (PUT)
+
+    Either '_id' or 'name' must be present in the request JSON as an identifier.
+
+    'update_equipment_type' updates an Equipment Type document's fields.
+    This cannot be used to update Equipment Type Attribute.
+
+    'update_equipment_type_attributes' updates Equipment Type Attributes in an Equipment Type document.
+    '_id' is not update-able and must be presented.
+    All other fields are optional.
+
+    'add_equipment_type_attributes' adds new Equipment Type Attribute in an Equipment Type document.
+    All fields are expected in the JSON.
+
+    'remove_equipment_type_attributes' removes Equipment Type Attributes in an Equipment Type document.
+    MongoId strings are expected.
+
+    Updating this document may not always work as expected since all Equipment documents are dependent
+    on this document. Please refer to the error message for details.
+
+    Sample request JSON:
+
+    {
+    	"_id" : "58e81cc37f8b9ac4571ef7c6",
+        "name" : "laptop",
+
+    	"update_equipment_type" :
+    	{
+    		"name" : "laptop2",
+    		"comments" : "Changed laptop to laptop2."
+    	},
+
+    	"update_equipment_type_attributes" :
+    	[
+    		{
+    			"_id" : "58e81cc37f8b9ac4571ef7c6",
+    			"name" : "serial_number",
+    			"required" : true,
+    			"unique" : true,
+    			"data_type" : "string",
+    			"regex" : "some regex string",
+    			"help_comment" : "some comment.",
+    			"enum" : true,
+    			"enum_values" : ["value1", "value2", "value3"]
+    		}
+    	],
+
+    	"add_equipment_type_attributes" :
+    	[
+    		{
+    			"name": "serial_number4",
+    			"required": true,
+    			"unique": true,
+    			"data_type" : "string",
+    			"regex" : "some regex string",
+    			"help_comment" : "some comment",
+    			"enum" : true,
+    			"enum_values" : [
+    				"value1", "value2", "value3"
+    			]
+    		}
+    	],
+
+    	"remove_equipment_type_attributes" :
+    	[
+    		"58e81cc37f8b9ac4571ef7c7"
+    	]
+    }
+
+    Delete (DELETE)
+
+    Bulk delete is not supported. Either '_id' or 'name' must be present in the request JSON.
+
+    {
+        "_id" : "58e81cc37f8b9ac4571ef7c6",
+        "name" : "laptop"
+    }
+
+
+New Equipment type input
+
+
 
 New Equipment input with the type above
 
@@ -159,24 +259,24 @@ username is used as identifier. It cannot be changed.
 {
 	"_id" : "idstring",
 	"username" : "bkang61",
-	
+
 	"edit_user" :
 	{
 		"email" : "new-email"
 	},
-	
+
 	"add_current_loans" : [
 		"loan ids"
 	],
-	
+
 	"add_past_loans" : [
 		"loan ids"
 	],
-	
+
 	"remove_current_loans" : [
 		"loan ids"
 	],
-	
+
 	"remove_past_loans" : [
 		"loan ids"
 	]
@@ -190,5 +290,3 @@ username will be ignored if id is provided.
 	"_id" : "idstring",
 	"username" : "bkang61"
 }
-
-

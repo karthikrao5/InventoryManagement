@@ -19,6 +19,97 @@ class EquipmentTypeValidator extends AbstractValidator {
     {
         return (preg_match($regex, null) === false);
     }
+    
+    public function isValidUpdateJSON($json)
+    {
+        $result = array('ok' => false, 'msg' => null);
+        
+        if(isset($json['_id']))
+        {
+            if(!$this->isMongoIdString($json['_id']))
+            {
+                $result['msg'] = "Field '_id' has invalid ID string.";
+                return $result;
+            }
+        }
+        else
+        {
+            if(!isset($json['name']))
+            {
+                $result['msg'] = "Either field '_id' or 'name' must be present in the reqeust JSON.";
+                return $result;
+            }
+        }
+        
+        if(isset($json['update_equipment_type']))
+        {
+            foreach($json['update_equipment_type'] as $key => $value)
+            {
+                if($key != "name" || $key != "comments")
+                {
+                    $result['msg'] = "Invalid key-value pair given in 'update_equipment_type'.";
+                    $result['key'] = $key;
+                    $result['value'] = $value;
+                }
+            }
+        }
+        
+        if(isset($json['update_equipment_type_attributes']))
+        {
+            foreach($json['update_equipment_type_attributes'] as $attribute)
+            {
+                $attrValidationResult = $this->validateAttributeUpdateJSON($attribute);
+                
+                if(!$attrValidationResult['ok'])
+                {
+                    return $attrValidationResult;
+                }
+            }
+        }
+        
+        if(isset($json['add_equipment_type_attributes']))
+        {
+            foreach($json['add_equipment_type_attributes'] as $attribute)
+            {
+                $attrValidationResult = $this->validateAttribute($attribute);
+                
+                if(!$attrValidationResult['ok'])
+                {
+                    return $attrValidationResult;
+                }
+            }
+        }
+        
+        if(isset($json['remove_equipment_type_attribute']))
+        {
+            foreach($json['remove_equipment_type_attribute'] as $attributeIdStr)
+            {
+                if(!$this->isMongoIdString($attributeIdStr))
+                {
+                    $result['msg'] = "Field 'remove_equipment_type_attributes' contains invalid ID string.";
+                    $result['invalid_id_string'] = $attributeIdStr;
+                    return $result;
+                }
+            }
+        }
+        
+        $result['ok'] = true;
+        return $result;
+    }
+    
+    private function validateAttributeUpdateJSON($attribute)
+    {
+        $result = array('ok' => false, 'msg' => null);
+        
+        if(!isset($attribute['_id']))
+        {
+            $result['msg'] = "Field '_id' must be present in Equipment Type Attribute to update.";
+            return $result;
+        }
+        
+        $result['ok'] = true;
+        return $result;
+    }
 
     public function isValidCreateJSON($json)
     {
