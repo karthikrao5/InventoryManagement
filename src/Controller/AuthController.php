@@ -23,22 +23,26 @@ class AuthController extends AbstractController {
 	 * @return JWT string
 	 */
 	public function authorize($request, $response) {
+
+		// information about hook comes from HTTP Request.
+
 		// if request does not have isHook, assume it is a regular 
 		// single user accessing the API
 
 		$arr = array("isHook"=>false, "hookname"=>null, "username"=>null);
 		$body = $request->getParsedBody();
 
-		if (!$body) {
-			// if body is not there, generate user token and return
+		if (!$body || !$body["isHook"]) {
+			// if body is not there, assume user is requesting auth
+
 			$token = $this->authValidator->getAuthToken();
-			return $response->withJson($token);
+			return $response->withJson(array("jwt"=> $token["jwt"]));
 		} else {
-			if ($body["isHook"] && $body["hook_name"]) {
+			if ($body["isHook"] && $body["hookname"]) {
 				$arr["isHook"] = true;
-				$arr["hook_name"] = $body["hook_name"];
-				if($body["user_name"]) {
-					$arr["user_name"] = $body["user_name"];
+				$arr["hookname"] = $body["hookname"];
+				if($body["username"]) {
+					$arr["username"] = $body["username"];
 				}
 
 				// pass in array of 3 things for hook. if all 3 are unset,
@@ -50,7 +54,7 @@ class AuthController extends AbstractController {
 				// username : optional
 				$token = $this->authValidator->getAuthToken($arr);
 				// $returnArray = array("jwt"=> json_encode($token));
-				return $response->withJson($token);
+				return $response->withJson(array("jwt"=> $token["jwt"]));
 			}
 		}
 
@@ -67,14 +71,11 @@ class AuthController extends AbstractController {
 
 		$val = $this->authValidator->decodeToken($body['jwt']);
 
-		if ($val["status"] == 401) {
-			return $response->write($val["msg"])->withStatus($val["status"]);
-		}
 		if ($val["ok"]) {
 			// return $response->withJson($val["msg"]);
-			return $response->withJson($val["data"]);
+			return $response->withJson($val["msg"]);
 		} else {
-			return $response->withJson($val["msg"])->withStatus($val["status"]);
+			return $response->withJson($val["msg"]);
 		}
 	}
 }

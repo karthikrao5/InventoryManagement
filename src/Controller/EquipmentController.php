@@ -33,14 +33,14 @@ class EquipmentController extends AbstractController{
      */
     public function find($request, $response) {
 
-        $authHeader = $request->getHeader("Authorization");
-        $token = str_replace("Bearer ", "", $authHeader[0]);
-        $result = $this->authValidator->decodeToken($token);
+        // $authHeader = $request->getHeader("Authorization");
+        // $token = str_replace("Bearer ", "", $authHeader[0]);
+        // $result = $this->authValidator->decodeToken($token);
 
-        if(!$result["ok"]) {
-            // decode messed up. Look into src\Core\Validator.php
-            return $response->write($result["msg"])->withStatus($result["status"]);
-        }
+        // if(!$result["ok"]) {
+        //     // decode messed up. Look into src\Core\Validator.php
+        //     return $response->write($result["msg"])->withStatus($result["status"]);
+        // }
 
 
         if(is_null($request)) {
@@ -49,6 +49,9 @@ class EquipmentController extends AbstractController{
 
         // TESTED THIS CODE, params works don't mess with it.
         $params = $request->getQueryParams();
+        print_r($params);
+        // return null;
+        $this->logger->debug("Equipment query params: ".json_decode($params));
         if ($params) {
             $array = $this->core->getEquipment($params);
         } else {

@@ -9,25 +9,93 @@ class Validator
 {
 	private $c;
 	private $logger;
+	private $core;
+	private $settings;
 
 
 	public function __construct(ContainerInterface $ci) {
 		$this->c = $ci;
 		$this->logger = $ci->get('logger');
+		$this->core = $ci->get("core");
+		$this->settings = $ci->get("settings");
 	}
 
+	/**
+	 * Check apache environment variable for authenticated user
+	 * @return CAS user group as array("user", "email", "group")
+	 */
 	public function getCASUser() {
-		return array("user"=>"krao34", "user_email"=>"krao34@gmail.com");
+
+		// // if the authenticated user is part of the CAS user gruup
+		// // give authorization
+
+		// $envArray = $_SERVER;
+		// foreach ($envArray as $key=>$value) {
+		// 	if ($value == $settings['CAS-group-name']) {
+		// 		$userArray["user"] = $envArray["REMOTE_USER"];
+		// 		$$userArray["user_email"] = $envArray["REMOTE_USER_EMAIL"];
+		// 	}
+		// }
+
+
+		// ====================test code=======================
+
+		// test IT admin (Not in Users table, but has CAS group for itadmin)
+		$userArray = null;
+		$userArray["username"] = "krao34";
+		$userArray["email"] = "krao34@gmail.com";
+		$userArray["group"] = $this->settings["CAS-group-name"];
+
+
+		// test renter
+		// $userArray = null;
+		// $userArray["username"] = "bkang61";
+		// $userArray["email"] = "bkang61@gatech.edu";
+		// $userArray["group"] = null;
+		// ====================================================
+		return $userArray;
 	}
 
-	// TODO User authentication through apache env variable
-	public function getAuthToken($input=null) {
-		if ($input["isHook"]) {
+	/**
+	 * @param PHP array: ["isHook", "hookname", "username"]
+	 * @return array with ok signal, message and data
+	 */
+	public function getAuthToken($hookInfo=null) {
+
+		if ($hookInfo["isHook"]) {
 			// generate a token whose body is hookname and email address
-			return $this->generateTokenForHook($input);
+			return $this->generateTokenForHook($hookInfo);
 		} else {
-			// input is not a hook, generate regular user token
-			return $this->generateTokenForUser();
+			// Get authenticated user
+			$userArray = $this->getCASUser();
+
+			if ($userArray["group"] == $this->settings["CAS-group-name"]) {
+
+				$this->logger->info("Created token for: ". $this->settings["CAS-group-name"] . "with username: " . $userArray["username"].".");
+
+				$token = $this->generateTokenForUser($userArray);
+
+				return array("ok"=>true,"msg"=>"Successfully created token for".$this->settings["CAS-group-name"].".", "jwt"=>$token);
+			}
+
+			// check if authenticated user is a renter
+			$checkUser = $this->core->getUser(array("username" => $userArray["username"]));
+
+			$this->logger->debug("Checking for user: ".$userArray["username"].".");
+			$this->logger->debug("CoreService getUser returned: ".$checkUser["users"][0].".");
+
+
+			// if authenticated user is in user collection (a renter), authorize
+			if($checkUser["users"][0]["username"] == $userArray["username"]) {
+				$token = $this->generateTokenForUser($userArray);
+
+				$this->logger->info("Created token for user: ".$userArray["username"].".");
+				return array("ok"=>true, "msg"=>"Successfully created token.", "jwt"=>$token);
+			} else {
+
+				$this->logger->info("User: ".$userArray["username"]." not found in User collection.");
+				return array("ok"=>false, "msg"=>"User not in database. Please contact your IT admin to be registered with the service.", "jwt"=>null);
+			}
 		}
 
 		// should not get here
@@ -35,6 +103,7 @@ class Validator
 	}
 
 	/**
+	 * @param JWT string
 	 * @return array(isHook, hook_name, user_name) otherwise return error triplet:
 	 *					array("ok"=>boolean, "msg"=>somemessage, "status"=>HTTP code)
 	 */
@@ -44,74 +113,73 @@ class Validator
 			return array("ok"=>false, "msg"=>"no token recieved.", "status"=>404);
 		}
 
-
-		$settings = $this->c->get('settings');
-
-		$secretKey = $settings["jwtSecretKey"];
-		$encryptionAlgo = $settings['encryptionAlgo'];
+		$secretKey = $this->settings["jwtSecretKey"];
+		$encryptionAlgo = $this->settings['encryptionAlgo'];
 		$jwt = null;
 
 		try {
 			$jwt = JWT::decode($token, $secretKey, array($encryptionAlgo));
 
 		} catch(\Firebase\JWT\ExpiredException $e) {
-			return array("ok"=>false, "msg"=>"expired token", "status"=>401);
+			return array("ok"=>false, "msg"=>"expired token", "status"=>403);
 		} catch(\Firebase\JWT\SignatureInvalidException $e) {
-			return array("ok"=>false, "msg"=>"token tampered with. notifying...","status"=>401);
+			return array("ok"=>false, "msg"=>"token tampered with. notifying...","status"=>403);
 		} catch (\Firebase\JWT\UnexpectedValueException $e) {
-			return array("ok"=>false, "msg"=>"invalid token", "status"=>401);
+			return array("ok"=>false, "msg"=>"invalid token", "status"=>403);
 		} catch (\Firebase\JWT\BeforeValidException $e) {
-			return array("ok"=>false, "msg"=>"token not yet valid. try again in a few seconds", "status"=>401);
+			return array("ok"=>false, "msg"=>"token not yet valid. try again in a few seconds", "status"=>403);
 		}
 
 		$returnArray = null;
 		
 		// $data = json_decode($jwt->data, true);
 
-		// return array("ok"=>true, "msg"=>$jwt->data, "status"=>200);
+		return array("ok"=>true, "msg"=>$jwt->data);
 // 
-		if ($jwt->data->hook_name) {
-			$this->logger->debug("Decoding token for hook ".$jwt->data->hook_name.".");
+		if ($jwt->data->hookname) {
+			$this->logger->debug("Decoding token for hook ".$jwt->data->hookname.".");
 			$returnArray["isHook"] = true;
-			$returnArray["hook_name"] = $jwt->data->hook_name;
-			$returnArray["user_name"] = $jwt->data->user_name;
+			$returnArray["hookname"] = $jwt->data->hookname;
+			$returnArray["username"] = $jwt->data->username;
 		
-			$result = array("ok"=>true, "msg"=>"Successful hook token decoded.", "data"=>$returnArray, "status"=>200);
+			$this->logger->debug("Decoding token for hook ".$jwt->data->hookname.".");
+			$result = array("ok"=>true, "msg"=>"Successful hook token decoded.", "data"=>$returnArray);
 			return $result;
 		} else {
-			if($jwt->data->user_name) {
-				$this->logger->debug("Decoding token for user ".$jwt->data->user_name.".");
+			if($jwt->data->username) {
 
-				$return = array("user"=>$jwt->data->user_name, 
-							    "user_email"=>$jwt->data->user_email);
+				$return = array("user"=>$jwt->data->username, 
+							    "email"=>$jwt->data->email,
+							    "group"=>$jwt->data->group);
 
-				return array("ok"=>true, "msg"=>"Successful user token decoded.", "data"=>$return, "status"=>200);
+				$this->logger->debug("Decoding token for user ".$jwt->data->username.".");
+				return array("ok"=>true, "msg"=>"Successful user token decoded.", "data"=>$return);
 			} else {
 				// should not get down here. make sure of it. still untested (april 17th 2017)
-				return array("ok"=>false,"msg"=>"something went wrong with decode", "status"=>404);
+				return array("ok"=>false,"msg"=>"something went wrong with decode", "data"=>null);
 			}
 			
 		}
 	}
 
 	/**
-	 * @return JSON with key "jwt" and value with the jwt string
+	 * @param PHP array of ["hookname", "username"]
+	 * @return JWT token string
 	 */
 	public function generateTokenForHook($data) {
-		$settings = $this->c->get('settings');
 
 		$username = null;
-		if($data["user_name"]) {
-			$username = $data["user_name"];
+		if($data["username"]) {
+			$username = $data["username"];
 		}
 
-		$encryptionAlgo = $settings['encryptionAlgo'];
+		$encryptionAlgo = $this->settings['encryptionAlgo'];
 
-		$tokenID 	= $data['hook_name'];	 
-		$issuedAt   = time();				 // current time
-		$notBefore  = $issuedAt + 1;		 // Token valid after 1 seconds
-		$expire     = $notBefore + 300;      // expires after 5 minutes
-		$serverName = $settings['serverName']; // Retrieve the server name from config file
+		$tokenID 	= $data['hookname'];	 
+		$issuedAt   = time();											// current time
+		$notBefore  = $issuedAt + 1;		 							// Token valid after 1 seconds
+		$expire     = $notBefore + $this->settings["token-expiration-time"];	// expires after 5 minutes
+		$serverName = $this->settings['serverName']; 							// Retrieve the server name from config file
 
 		$tokenArray  = [
 				'iat' => time(),
@@ -119,53 +187,39 @@ class Validator
 				'nbf' => $notBefore,
 				'exp' => $expire,
 				'data'=> [
-						'hook_name' => $data['hook_name'],
-						'user_name' => $username
+						'hookname' => $data['hookname'],
+						'username' => $username
 					]
 			];
 
 		$generatedToken = JWT::encode(
 				$tokenArray,
-				$settings['jwtSecretKey'],
+				$this->settings['jwtSecretKey'],
 				$encryptionAlgo
 			);
-		$this->logger->info("Generating JWT for HOOK: ".$data["hook_name"].". Token: ".$generatedToken);
-		$return = ['jwt' => $generatedToken];
+		$this->logger->info("Generating JWT for HOOK: ".$data["hookname"].". Token: ".$generatedToken);
+		$return = $generatedToken;
 		return $return;
 	}
 
 	/**
-	 * @return JSON with key "jwt" and value with the jwt string
+	 * @param PHP array of ["username", "email", "group"]
+	 * @return JWT token string
 	 */
-	public function generateTokenForUser() {
-		// gets authenticated user from CAS (apache env variable)
-		// $userArray = $this->getAuthUser();
-		$settings = $this->c->get('settings');
-		$userArray = null;
-		// $envArray = $_SERVER;
+	public function generateTokenForUser($userArray) {
+
+		// userArray will have three fields
+		// 1. username
+		// 2. email
+		// 3. group
 		
+		$encryptionAlgo = $this->settings['encryptionAlgo'];
 
-		// // if the authenticated user is part of the CAS user gruup
-		// // give authorization
-		// foreach ($envArray as $key=>$value) {
-		// 	if ($value == $settings['CAS-group-name']) {
-		// 		$userArray["user"] = $envArray["REMOTE_USER"];
-		// 		$$userArray["user_email"] = $envArray["REMOTE_USER_EMAIL"];
-		// 	}
-		// }
-		// ====================test code=======================
-
-		$userArray["user"] = "krao34";
-		$userArray["user_email"] = "krao34@gmail.com";
-		// ====================================================
-
-		$encryptionAlgo = $settings['encryptionAlgo'];
-
-		$tokenID 	= $userArray['user'];	 
+		$tokenID 	= $userArray['username'];	 
 		$issuedAt   = time();				 							// current time
 		$notBefore  = $issuedAt + 1;		 							// Token valid after 1 seconds
-		$expire     = $notBefore + $settings["token-expiration-time"];  // expires after 5 minutes (default) Edit in settings.php
-		$serverName = $settings['serverName']; 							// Retrieve the server name from config file
+		$expire     = $notBefore + $this->settings["token-expiration-time"];  // expires after 5 minutes (default) Edit in settings.php
+		$serverName = $this->settings['serverName']; 							// Retrieve the server name from config file
 
 		$tokenArray  = [
 				'iat' => time(),
@@ -173,18 +227,20 @@ class Validator
 				'nbf' => $notBefore,
 				'exp' => $expire,
 				'data'=> [
-						'user_name' => $userArray['user'],
-						'user_email' => $userArray['user_email']
+						'username' => $userArray['username'],
+						'email' => $userArray['email'],
+						'group' => $userArray['group']
 					]
 			];
 
 		$generatedToken = JWT::encode(
 				$tokenArray,
-				$settings['jwtSecretKey'],
+				$this->settings['jwtSecretKey'],
 				$encryptionAlgo
 			);
-		$this->logger->info("Generating JWT for USER: ".$userArray["user"].". Token: ".$generatedToken);
-		$return = ['jwt' => $generatedToken];
+		$this->logger->info("Generating JWT for USER: ".$userArray["username"].". Of group: ". $userArray["group"]. ". Token: ".$generatedToken);
+
+		$return = $generatedToken;
 		return $return;
 	}
 

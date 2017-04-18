@@ -6,8 +6,11 @@ angular.module("app.controllers").controller("NewEquipmentController", ["$scope"
 		$scope.defaultEquipmentTypes = {};
 		$scope.currEqType;
 
-		$http.get('http://localhost:8080/v1/equipmenttypes').then(function(response) {
+		APIService.query("equipmenttypes", onEquipmentTypeSuccess, function() {
+			console.log("error with getting equipmenttypes");
+		});
 
+		function onEquipmentTypeSuccess(response) {
 			$scope.equipmenttypes = response.data.equipment_types;
 
 			angular.forEach($scope.equipmenttypes, function(item) {
@@ -25,8 +28,12 @@ angular.module("app.controllers").controller("NewEquipmentController", ["$scope"
 
 			});
 			// console.log($scope.defaultEquipmentTypes);
+		}
 
-		});
+
+		// $http.get('http://localhost:8080/v1/equipmenttypes').then(function(response) {
+
+		// });
 
 		$scope.labels = ['department_tag', "gt_tag", "status", "comment", "loaned_to"];
 

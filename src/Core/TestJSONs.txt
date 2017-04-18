@@ -37,12 +37,12 @@ JSON Formats and examples
 
     Read (GET)
 
-    http://server_url/v1/equipmenttypes?searchField=value%searchField=value
+    http://server_url/v1/equipmenttypes?searchField=value&searchField=value
 
     This API searches for exact match and does not support nested search.
     'searchField' cannot be a field in 'equipment_type_attributes'.
     'searchField' can be '_id', 'name', or 'comments'.
-    More search criteria can be added by using '%' as a separator.
+    More search criteria can be added by using '&' as a separator.
 
     If query is not given, then API returns all available Equipment Type documents (search all).
 
