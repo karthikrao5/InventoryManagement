@@ -10,19 +10,19 @@ class UserValidator extends AbstractValidator
             parent::__construct($ci);
     }
     
-    public function isMongoIdString($string)
+    public function isUsernameExist($username)
     {
-        return preg_match('/^[a-f\d]{24}$/i', $string);
+        return $this->core->getUser(array('username' => $username))['ok'];
     }
     
-    public function isMongoIdObject($object)
+    public function isUserIdExist($id)
     {
-        return $object instanceof \MongoId;
-    }
-    
-    public function isUsernameExist($json)
-    {
-        return $this->core->getUser(array('username' => $json['username']))['ok'];
+        if(!($id instanceof \MongoId))
+        {
+            $id = new \MongoId($id);
+        }
+        
+        return $this->core->getUser(array('_id' => $id))['ok'];
     }
     
     public function isValidDeleteJson($json)

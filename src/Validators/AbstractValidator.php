@@ -4,24 +4,34 @@ namespace App\Validators;
 
 use Interop\Container\ContainerInterface;
 
-abstract class AbstractValidator {
+abstract class AbstractValidator 
+{
+    protected $dm;
 
-	protected $dm;
+    protected $ci;
 
-	protected $ci;
+    protected $logger;
 
-	protected $logger;
-        
-        protected $core;
+    protected $core;
 
-	public function __construct(ContainerInterface $ci) {
-            $this->ci = $ci;
-            $this->dm = $ci->get('dm');
-            $this->logger = $ci->get('logger');
-	}
-        
-        public function setCore($core)
-        {
-            $this->core = $core;
-        }
+    public function __construct(ContainerInterface $ci) {
+        $this->ci = $ci;
+        $this->dm = $ci->get('dm');
+        $this->logger = $ci->get('logger');
+    }
+
+    public function setCore($core)
+    {
+        $this->core = $core;
+    }
+
+    public function isMongoIdString($string)
+    {
+        return preg_match('/^[a-f\d]{24}$/i', $string);
+    }
+
+    public function isMongoIdObject($object)
+    {
+        return $object instanceof \MongoId;
+    }
 }
