@@ -4,6 +4,8 @@ JSON Formats and examples
 
     Create (POST)
 
+    http://server_url/v1/equipmenttypes
+
     {
       "name" : "laptop",
       "comments" : "some comments here.",
@@ -49,6 +51,8 @@ JSON Formats and examples
     http://server_url/v1/equipmenttypes
 
     Update (PUT)
+
+    http://server_url/v1/equipmenttypes
 
     Either '_id' or 'name' must be present in the request JSON as an identifier.
 
@@ -119,6 +123,8 @@ JSON Formats and examples
 
     Delete (DELETE)
 
+    http://server_url/v1/equipmenttypes
+
     Bulk delete is not supported. Either '_id' or 'name' must be present in the request JSON.
 
     {
@@ -127,7 +133,55 @@ JSON Formats and examples
     }
 
 
-New Equipment type input
+2. Equipment
+
+    Create (POST)
+
+    http://server_url/v1/equipments
+
+    Read (GET)
+
+    http://server_url/v1/equipments?searchField=value%searchField=value
+
+    This API searches for exact match and does not support nested search.
+    'searchField' cannot be a field in 'equipment_attributes'.
+    'searchField' can be "department_tag", "gt_tag", "equipment_type_name", "status", "loaned_to", "created_on", "last_updated", "comment"
+    More search criteria can be added by using '%' as a separator.
+
+    If query is not given, then API returns all available Equipment Type documents (search all).
+
+    http://server_url/v1/equipments
+
+    Update (PUT)
+
+    http://server_url/v1/equipments
+
+    Delete (DELETE)
+
+    http://server_url/v1/equipments
+
+3. User
+
+    Create (POST)
+
+    Read (GET)
+
+    Update (PUT)
+
+    Delete (DELETE)
+
+4. Loan
+
+    Create (POST)
+
+    Read (GET)
+
+    Update (PUT)
+
+    Delete (DELETE)
+
+5. Log
+
 
 
 
