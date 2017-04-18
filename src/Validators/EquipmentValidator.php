@@ -175,10 +175,77 @@ class EquipmentValidator extends AbstractValidator {
         }
         
         //check for value against regex and enum
+        foreach($equipmentTypeAttributes as $equipmentTypeAttr)
+        {
+            foreach($attributes as $attr)
+            {
+                if($equipmentTypeAttr['name'] == $attr['name'])
+                {
+                    if(isset($equipmentTypeAttr['regex']))
+                    {
+                        if(!preg_match($equipmentTypeAttr['regex'], $attr['value']))
+                        {
+                            $result['msg'] = "Attribute '".$attr['name']."' has failed regex check.";
+                        }
+                    }
+                    
+                    if($equipmentTypeAttr['enum'])
+                    {
+                        if(!in_array($attr['value'], $equipmentTypeAttr['enum_values']))
+                        {
+                            $result['msg'] = "Attribute '".$attr['name']."' must have value from equipment type's enum_values.";
+                        }
+                    }
+                }
+            }
+        }
+        
+        //gather attribute names
+        $temp = array();
+        foreach($attributes as $attr)
+        {
+            $temp[] = $attr['name'];
+        }
         
         //check for missing required attributes
+        foreach($equipmentTypeAttributes as $equipmentTypeAttr)
+        {
+            if($equipmentTypeAttr['required'] && !in_array($equipmentTypeAttr['name'], $temp))
+            {
+                $result['msg'] = "Equipment is missing required attribute '".$equipmentTypeAttr['name']."'.";
+                return $result;
+            }
+        }
         
         //check for unique attributes
+        foreach($equipmentTypeAttributes as $equipmentTypeAttr)
+        {
+            if($equipmentTypeAttr['unique'])
+            {
+                foreach($attributes as $attr)
+                {
+                    if($attr['name'] == $equipmentTypeAttr['name'])
+                    {
+                        if(!$this->isAttributeUnique($equipmentTypeAttr, $attr))
+                        {
+                            $result['msg'] = "Attribute '".$attr['name']."' has duplicate value.";
+                            return $result;
+                        }
+                    }
+                }
+            }
+        }
+        
+        $result['ok'] = true;
+        return $result;
+    }
+    
+    private function isAttributeUnique($equipmentTypeAttribute, $attribute)
+    {
+        $dao = $this->core->getDao();
+        
+        return $dao->getEquipmentAttribute(array('equipment_type_attribute_id' => $equipmentTypeAttribute['_id'], 
+            'name' => $attribute['name'], 'value' => $attribute['value']))['ok'] == false;
     }
     
     public function isCorrectStatus($status)
