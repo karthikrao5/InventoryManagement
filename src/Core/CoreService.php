@@ -375,6 +375,21 @@ class CoreService
         {
             return $validationResult;
         }
+        
+        if(!isset($requestJson['_id']))
+        {
+            $getIdResult = $this->equipmentTypeValidator->getEquipmentTypeIdByName($requestJson['name']);
+            
+            if($getIdResult['ok'])
+            {
+                $requestJson['_id'] = $getIdResult['_id'];
+            }
+            else
+            {
+                $result['msg'] = "Equipment Type not found with given name.";
+                return $result;
+            }
+        }
 
         //do not trust DAO in terms of semantics.
         //update equipment type document itself (not its attributes).
@@ -426,11 +441,33 @@ class CoreService
         {
             return $validationResult;
         }
+        
+        if(!isset($requestJson['_id']))
+        {
+            $getIdResult = $this->equipmentTypeValidator->getEquipmentTypeIdByName($requestJson['name']);
+            
+            if($getIdResult['ok'])
+            {
+                $requestJson['_id'] = $getIdResult['_id'];
+            }
+            else
+            {
+                $result['msg'] = "Equipment Type not found with given name.";
+                return $result;
+            }
+        }
 
-        $daoResult = $this->dao->deleteEquipmentType($requestJson['ids']);
-
-        $result['ok'] = $daoResult['ok'];
-        $result['n'] = $daoResult['n'];
+        $daoResult = $this->dao->deleteEquipmentType($requestJson['_id']);
+        
+        if($daoResult['ok'])
+        {
+            $result['ok'] = true;
+            $result['msg'] = "Successfully deleted Equipment Type.";
+        }
+        else
+        {
+            $result['msg'] = $daoResult['msg'];
+        }
 
         return $result;
     }

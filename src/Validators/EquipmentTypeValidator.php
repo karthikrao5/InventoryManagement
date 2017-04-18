@@ -26,18 +26,16 @@ class EquipmentTypeValidator extends AbstractValidator {
         return $dao->getEquipmentTypeAttribute(array('equipment_type_id' => $equipmentTypeId, 'name' => $name))['ok'];
     }
     
-    private function getEquipmentTypeIdByName($name)
-    {
+    public function getEquipmentTypeIdByName($name)
+    {   
         $result = $this->core->getEquipmentType(array('name' => $name));
         
         if($result['ok'])
         {
             $result = array('ok' => true, '_id' => $result['equipment_types'][0]['_id']);
         }
-        else
-        {
-            return $result;
-        }
+        
+        return $result;
     }
     
     private function isValidRegex($regex)
@@ -62,18 +60,6 @@ class EquipmentTypeValidator extends AbstractValidator {
             if(!isset($json['name']))
             {
                 $result['msg'] = "Either field '_id' or 'name' must be present in the reqeust JSON.";
-                return $result;
-            }
-            
-            $getIdResult = $this->getEquipmentTypeIdByName($json['name']);
-            
-            if($getIdResult['ok'])
-            {
-                $json['_id'] = $getIdResult['_id'];
-            }
-            else
-            {
-                $result['msg'] = "Equipment Type not found with given name.";
                 return $result;
             }
         }
@@ -101,19 +87,6 @@ class EquipmentTypeValidator extends AbstractValidator {
                 $result['msg'] = "Either field '_id' or 'name' must be present in the reqeust JSON.";
                 return $result;
             }
-            
-            $getIdResult = $this->getEquipmentTypeIdByName($json['name']);
-            
-            if($getIdResult['ok'])
-            {
-                $json['_id'] = $getIdResult['_id'];
-            }
-            else
-            {
-                $result['msg'] = "Equipment Type not found with given name.";
-                return $result;
-            }
-            
         }
         
         if(isset($json['update_equipment_type']))

@@ -93,9 +93,10 @@ class EquipmentTypeController extends AbstractController{
         }
 
         $result = $this->core->deleteEquipmentType($request->getParsedBody());
+        
+        return $response->withJson($result);
 
         if ($result["ok"]) {
-            //return $response->withStatus(200)->write("Successfully deleted EquipmentTypes.");
             return $response->withStatus(200)->write("Successfully deleted ".$result['n']." EquipmentTypes!");
         } else {
             return $response->withStatus(404)->write("Something went wrong, EquipmentType are not deleted.");
