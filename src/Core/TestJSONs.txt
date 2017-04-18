@@ -4,6 +4,20 @@ JSON Formats and examples
 
     Create (POST)
 
+    Unique identifiers are "name" and "_id". "_id" is used internally.
+    Each Equipment Type Attribute in Equipment Type document must have unique name.
+
+    "required" - Forces Equipment to have an attribute.
+    "unique" - Enforces uniqueness of given Equipment Attribute. For example, laptop's serial number.
+    "data_type" - Not supported in current version. It is required to have 'data_type' field in request JSON but it is unused and unchecked.
+    "regex" - Enforces value of Equipment Attribute to follow regex format.
+    "enum" - true = set, false = unset. Enforces value of Equipment Attribute to be one of the 'enum_values' element.
+    "enum_values" - If enum is set, value of Equipment Attribute must be one of the 'enum_values' element.
+
+    * "data_type" is unsupported due to current way of searching.
+    Nested search (searching for attribute's fields) and conditional search is not possible.
+    This is one of the milestone on next release.
+
     http://server_url/v1/equipmenttypes
 
     Sample request JSON:
@@ -43,7 +57,7 @@ JSON Formats and examples
 
     http://server_url/v1/equipmenttypes?searchField=value%searchField=value
 
-    This API searches for exact match and does not support nested search.
+    This API searches for exact match and does not support nested search or conditional search.
     'searchField' cannot be a field in 'equipment_type_attributes'.
     'searchField' can be '_id', 'name', or 'comments'.
     More search criteria can be added by using '%' as a separator.
@@ -65,11 +79,22 @@ JSON Formats and examples
     '_id' is not update-able and must be presented.
     All other fields are optional.
 
+        "unique" - Setting unique from false to true does not affect current Equipments until their next update.
+        Uniqueness check will be applied on the next update or new Equipments.
+
+        "data_type" - This is unsupported in current version.
+
+        "regex" - Just like "unique", changing this does not affect current Equipments until their next update.
+        Regular expression check will be applied to new Equipments or current Equipment's next update.
+
+        "enum" - Just like "unique", changing this does not affect current Equipments until their next update.
+        Enum check will be applied to new Equipments or current Equipment's next update.
+
     'add_equipment_type_attributes' adds new Equipment Type Attribute in an Equipment Type document.
-    All fields are expected in the JSON.
+    All fields are expected in the JSON. This won't affect current Equipments until their next update.
 
     'remove_equipment_type_attributes' removes Equipment Type Attributes in an Equipment Type document.
-    MongoId strings are expected.
+    MongoId strings are expected. Remove won't be allowed if there is an Equipment Attribute that has this Equipment Type Attribute.
 
     Updating this document may not always work as expected since all Equipment documents are dependent
     on this document. Please refer to the error message for details.
@@ -170,7 +195,7 @@ JSON Formats and examples
 
     http://server_url/v1/equipments?searchField=value%searchField=value
 
-    This API searches for exact match and does not support nested search.
+    This API searches for exact match and does not support nested search or conditional search.
     'searchField' cannot be a field in 'equipment_attributes'.
     'searchField' can be "department_tag", "gt_tag", "equipment_type_name", "status", "loaned_to", "created_on", "last_updated", "comment"
     More search criteria can be added by using '%' as a separator.
@@ -191,6 +216,8 @@ JSON Formats and examples
 
     Unique identifiers:
         '_id', 'department_tag', 'gt_tag'
+
+    Sample request JSON:
 
     {
         "_id" : "58e81cc37f8b9ac4571ef7c6",

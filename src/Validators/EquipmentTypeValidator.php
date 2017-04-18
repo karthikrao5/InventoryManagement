@@ -262,7 +262,7 @@ class EquipmentTypeValidator extends AbstractValidator {
 
         if(!array_key_exists('regex', $attribute)) 
         {
-            $result['msg'] = "Field 'regex' of Equipmment Type Attribute is missing on '".$attribute['name']."'.";
+            $result['msg'] = "Field 'regex' of Equipmment Type Attribute is missing on '".$attribute['name']."'. Value of regex can be null.";
             return $result;
         }
         else
@@ -307,6 +307,13 @@ class EquipmentTypeValidator extends AbstractValidator {
         if($attribute['enum'] && empty($attribute['enum_values'])) 
         {
             $result['msg'] = "Field 'enum_values' of Equipmment Type Attribute cannot be null or empty when 'enum' is true on '".$attribute['name']."'.";
+            return $result;
+        }
+        
+        //if enum is set, then unique cannot be true
+        if($attribute['enum'] && $attribute['unique'])
+        {
+            $result['msg'] = "Field 'enum' cannot be true when 'unique' is true.";
             return $result;
         }
 
