@@ -20,6 +20,32 @@ class Validator
 		$this->settings = $ci->get("settings");
 	}
 
+	private function getTokenFromHeader($authHeader) {
+		if(!$authHeader) {
+			return null;
+		}
+		$token = str_replace("Bearer ", "", $authHeader[0]);
+		return $token;
+	}
+
+	public function isRenter($userArray) {
+		// if user is not CAS group or hook, they are renter
+		if ($userArray["group"] != $this->settings["CAS-group-name"]
+			|| !$userArray["hookname"]) {
+			return true;
+		}
+		return false;
+	}
+
+	public function isAdminOrHook($userArray) {
+		// if user is CAS group or hook
+		if ($userArray["group"] == $this->settings["CAS-group-name"]
+			|| $userArray["hookname"]) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Check apache environment variable for authenticated user
 	 * @return CAS user group as array("user", "email", "group")
@@ -39,19 +65,26 @@ class Validator
 
 
 		// ====================test code=======================
-
-		// test IT admin (Not in Users table, but has CAS group for itadmin)
 		$userArray = null;
-		$userArray["username"] = "krao34";
-		$userArray["email"] = "krao34@gmail.com";
-		$userArray["group"] = $this->settings["CAS-group-name"];
 
+		if($this->settings["test-renter"]) {
+			// test renter
+			// $userArray["username"] = "bkang61";
+			// $userArray["email"] = "bkang61@gatech.edu";
+			// $userArray["group"] = null;
 
-		// test renter
-		// $userArray = null;
-		// $userArray["username"] = "bkang61";
-		// $userArray["email"] = "bkang61@gatech.edu";
-		// $userArray["group"] = null;
+			// not in users (aka forbidden user)
+			$userArray["username"] = "krao34";
+			$userArray["email"] = "krao34@gatech.edu";
+			$userArray["group"] = null;
+
+		} else {
+			// test IT admin (Not in Users table, but has CAS group for itadmin)
+			$userArray["username"] = "krao34";
+			$userArray["email"] = "krao34@gmail.com";
+			$userArray["group"] = $this->settings["CAS-group-name"];
+		}
+		
 		// ====================================================
 		return $userArray;
 	}
@@ -103,11 +136,14 @@ class Validator
 	}
 
 	/**
-	 * @param JWT string
+	 * @param request Header array
 	 * @return array(isHook, hook_name, user_name) otherwise return error triplet:
 	 *					array("ok"=>boolean, "msg"=>somemessage, "status"=>HTTP code)
 	 */
-	public function decodeToken($token) {
+	public function decodeToken($authHeader) {
+
+		// get JWT string from header
+		$token = $this->getTokenFromHeader($authHeader);
 
 		if(!$token) {
 			return array("ok"=>false, "msg"=>"no token recieved.", "status"=>404);
@@ -156,7 +192,7 @@ class Validator
 				return array("ok"=>true, "msg"=>"Successful user token decoded.", "data"=>$return);
 			} else {
 				// should not get down here. make sure of it. still untested (april 17th 2017)
-				return array("ok"=>false,"msg"=>"something went wrong with decode", "data"=>null);
+				return array("ok"=>false,"msg"=>"something went wrong with decode", "data"=>null, "status"=>500);
 			}
 			
 		}

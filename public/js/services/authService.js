@@ -27,6 +27,10 @@ angular.module("app").factory("Auth", ["$window", "$http", function($window, $ht
 
         isExpired : function() {
             return isExpired();
+        },
+
+        deleteAuth : function() {
+            $window.localStorage.removeItem("jwt");
         }
     };
 
