@@ -181,12 +181,90 @@ class EquipmentValidator extends AbstractValidator {
         
         if(isset($json['add_equipment_attributes']))
         {
+            $dao = $this->core->getDao();
+            $equipment = $dao->getEquipment(array('_id' => $json['_id']))['equipments'][0];
+            $equipmentAttributes = $dao->getEquipmentAttribute(array('equipment_id' => $json['_id']))['equipment_attributes'];
+            $equipmentTypeAttributes = $dao->getEquipmentTypeAttribute(array('equipment_type_id' => $equipment['equipment_type_id']));
             
+            //check if the attribute is already present.
+            foreach($equipmentAttributes as $attr)
+            {
+                foreach($json['add_equipment_attributes'] as $attr2)
+                {
+                    if($attr['name'] == $attr2['name'])
+                    {
+                        $result['msg'] = "Attribute name '".$attr2."' already exists.";
+                        return $result;
+                    }
+                }
+            }
+            
+            //check if value is correct.
+            foreach($equipmentTypeAttributes as $attrType)
+            {
+                foreach($json['add_equipment_attributes'] as $attr)
+                {
+                    if($attrType['name'] == $attr['name'])
+                    {
+                        if($attrType['unique'])
+                        {
+                            if(!$this->isAttributeUnique($attrType, $attr))
+                            {
+                                $result['msg'] = "Given attribute value '".$attr."' is not unqiue.";
+                                return $result;
+                            }
+                        }
+                        
+                        if(isset($attrType['regex']))
+                        {
+                            if(!preg_match($attrType['regex'], $attr['value']))
+                            {
+                                $result['msg'] = "Given attribute value '".$attr."' is not in regex format.";
+                                return $result;
+                            }
+                        }
+                        
+                        if($attrType['enum'])
+                        {
+                            if(!in_array($attr['value'], $attrType['enum_values']))
+                            {
+                                $result['msg'] = "Given attribute value '".$attr['value']."' is not in 'enum_values' in 'add_equipment_attributes'";
+                                return $result;
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         if(isset($json['remove_equipment_attributes']))
         {
-            
+            foreach($json['remove_equipment_attributes'] as $attrId)
+            {
+                if(!$this->isMongoIdString($attrId))
+                {
+                    $result['msg'] = "Invalid ID string '".$attrId."' given to 'remove_equipment_attributes'.";
+                    return $result;
+                }
+                
+                $dao = $this->core->getDao();
+                $daoResult = $dao->getEquipmentAttribute(array('_id' => new \MongoId($attrId)));
+                
+                if(!$daoResult['ok'])
+                {
+                    $result['msg'] = "Equipment Attribute not found with given ID string.";
+                    $result['id_string'] = $attrId;
+                }
+                
+                $equipmentAttribute = $daoResult['equipment_attributes'][0];
+                $equipmentTypeAttribute = $dao->getEquipmentTypeAttribute(array('_id' => $equipmentAttribute['equipment_type_attribute_id']))['equipment_type_attributes'][0];
+                
+                if($equipmentTypeAttribute['required'])
+                {
+                    $result['msg'] = "Attribute '".$equipmentAttribute['name']."' is required attribute.";
+                    return $result;
+                }
+            }
         }
         
         return $result;
@@ -215,17 +293,29 @@ class EquipmentValidator extends AbstractValidator {
         
         if(isset($equipmentTypeAttribute['regex']))
         {
-            
+            if(!preg_match($equipmentTypeAttribute['regex'], $attribute['value']))
+            {
+                $result['msg'] = "Attribute value '".$attribute['value']."' is not in regex format in 'update_equipment_attributes'.";
+                return $result;
+            }
         }
         
         if(isset($equipmentTypeAttribute['unique']))
         {
-            
+            if(!$this->isAttributeUnique($equipmentTypeAttribute, $attribute))
+            {
+                $result['msg'] = "Attribute value '".$attribute['value']."' is not unique in 'update_equipment_attributes'.";
+                return $result;
+            }
         }
         
         if($equipmentTypeAttribute['enum'])
         {
-            
+            if(!in_array($attribute['value'], $equipmentTypeAttribute['enum_values']))
+            {
+                $result['msg'] = "Attribute value '".$attribute['value']."' is not in enum_values array in 'update_equipment_attributes'.";
+                return $result;
+            }
         }
         
         return $result;
