@@ -33,8 +33,16 @@ class DAO
         }
         
         $result = $loans->insert($loan);
+        $this->addCurrentLLoanToUser($this->getUserId($loan['username']), $loan['_id']);
         
-        return $loan;
+        return $this->getLoan(array('_id' => $loan['_id']))[0];
+    }
+    
+    private function getUserId($username)
+    {
+        $result = $this->getUser(array('username' => $username));
+        
+        return $result['users'][0]['_id'];
     }
     
     public function getLoan($searchCriteria=null)
