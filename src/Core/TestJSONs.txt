@@ -4,6 +4,24 @@ JSON Formats and examples
 
     Create (POST)
 
+    Unique identifiers are "name" and "_id". "_id" is used internally.
+    Each Equipment Type Attribute in Equipment Type document must have unique name.
+
+    "required" - Forces Equipment to have an attribute.
+    "unique" - Enforces uniqueness of given Equipment Attribute. For example, laptop's serial number.
+    "data_type" - Not supported in current version. It is required to have 'data_type' field in request JSON but it is unused and unchecked.
+    "regex" - Enforces value of Equipment Attribute to follow regex format.
+    "enum" - true = set, false = unset. Enforces value of Equipment Attribute to be one of the 'enum_values' element.
+    "enum_values" - If enum is set, value of Equipment Attribute must be one of the 'enum_values' element.
+
+    * "data_type" is unsupported due to current way of searching.
+    Nested search (searching for attribute's fields) and conditional search is not possible.
+    This is one of the milestone on next release.
+
+    http://server_url/v1/equipmenttypes
+
+    Sample request JSON:
+
     {
       "name" : "laptop",
       "comments" : "some comments here.",
@@ -39,7 +57,7 @@ JSON Formats and examples
 
     http://server_url/v1/equipmenttypes?searchField=value&searchField=value
 
-    This API searches for exact match and does not support nested search.
+    This API searches for exact match and does not support nested search or conditional search.
     'searchField' cannot be a field in 'equipment_type_attributes'.
     'searchField' can be '_id', 'name', or 'comments'.
     More search criteria can be added by using '&' as a separator.
@@ -50,6 +68,8 @@ JSON Formats and examples
 
     Update (PUT)
 
+    http://server_url/v1/equipmenttypes
+
     Either '_id' or 'name' must be present in the request JSON as an identifier.
 
     'update_equipment_type' updates an Equipment Type document's fields.
@@ -59,11 +79,22 @@ JSON Formats and examples
     '_id' is not update-able and must be presented.
     All other fields are optional.
 
+        "unique" - Setting unique from false to true does not affect current Equipments until their next update.
+        Uniqueness check will be applied on the next update or new Equipments.
+
+        "data_type" - This is unsupported in current version.
+
+        "regex" - Just like "unique", changing this does not affect current Equipments until their next update.
+        Regular expression check will be applied to new Equipments or current Equipment's next update.
+
+        "enum" - Just like "unique", changing this does not affect current Equipments until their next update.
+        Enum check will be applied to new Equipments or current Equipment's next update.
+
     'add_equipment_type_attributes' adds new Equipment Type Attribute in an Equipment Type document.
-    All fields are expected in the JSON.
+    All fields are expected in the JSON. This won't affect current Equipments until their next update.
 
     'remove_equipment_type_attributes' removes Equipment Type Attributes in an Equipment Type document.
-    MongoId strings are expected.
+    MongoId strings are expected. Remove won't be allowed if there is an Equipment Attribute that has this Equipment Type Attribute.
 
     Updating this document may not always work as expected since all Equipment documents are dependent
     on this document. Please refer to the error message for details.
@@ -119,7 +150,11 @@ JSON Formats and examples
 
     Delete (DELETE)
 
+    http://server_url/v1/equipmenttypes
+
     Bulk delete is not supported. Either '_id' or 'name' must be present in the request JSON.
+
+    Sample request JSON:
 
     {
         "_id" : "58e81cc37f8b9ac4571ef7c6",
@@ -127,121 +162,150 @@ JSON Formats and examples
     }
 
 
-New Equipment type input
+2. Equipment
+
+    Create (POST)
+
+    Unique identifiers are "department_tag", "gt_tag", and "_id". "_id" is set by the system and used internally.
+    Attribute's name and value are checked by the system using Equipment Type Attribute information.
+
+    http://server_url/v1/equipments
+
+    Sample request JSON:
+
+    {
+    	"department_tag" : "math-12342",
+    	"gt_tag" : null,
+    	"equipment_type_name" : "laptop",
+    	"comments" : "some comment",
+
+    	"attributes" : [
+    		{
+    			"name" : "serial_number",
+    			"value" : "DS6AF5DS4F6-454645DSF"
+    		},
+    		{
+    			"name" : "serial_number1",
+    			"value" : "DS6AF5DS4F6-454645DSF"
+    		}
+    	]
+    }
+
+    Read (GET)
+
+    http://server_url/v1/equipments?searchField=value%searchField=value
+
+    This API searches for exact match and does not support nested search or conditional search.
+    'searchField' cannot be a field in 'equipment_attributes'.
+    'searchField' can be "department_tag", "gt_tag", "equipment_type_name", "status", "loaned_to", "created_on", "last_updated", "comment"
+    More search criteria can be added by using '%' as a separator.
+
+    If query is not given, then API returns all available Equipment Type documents (search all).
+
+    http://server_url/v1/equipments
+
+    Update (PUT)
+
+    At least one identifier must be present in the request JSON.
+    Identifiers are "_id", "department_tag", and "gt_tag".
+
+    "update_equipment" - Updates fields of Equipment document.
+        "department_tag", "gt_tag", "status", "loaned_to", "comments" can be changed.
+        It is not possible to change equipment type of an Equipment.
+        "equipment_type_name" will be changed by the system if Equipment Type's name is changed.
+
+    "update_equipment_attributes" - Either "_id" or "name" must be present.
+        "value" is only field that can be changed and this will be checked against Equipment Type Attribute information.
+
+    "add_equipment_attributes" - "name" and "value" must be presented and this will be checked against Equipment Type Attribute information.
+
+    "remove_equipment_attributes" - ID string of Equipment Type Attribute must be present. Required attributes cannot be deleted.
+
+    {
+    	"_id" : "58e81cc37f8b9ac4571ef7c6",
+        "department_tag" : "math-12342",
+    	"gt_tag" : null,
+
+    	"update_equipment" :
+    	{
+            "department_tag": "math-12342",
+            "gt_tag": null,
+            "status": "loaned",
+            "loaned_to": "bkang61",
+            "comments": "some comment"
+    	},
+
+    	"update_equipment_attributes" :
+    	[
+    		{
+    			"_id" : "58e81cc37f8b9ac4571ef7c6",
+    			"name" : "serial_number",
+                "value" : "some other value"
+    		}
+    	],
+
+    	"add_equipment_attributes" :
+    	[
+    		{
+                "name" : "serial_number999",
+                "value" : "some value"
+    		}
+    	],
+
+    	"remove_equipment_attributes" :
+    	[
+    		"58e81cc37f8b9ac4571ef7c7"
+    	]
+    }
+
+    http://server_url/v1/equipments
+
+    Delete (DELETE)
+
+    http://server_url/v1/equipments
+
+    Bulk delete is not supported. One of the following unique identifiers must be presented in the request JSON.
+
+    Unique identifiers:
+        '_id', 'department_tag', 'gt_tag'
+
+    Sample request JSON:
+
+    {
+        "_id" : "58e81cc37f8b9ac4571ef7c6",
+        "department_tag" : "laptop",
+        "gt_tag" : "gttag1234"
+    }
+
+3. User
+
+    Create (POST)
+
+    Read (GET)
+
+    Update (PUT)
+
+    Delete (DELETE)
+
+4. Loan
+
+    Create (POST)
+
+    Read (GET)
+
+    Update (PUT)
+
+    Delete (DELETE)
+
+5. Log
 
 
 
-New Equipment input with the type above
 
-{
-	"department_tag" : "math-12342",
-	"gt_tag" : null,
-	"equipment_type_name" : "laptop",
-	"status" : "loaned",
-	"loaned_to" : "bkang61",
-	"created_on" : "2017-01-01 00:00:00",
-	"last_updated" : "2017-01-02 00:00:00",
-	"comment" : "some comment",
-
-	"attributes" : [
-		{
-			"name" : "serial_number",
-			"value" : "DS6AF5DS4F6-454645DSF"
-		},
-		{
-			"name" : "serial_number1",
-			"value" : "DS6AF5DS4F6-454645DSF"
-		}
-	]
-}
-
-input for Equipment Type edit (change ids based on your data)
-
-{
-	"_id" : "58e81cc37f8b9ac4571ef7c6",
-
-	"update_equipment_type" :
-	{
-		"name" : "laptop2",
-		"comments" : "Changed laptop to laptop2."
-	},
-
-	"update_equipment_type_attributes" :
-	[
-		{
-			"_id" : "58e81cc37f8b9ac4571ef7c6",
-			"name" : "serial_number",
-			"required" : true,
-			"unique" : true,
-			"data_type" : "string",
-			"regex" : "some regex string",
-			"help_comment" : "some comment.",
-			"enum" : true,
-			"enum_values" : ["value1", "value2", "value3"]
-		}
-	],
-
-	"add_equipment_type_attributes" :
-	[
-		{
-			"name": "serial_number4",
-			"required": true,
-			"unique": true,
-			"data_type" : "string",
-			"regex" : "some regex string",
-			"help_comment" : "some comment",
-			"enum" : true,
-			"enum_values" : [
-				"value1", "value2", "value3"
-			]
-		}
-	],
-
-	"remove_equipment_type_attributes" :
-	[
-		"58e81cc37f8b9ac4571ef7c7"
-	]
-}
 
 input for equipment edit (change ids based on your data)
 
-{
-	"_id" : "58e81cc37f8b9ac4571ef7c6",
 
-	"update_equipment" :
-	{
-        "department_tag": "math-12342",
-        "gt_tag": null,
-        "equipment_type_name": "laptop",
-        "status": "loaned",
-        "loaned_to": "bkang61",
-        "created_on": "2017-01-01 00:00:00",
-        "last_updated": "2017-01-02 00:00:00",
-        "comment": "some comment"
-	},
-
-	"update_equipment_attributes" :
-	[
-		{
-			"_id" : "58e81cc37f8b9ac4571ef7c6",
-			"name" : "serial_number",
-            "value" : "some other value"
-		}
-	],
-
-	"add_equipment_attributes" :
-	[
-		{
-            "name" : "serial_number999",
-            "value" : "some value"
-		}
-	],
-
-	"remove_equipment_attributes" :
-	[
-		"58e81cc37f8b9ac4571ef7c7"
-	]
-}
 
 Input for create user
 

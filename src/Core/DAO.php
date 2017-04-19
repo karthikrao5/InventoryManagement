@@ -1130,14 +1130,11 @@ class DAO
     
     // Delete
 
-    public function deleteEquipment($equipmentIds)
+    public function deleteEquipment($equipmentId)
     {
-        foreach($equipmentIds as $key => $value)
+        if(!($equipmentId instanceof MongoId))
         {
-            if(!($value instanceof MongoId))
-            {
-                $equipmentIds[$key] = new MongoId($value);
-            }
+            $equipmentId = new MongoId($equipmentId);
         }
 
         $mongo = new MongoClient(DAO::$connectionString);
@@ -1145,7 +1142,7 @@ class DAO
         $attributes = $mongo->inventorytracking->equipmentattributes;
         
         //get all ids to make logs
-        $targetAttrs = iterator_to_array($attributes->find(array('equipment_id' => array('$in' => $equipmentIds))));
+        $targetAttrs = iterator_to_array($attributes->find(array('equipment_id' => $equipmentId)));
         $targetAttrIds = array();
         
         foreach($targetAttrs as $attr)
@@ -1176,7 +1173,7 @@ class DAO
             $this->updateLog($log);
         }
         
-        $result = $equipments->remove(array('_id' => array('$in' => $equipmentIds)));
+        $result = $equipments->remove(array('_id' => $equipmentId));
 
         $mongo->close();
 
@@ -1617,22 +1614,30 @@ class DAO
     
     // Delete
     
-    public function deleteEquipmentType($equipmentTypeIds)
+    public function deleteEquipmentType($equipmentTypeId)
     {
-        foreach($equipmentTypeIds as $key => $value)
+        if(!($equipmentTypeId instanceof MongoId))
         {
-            if(!($value instanceof MongoId))
-            {
-                $equipmentTypeIds[$key] = new MongoId($value);
-            }
+            $equipmentTypeId = new MongoId($value);
         }
 
         $mongo = new MongoClient(DAO::$connectionString);
         $equipmentTypes = $mongo->inventorytracking->equipmenttypes;
         $equipmentTypeAttributes = $mongo->inventorytracking->equipmenttypeattributes;
+        $equipments = $mongo->inventorytracking->equipments;
+        
+        $result = array('ok' => false, 'msg' => null);
+        
+        //check if any equipments are using this equipment type.
+        $foundEquipments = iterator_to_array($equipments->find(array('equipment_type_id' => $equipmentTypeId)));
+        if(!empty($foundEquipments))
+        {
+            $result['msg'] = "Equipment Type cannot be deleted due to existing equipments.";
+            return $result;
+        }
         
         //get all ids to make logs
-        $targetAttrs = iterator_to_array($equipmentTypeAttributes->find(array('equipment_type_id' => array('$in' => $equipmentTypeIds))));
+        $targetAttrs = iterator_to_array($equipmentTypeAttributes->find(array('equipment_type_id' => $equipmentTypeId)));
         $targetAttrIds = array();
         
         foreach($targetAttrs as $attr)
@@ -1651,19 +1656,16 @@ class DAO
         
         $result = $equipmentTypeAttributes->remove(array('_id' => array( '$in' => $targetAttrIds)));
         
-        foreach($equipmentTypeIds as $equipmentTypeId)
-        {
-            //create remove log for each equipment type document.
-            $log = $this->createLog();
-            $log['reference_id'] = $equipmentTypeId;
-            $log['document_type'] = "equipment_type";
-            $log['action_by'] = "some user";
-            $log['action_via'] = "hard coded web";
-            $log['action_type'] = "remove";
-            $this->updateLog($log);
-        }
+        //create remove log for each equipment type document.
+        $log = $this->createLog();
+        $log['reference_id'] = $equipmentTypeId;
+        $log['document_type'] = "equipment_type";
+        $log['action_by'] = "some user";
+        $log['action_via'] = "hard coded web";
+        $log['action_type'] = "remove";
+        $this->updateLog($log);
         
-        $result = $equipmentTypes->remove(array('_id' => array( '$in' => $equipmentTypeIds)));
+        $result = $equipmentTypes->remove(array('_id' => $equipmentTypeId));
 
         $mongo->close();
 

@@ -97,10 +97,12 @@ class EquipmentController extends AbstractController{
         $authHeader = $request->getHeader("Authorization");
         $authResult = $this->authValidator->decodeToken($authHeader);
         
+        /*
         if(!$result["ok"]) {
             // decode messed up. Look into src\Core\Validator.php
             return $response->write($result["msg"])->withStatus($result["status"]);
         }
+         */
 
         $authData = $authResult["data"];
 

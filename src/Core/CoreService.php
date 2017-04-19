@@ -99,6 +99,19 @@ class CoreService
     {
         $result = array('ok' => false, 'msg' => null, 'users' => null);
         
+        if(isset($requestJson['_id']))
+        {
+            if($this->userValidator->isMongoIdString($requestJson['_id']))
+            {
+                $requestJson['_id'] = new \MongoId($requestJson['_id']);
+            }
+            else 
+            {
+                $result['msg'] = "Invalid ID string given.";
+                return $result;
+            }
+        }
+        
         $users = $this->dao->getUser($requestJson);
         
         if(is_null($users) || empty($users))
@@ -226,6 +239,13 @@ class CoreService
     public function createEquipment($requestJson, $username, $isHook, $hookname)
     {
         $returnArray = array('ok' => false, 'msg' => null, 'equipment' => null);
+        
+        $validationResult = $this->equipmentValidator->isValidCreateJSON($requestJson);
+        
+        if(!$validationResult['ok'])
+        {
+            return $validationResult;
+        }
 
         $result = $this->getEquipmentType(array('name' => $requestJson['equipment_type_name']));
 
@@ -235,10 +255,13 @@ class CoreService
             $returnArray['msg'] = "EquipmentType '".$requestJson['equipment_type_name']."' not found.";
             return $returnArray;
         }
+        
+        $requestJson['status'] = "inventory";
+        $requestJson['loaned_to'] = null;
 
         $updated = $this->dao->createEquipment($requestJson, $result['equipment_types'][0]);
 
-        return array("ok" => true, "message" => "Successfully created Equipment '".$requestJson['department_tag']."' !",
+        return array("ok" => true, "message" => "Successfully created Equipment '".$requestJson['department_tag']."'.",
                 'equipment' => $updated);
     }
 
@@ -263,9 +286,47 @@ class CoreService
         }
     }
 
-    public function updateEquipment($requestJson, $username, $isHook, $hookname)
+    public function updateEquipment($requestJson, $auth)
     {
         $result = array("ok" => false, "msg" => null, "updated_equipment" => null);
+        
+        $validationResult = $this->equipmentValidator->isValidUpdateJSON($requestJson);
+        
+        if(!$validationResult['ok'])
+        {
+            return $validationResult;
+        }
+        
+        //get id
+        if(!isset($requestJson['_id']))
+        {
+            if(isset($requestJson['department_tag']))
+            {
+                $getIdResult = $this->equipmentValidator->getIdByDepartmentTag($requestJson['department_tag']);
+                if($getIdResult['ok'])
+                {
+                    $requestJson['_id'] = $getIdResult['_id'];
+                }
+                else
+                {
+                    $result['msg'] = "Equipment not found with given name.";
+                    return $result;
+                }
+            }
+            else if(isset($requestJson['gt_tag']))
+            {
+                $getIdResult = $this->equipmentValidator->getIdByGtTag($requestJson['gt_tag']);
+                if($getIdResult['ok'])
+                {
+                    $requestJson['_id'] = $getIdResult['_id'];
+                }
+                else
+                {
+                    $result['msg'] = "Equipment not found with given name.";
+                    return $result;
+                }
+            }
+        }
 
         if(isset($requestJson['update_equipment']) && !empty($requestJson['update_equipment']))
         {
@@ -295,11 +356,15 @@ class CoreService
                 $result = $this->dao->removeEquipmentAttribute($requestJson['_id'], $removeTarget);
             }
         }
+        
+        $result['ok'] = true;
+        $result['msg'] = "Update success.";
+        $result['updated_equipment'] = $this->dao->getEquipment(array('_id' => $requestJson['_id']));
 
         return $result;
     }
 
-    public function deleteEquipment($requestJson, $username, $isHook, $hookname)
+    public function deleteEquipment($requestJson, $auth)
     {
         $result = array("ok" => false, "msg" => null);
 
@@ -308,12 +373,51 @@ class CoreService
             $result['msg'] = "Json is empty or null.";
             return $result;
         }
+        
+        $validationResult = $this->equipmentValidator->isValidDeleteJSON($requestJson);
+        
+        if(!$validationResult['ok'])
+        {
+            return $validationResult;
+        }
+        
+        if(!isset($requestJson['_id']))
+        {
+            if(isset($requestJson['department_tag']))
+            {
+                $idArr = $this->equipmentValidator->getIdByDepartmentTag($requestJson['department_tag']);
+                
+                if($idArr['ok'])
+                {
+                    $requestJson['_id'] = $idArr['_id'];
+                }
+                else
+                {
+                    $result['msg'] = "Given 'department_tag' value is not found.";
+                    return $result;
+                }
+            }
+            else
+            {
+                $idArr = $this->equipmentValidator->getIdByGtTag($requestJson['gt_tag']);
+                
+                if($idArr['ok'])
+                {
+                    $requestJson['_id'] = $idArr['_id'];
+                }
+                else
+                {
+                    $result['msg'] = "Given 'gt_tag' value is not found.";
+                    return $result;
+                }
+            }
+        }
 
-        $daoResult = $this->dao->deleteEquipment($requestJson['ids']);
+        $daoResult = $this->dao->deleteEquipment($requestJson['_id']);
 
         $result['ok'] = $daoResult['ok'];
-        $result['n'] = $daoResult['n'];
-
+        $result['msg'] = "Successfully deleted Equipment.";
+        
         return $result;
     }
     
@@ -368,11 +472,33 @@ class CoreService
     public function updateEquipmentType($requestJson, $auth)
     {
         $result = array("ok" => false, "msg" => null, "updated_equipment_type" => null);
+        
+        $validationResult = $this->equipmentTypeValidator->isValidUpdateJSON($requestJson);
+        
+        if(!$validationResult['ok'])
+        {
+            return $validationResult;
+        }
+        
+        if(!isset($requestJson['_id']))
+        {
+            $getIdResult = $this->equipmentTypeValidator->getEquipmentTypeIdByName($requestJson['name']);
+            
+            if($getIdResult['ok'])
+            {
+                $requestJson['_id'] = $getIdResult['_id'];
+            }
+            else
+            {
+                $result['msg'] = "Equipment Type not found with given name.";
+                return $result;
+            }
+        }
 
         //do not trust DAO in terms of semantics.
         //update equipment type document itself (not its attributes).
         if(isset($requestJson['update_equipment_type']))
-        {
+        {   
             $result = $this->dao->updateEquipmentType($requestJson['_id'], $requestJson['update_equipment_type']);
         }
 
@@ -399,6 +525,10 @@ class CoreService
                 $result = $this->dao->removeEquipmentTypeAttribute($requestJson['_id'], $removeTarget);
             }
         }
+        
+        $result['ok'] = true;
+        $result['msg'] = "Update success.";
+        $result['updated_equipment_type'] = $this->dao->getEquipmentType(array('_id' => $requestJson['_id']));
 
         return $result;
     }
@@ -412,12 +542,46 @@ class CoreService
             $result['msg'] = "Json is empty or null.";
             return $result;
         }
+        
+        $validationResult = $this->equipmentTypeValidator->isValidDeleteJSON($requestJson);
+        
+        if(!$validationResult['ok'])
+        {
+            return $validationResult;
+        }
+        
+        if(!isset($requestJson['_id']))
+        {
+            $getIdResult = $this->equipmentTypeValidator->getEquipmentTypeIdByName($requestJson['name']);
+            
+            if($getIdResult['ok'])
+            {
+                $requestJson['_id'] = $getIdResult['_id'];
+            }
+            else
+            {
+                $result['msg'] = "Equipment Type not found with given name.";
+                return $result;
+            }
+        }
 
-        $daoResult = $this->dao->deleteEquipmentType($requestJson['ids']);
-
-        $result['ok'] = $daoResult['ok'];
-        $result['n'] = $daoResult['n'];
+        $daoResult = $this->dao->deleteEquipmentType($requestJson['_id']);
+        
+        if($daoResult['ok'])
+        {
+            $result['ok'] = true;
+            $result['msg'] = "Successfully deleted Equipment Type.";
+        }
+        else
+        {
+            $result['msg'] = $daoResult['msg'];
+        }
 
         return $result;
+    }
+    
+    public function getDAO()
+    {
+        return $this->dao;
     }
 }
