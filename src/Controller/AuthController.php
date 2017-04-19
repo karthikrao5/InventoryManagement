@@ -69,7 +69,7 @@ class AuthController extends AbstractController {
 	public function testDecode($request, $response) {
 		$body = $request->getParsedBody();
 
-		$val = $this->authValidator->decodeToken($body['jwt']);
+		$val = $this->authValidator->decodeToken(null, $body['jwt']);
 
 		if ($val["ok"]) {
 			// return $response->withJson($val["msg"]);

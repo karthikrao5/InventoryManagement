@@ -39,27 +39,46 @@ class EquipmentController extends AbstractController{
             return $response->write("Invalid request.")->withStatus(400);
         }
 
-        $authHeader = $request->getHeader("Authorization");
-        $authResult = $this->authValidator->decodeToken($authHeader);
+        // $authHeader = $request->getHeader("Authorization");
+
+        // if (!$authHeader) {
+        //     return $response->write("No auth header.")->withStatus(401);
+        // }
+
+        // $authResult = $this->authValidator->decodeToken($authHeader);
+
+        // if(!$authResult["ok"]) {
+        //     // decode messed up. Look into src\Core\Validator.php
+        //     return $response->write($authResult["msg"])->withStatus($authResult["status"]);
+        // }
+
+
+
+        // $authData = $authResult["data"];
+
         
-        if(!$result["ok"]) {
-            // decode messed up. Look into src\Core\Validator.php
-            return $response->write($result["msg"])->withStatus($result["status"]);
-        }
 
-        $authData = $authResult["data"];
+        // $this->logger->debug("authData in equipmentcontroller line 50: ".$authData["username"]);
 
-        // if the user is a renter, only return that renter's stuff
-        if($this->authValidator->isRenter($authData)) {
-            // get the item and check loaned users
-            $user = $this->core->getUser($authResult["data"]["username"]);
-            $loanedItems = $user["current_loans"];
-            return $response->withJson($loanedItems);
-        } else {
+        // // if the user is a renter, only return that renter's stuff
+        // if($this->authValidator->isRenter($authData)) {
+
+        //     // print_r($authData);
+        //     // return null;
+
+        //     // get the item and check loaned users
+        //     // $user = $this->core->getUser(array("username" => $authData["username"]));
+        //     // $loanedItems = $user["current_loans"];
+        //     $loanedItems = $this->core->getLoan(array("username"=>$authData["username"]));
+        //     return $response->withJson($loanedItems);
+
+
+        // }
+        // if($this->authValidator->isAdminOrHook($authData)) {
+            
             // user is anyone else, ie hook or admin, return all 
-            // TESTED THIS CODE, params works don't mess with it.
             $params = $request->getQueryParams();
-            // return null;
+
             $this->logger->debug("Equipment query params: ".json_decode($params));
             if ($params) {
                 $array = $this->core->getEquipment($params);
@@ -72,8 +91,8 @@ class EquipmentController extends AbstractController{
             } else {
                 return $response->withStatus(404)->write("Something went wrong with the find function in EquipmentController.");
             }
-        }
-        return $response->write("Something went wrong in fetching equipments.")->withJson(404)
+        // }
+        return $response->write("Something went wrong in fetching equipments.")->withJson(404);
        
     }
 
@@ -94,27 +113,43 @@ class EquipmentController extends AbstractController{
             return $response->write("No body recieved.")->withStatus(200);
         }
 
-        $authHeader = $request->getHeader("Authorization");
-        $authResult = $this->authValidator->decodeToken($authHeader);
+        // $authHeader = $request->getHeader("Authorization");
+        // if (!$authHeader) {
+        //     return $response->write("No auth header.")->withStatus(401);
+        // }
+
+        // $authResult = $this->authValidator->decodeToken($authHeader);
+
+        // // this will only go bad from jwt exceptions or missing token from authheader etc
+        // if(!$authResult["ok"]) {
+        //     // decode messed up. Look into src\Core\Validator.php
+        //     return $response->write($authResult["msg"])->withStatus($authResult["status"]);
+        // }
         
-        /*
-        if(!$result["ok"]) {
-            // decode messed up. Look into src\Core\Validator.php
-            return $response->write($result["msg"])->withStatus($result["status"]);
-        }
-         */
+        
+        // if(!$result["ok"]) {
+        //     // decode messed up. Look into src\Core\Validator.php
+        //     return $response->write($result["msg"])->withStatus($result["status"]);
+        // }
+         
 
-        $authData = $authResult["data"];
+        // $authData = $authResult["data"];
 
-        // if user is not admin or hook, do not auth
-        if(!$this->authValidator->isAdminOrHook($authData)) {
-            return $response->write("Forbidden.")->withStatus(403);
-        }
+        // // if user is not admin or hook, do not auth
+        // if(!$this->authValidator->isAdminOrHook($authData)) {
+        //     return $response->write($authData["username"]." is not authorized to create equipments.")->withStatus(403);
+        // }
+
+        // if($this->authValidator->isRenter($authData)) {
+        //     return $response->write("You are forbidden.")->withStatus(403);
+        // }
 
         $result = $this->core->createEquipment($request->getParsedBody());
 
         if ($result["ok"]) {
             return $response->withStatus(201)->withJson($result);
+        } else {
+            return $response->withStatus(404)->withJson($result);
         }
 
         return $response->write("Something went wrong.")->withStatus(404);
@@ -130,19 +165,19 @@ class EquipmentController extends AbstractController{
             return $response->write("Invalid request.")->withStatus(400);
         }
 
-        $authHeader = $request->getHeader("Authorization");
-        $authResult = $this->authValidator->decodeToken($authHeader);
+        // $authHeader = $request->getHeader("Authorization");
+        // $authResult = $this->authValidator->decodeToken($authHeader);
         
-        if(!$result["ok"]) {
-            // decode messed up. Look into src\Core\Validator.php
-            return $response->write($result["msg"])->withStatus($result["status"]);
-        }
+        // if(!$result["ok"]) {
+        //     // decode messed up. Look into src\Core\Validator.php
+        //     return $response->write($result["msg"])->withStatus($result["status"]);
+        // }
 
-        $authData = $authResult["data"];
+        // $authData = $authResult["data"];
 
-        if(!$this->authValidator->isAdminOrHook($authData)) {
-            return $response->write("Forbidden.")->withStatus(403);
-        }
+        // if(!$this->authValidator->isAdminOrHook($authData)) {
+        //     return $response->write("Forbidden.")->withStatus(403);
+        // }
 
         if (is_null($request->getParsedBody())) {
             return $response->write("No body recieved.")->withStatus(200);
@@ -164,19 +199,19 @@ class EquipmentController extends AbstractController{
             return $response->write("Invalid request.")->withStatus(400);
         }
 
-        $authHeader = $request->getHeader("Authorization");
-        $authResult = $this->authValidator->decodeToken($authHeader);
+        // $authHeader = $request->getHeader("Authorization");
+        // $authResult = $this->authValidator->decodeToken($authHeader);
         
-        if(!$result["ok"]) {
-            // decode messed up. Look into src\Core\Validator.php
-            return $response->write($result["msg"])->withStatus($result["status"]);
-        }
+        // if(!$result["ok"]) {
+        //     // decode messed up. Look into src\Core\Validator.php
+        //     return $response->write($result["msg"])->withStatus($result["status"]);
+        // }
 
-        $authData = $authResult["data"];
+        // $authData = $authResult["data"];
 
-        if(!$this->authValidator->isAdminOrHook($authData)) {
-            return $response->write("Forbidden.")->withStatus(403);
-        }
+        // if(!$this->authValidator->isAdminOrHook($authData)) {
+        //     return $response->write("Forbidden.")->withStatus(403);
+        // }
 
         if (is_null($request->getParsedBody()))
 		{

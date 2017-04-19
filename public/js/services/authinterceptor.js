@@ -7,6 +7,8 @@ angular.module("app").factory('authInterceptor', ["$window", "$q", "$location",
                 config.headers = config.headers || {};
                 if ($window.localStorage.getItem("jwt")) {
                    config.headers.Authorization = 'Bearer ' + $window.localStorage.getItem("jwt");
+                } else {
+                    console.log("no token in local storage for auth.");
                 }
                 return config;
             },

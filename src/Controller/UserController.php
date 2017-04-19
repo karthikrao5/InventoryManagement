@@ -23,48 +23,48 @@ class UserController extends AbstractController
             return $response->write("Invalid request.")->withStatus(400);
         }
 
-        if(!$request->getHeader("Authorization")) {
-            // if no header present, return unauthorized
-            return $response->write("Forbidden")->withStatus(401); 
-        }
+        // if(!$request->getHeader("Authorization")) {
+        //     // if no header present, return unauthorized
+        //     return $response->write("Forbidden")->withStatus(401); 
+        // }
 
-        $authHeader = $request->getHeader("Authorization");
-        $authResult = $this->authValidator->decodeToken($authHeader);
+        // $authHeader = $request->getHeader("Authorization");
+        // $authResult = $this->authValidator->decodeToken($authHeader);
 
-        if(!$authResult["ok"]) {
-            // if decode does not work, return the error message and code
-            return $response->write($authResult["msg"])->withStatus($authResult["status"]);
-        }
+        // if(!$authResult["ok"]) {
+        //     // if decode does not work, return the error message and code
+        //     return $response->write($authResult["msg"])->withStatus($authResult["status"]);
+        // }
 
 
         $params = $request->getQueryParams();
 
         // if user is renter, check params to make sure they are only querying 
         // themselves, otherwise reject
-        if($this->authValidator->isRenter($authResult["data"])) {
+        // if($this->authValidator->isRenter($authResult["data"])) {
 
-            // query matches authorized user, return data
-            if($params["username"] == $authResult["data"]["username"]) {
+        //     // query matches authorized user, return data
+        //     if($params["username"] == $authResult["data"]["username"]) {
                 $result = $this->core->getUser($authResult["data"]["username"]);
                 return $response->withJson($result);
-            } else {
+            // } else {
 
-                // renter is trying to query someone else's username, return forbidden
-                return $response->write("Forbidden.")->withStatus(403);
-            }
+            //     // renter is trying to query someone else's username, return forbidden
+            //     return $response->write("Forbidden.")->withStatus(403);
+            // }
         }
     }
     
     public function create($request, $response)
     {
-        $authHeader = $request->getHeader("Authorization");
-        $token = str_replace("Bearer ", "", $authHeader[0]);
-        $result = $this->authValidator->decodeToken($token);
+        // $authHeader = $request->getHeader("Authorization");
+        // $token = str_replace("Bearer ", "", $authHeader[0]);
+        // $result = $this->authValidator->decodeToken($token);
         
-        if(!$result["ok"]) {
-            // decode messed up. Look into src\Core\Validator.php
-            return $response->write($result["msg"])->withStatus($result["status"]);
-        }
+        // if(!$result["ok"]) {
+        //     // decode messed up. Look into src\Core\Validator.php
+        //     return $response->write($result["msg"])->withStatus($result["status"]);
+        // }
 
         
         if(is_null($request))

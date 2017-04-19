@@ -25,24 +25,28 @@ class Validator
 			return null;
 		}
 		$token = str_replace("Bearer ", "", $authHeader[0]);
+		$this->logger->debug("getTokenFromHeader returns: ".$token);
 		return $token;
 	}
 
 	public function isRenter($userArray) {
 		// if user is not CAS group or hook, they are renter
-		if ($userArray["group"] != $this->settings["CAS-group-name"]
-			|| !$userArray["hookname"]) {
+		if ($userArray["group"] !== $this->settings["CAS-group-name"] || !$userArray["group"]) {
+			$this->logger->debug("returning true for isrenter for group: ".$userArray["group"]);
 			return true;
 		}
 		return false;
 	}
 
 	public function isAdminOrHook($userArray) {
+		$this->logger->debug("Checking if ".$userArray["username"]." is an admin or not.");
 		// if user is CAS group or hook
-		if ($userArray["group"] == $this->settings["CAS-group-name"]
+		if ($userArray["group"] === $this->settings["CAS-group-name"]
 			|| $userArray["hookname"]) {
+			$this->logger->debug($userArray["username"]." is an admin.");
 			return true;
 		}
+		$this->logger->debug("isAdminOrHook returned false for ".$userArray["username"].".");
 		return false;
 	}
 
@@ -67,23 +71,21 @@ class Validator
 		// ====================test code=======================
 		$userArray = null;
 
-		if($this->settings["test-renter"]) {
-			// test renter
-			// $userArray["username"] = "bkang61";
-			// $userArray["email"] = "bkang61@gatech.edu";
-			// $userArray["group"] = null;
 
-			// not in users (aka forbidden user)
-			$userArray["username"] = "krao34";
-			$userArray["email"] = "krao34@gatech.edu";
-			$userArray["group"] = null;
+		// // not in users (aka forbidden user)
+		// $userArray["username"] = "bkang61";
+		// $userArray["email"] = "bkang61@gatech.edu";
+		// $userArray["group"] = null;
+		// $userArray["isHook"] = false;
+		// $userArray["hookname"] = null;
 
-		} else {
-			// test IT admin (Not in Users table, but has CAS group for itadmin)
-			$userArray["username"] = "krao34";
-			$userArray["email"] = "krao34@gmail.com";
-			$userArray["group"] = $this->settings["CAS-group-name"];
-		}
+		// test IT admin (Not in Users table, but has CAS group for itadmin)
+		$userArray["username"] = "krao34";
+		$userArray["email"] = "krao34@gmail.com";
+		$userArray["group"] = $this->settings["CAS-group-name"];
+		$userArray["isHook"] = false;
+		$userArray["hookname"] = null;
+		
 		
 		// ====================================================
 		return $userArray;
@@ -115,7 +117,7 @@ class Validator
 			$checkUser = $this->core->getUser(array("username" => $userArray["username"]));
 
 			$this->logger->debug("Checking for user: ".$userArray["username"].".");
-			$this->logger->debug("CoreService getUser returned: ".$checkUser["users"][0].".");
+			$this->logger->debug("CoreService getUser returned: ".$checkUser["users"][0]["username"].".");
 
 
 			// if authenticated user is in user collection (a renter), authorize
@@ -143,8 +145,15 @@ class Validator
 	public function decodeToken($authHeader) {
 
 		// get JWT string from header
+		// // this is for testing, remove this and $justToken from params
+		// $this->logger->debug("decoding token from test: ".$justToken);
+		// $token = $justToken;
+		// } else {
 		$token = $this->getTokenFromHeader($authHeader);
-
+		$this->logger->debug("AuthHeader in decodeToken: ".$authHeader);
+		$this->logger->debug("decoding token: ".$token);
+		// }
+		
 		if(!$token) {
 			return array("ok"=>false, "msg"=>"no token recieved.", "status"=>404);
 		}
@@ -170,7 +179,7 @@ class Validator
 		
 		// $data = json_decode($jwt->data, true);
 
-		return array("ok"=>true, "msg"=>$jwt->data);
+		// return array("ok"=>true, "msg"=>$jwt->data);
 // 
 		if ($jwt->data->hookname) {
 			$this->logger->debug("Decoding token for hook ".$jwt->data->hookname.".");

@@ -26,7 +26,6 @@ return [
         'jwtSecretKey' => 'someprivatekey',
         'encryptionAlgo' => 'HS256',
         'CAS-group-name' => "inventory-management-group",
-        'token-expiration-time' => 300,
-        'test-renter' => true,
+        'token-expiration-time' => 3600,
     ],
 ];

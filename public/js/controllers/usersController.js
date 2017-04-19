@@ -4,7 +4,7 @@ angular.module("app.controllers").controller("UsersController", ["$scope", "Auth
 		$scope.users;
 
 		function onSuccess(response) {
-			$scope.users = response.data.users
+			$scope.users = response.data.users;
 		}
 	}
 ]);
