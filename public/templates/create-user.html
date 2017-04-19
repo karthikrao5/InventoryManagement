@@ -1,0 +1,18 @@
+<h1>User create form</h1>
+
+<div class="container" ng-controller="NewUserController as uc">
+	<form class="user-form" ng-submit="uc.submitUserCreation()">
+		<fieldset>
+			<input type="text" ng-model="formObj.username" placeholder="Username">
+			<input type="text" ng-model="formObj.email" placeholder="Email">
+		</fieldset>
+
+    	<button type="submit" ng-submit="uc.submitUserCreation()">Submit</button>
+	</form>
+
+	{{formObj|json}}
+
+	{{something|json}}
+	
+	<a href="#!/">Home</a>
+</div>

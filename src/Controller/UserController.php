@@ -45,18 +45,17 @@ class UserController extends AbstractController
 
         //     // query matches authorized user, return data
         //     if($params["username"] == $authResult["data"]["username"]) {
-                $result = $this->core->getUser($authResult["data"]["username"]);
-                return $response->withJson($result);
+        $result = $this->core->getUser($params);
+        return $response->withJson($result);
             // } else {
 
             //     // renter is trying to query someone else's username, return forbidden
             //     return $response->write("Forbidden.")->withStatus(403);
             // }
-        }
+        // }
     }
     
-    public function create($request, $response)
-    {
+    public function create($request, $response) {
         // $authHeader = $request->getHeader("Authorization");
         // $token = str_replace("Bearer ", "", $authHeader[0]);
         // $result = $this->authValidator->decodeToken($token);

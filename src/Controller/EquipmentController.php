@@ -79,7 +79,7 @@ class EquipmentController extends AbstractController{
             // user is anyone else, ie hook or admin, return all 
             $params = $request->getQueryParams();
 
-            $this->logger->debug("Equipment query params: ".json_decode($params));
+            // $this->logger->debug("Equipment query params: ".json_decode($params));
             if ($params) {
                 $array = $this->core->getEquipment($params);
             } else {

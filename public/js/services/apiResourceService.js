@@ -10,6 +10,7 @@ angular.module("app").factory("APIService", ["$window", "$http",
 			},
 
 			post : function(resource, data, success, error) {
+				console.log(apiURL+resource);
 				$http.post(apiURL+resource, data).then(success).catch(error)
 			},
 

@@ -1,4 +1,4 @@
-var app = angular.module("app", ["ngRoute", "ngResource", "app.controllers", "ui.grid", "app.services"])
+var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "app.services"])
 .config(function($routeProvider, $httpProvider){
 
     // $routeProvider
@@ -30,16 +30,20 @@ var app = angular.module("app", ["ngRoute", "ngResource", "app.controllers", "ui
             // admin will have options to add, user will just view their items
             templateUrl: 'templates/home.html',
             controller: 'HomeController'
-        }).when('equipments/new', {
+        })
+        .when('/equipments/new', {
             templateUrl: 'templates/create-equipment.html',
             controller: 'NewEquipmentController'
-        }).when('equipmenttypes/new' {
-            templateUrl: 'templates/create-equipmenttype.html',
-            controller: 'NewEquipmentTypeController'
-        }).when('/users/new', {
+        })
+        // .when('equipmenttypes/new' {
+        //     templateUrl: 'templates/create-equipmenttype.html',
+        //     controller: 'NewEquipmentTypeController'
+        // })
+        .when('/users/new', {
             templateUrl: 'templates/create-user.html',
             controller: 'NewUserController'
-        }).otherwise({redirectTo: '/'});
+        })
+        .otherwise({redirectTo: '/'});
 
     // .when('/equipmenttypes', {
     // 	templateUrl: 'templates/equipmenttypes-list.html',
@@ -49,5 +53,3 @@ var app = angular.module("app", ["ngRoute", "ngResource", "app.controllers", "ui
     // $httpProvider.interceptors.push("authInterceptor");
     
 });
-
-angular.module("app").constant("APIURL", "https://localhost:8080/v1/");
