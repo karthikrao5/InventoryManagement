@@ -219,7 +219,22 @@ class CoreService
 
     public function getLoan($requestJson, $username, $isHook, $hookname)
     {
-        return $this->dao->getLoan($requestJson);
+        $loans = $this->dao->getLoan($requestJson);
+        
+        if(is_null($loans) || empty($loans))
+        {
+            $result['msg'] = 'Loan not found with given search criteria.';
+            $result['search_criteria'] = $requestJson;
+        }
+        else
+        {
+            $result['ok'] = true;
+            $result['msg'] = "Successfully found loans.";
+            $result['n'] = count($loans);
+            $result['loans'] = $loans;
+        }
+        
+        return $result;
     }
 
     public function updateLoan($requestJson, $username, $isHook, $hookname)
