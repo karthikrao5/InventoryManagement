@@ -33,7 +33,7 @@ JSON Formats and examples
           "data_type" : "string",
           "regex" : "some regex string",
           "help_comment" : "some comment",
-          "enum" : true,
+          "enum" : false,
           "enum_values" : [
             "value1", "value2", "value3"
           ]
@@ -45,7 +45,7 @@ JSON Formats and examples
           "data_type" : "string",
           "regex" : "some regex string",
           "help_comment" : "some comment",
-          "enum" : true,
+          "enum" : false,
           "enum_values" : [
             "value1", "value2", "value3"
           ]

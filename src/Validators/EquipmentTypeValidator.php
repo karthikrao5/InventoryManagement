@@ -401,6 +401,12 @@ class EquipmentTypeValidator extends AbstractValidator {
             $result['msg'] = "Field 'enum_values' of Equipmment Type Attribute cannot be null or empty when 'enum' is true on '".$attribute['name']."'.";
             return $result;
         }
+        
+        if($attribute['enum'] && $attribute['unique'])
+        {
+            $result['msg'] = "Field 'enum' and 'unique' cannot be true at the same time in '".$attribute['name']."'.";
+            return $result;
+        }
 
         $result['ok'] = true;
         return $result;
