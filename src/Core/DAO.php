@@ -629,6 +629,11 @@ class DAO
             $result = array_values($result);
         }
         
+        foreach($result as $key => $value)
+        {
+            $result[$key]['timestamp'] = date('Y-m-d H:i:s', $value['timestamp']->sec);
+        }
+        
         return $result;
     }
 
