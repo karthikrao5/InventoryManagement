@@ -36,7 +36,12 @@ class AuthController extends AbstractController {
 			// if body is not there, assume user is requesting auth
 
 			$token = $this->authValidator->getAuthToken();
-			return $response->withJson(array("jwt"=> $token["jwt"]));
+			if ($token["ok"]) {
+				return $response->withJson(array("jwt"=> $token["jwt"]));
+			} else {
+				return $response->write($token["msg"])->withStatus(403);
+			}
+
 		} else {
 			if ($body["isHook"] && $body["hookname"]) {
 				$arr["isHook"] = true;
@@ -69,13 +74,13 @@ class AuthController extends AbstractController {
 	public function testDecode($request, $response) {
 		$body = $request->getParsedBody();
 
-		$val = $this->authValidator->decodeToken(null, $body['jwt']);
+		$val = $this->authValidator->decodeToken($body['jwt']);
 
 		if ($val["ok"]) {
 			// return $response->withJson($val["msg"]);
-			return $response->withJson($val["msg"]);
+			return $response->withJson($val["data"]);
 		} else {
-			return $response->withJson($val["msg"]);
+			return $response->withJson($val["data"]);
 		}
 	}
 }

@@ -78,6 +78,7 @@ class Validator
 		// $userArray["group"] = null;
 		// $userArray["isHook"] = false;
 		// $userArray["hookname"] = null;
+		// $userArray["isAdmin"] = false;
 
 		// test IT admin (Not in Users table, but has CAS group for itadmin)
 		$userArray["username"] = "krao34";
@@ -85,6 +86,7 @@ class Validator
 		$userArray["group"] = $this->settings["CAS-group-name"];
 		$userArray["isHook"] = false;
 		$userArray["hookname"] = null;
+		$userArray['isAdmin'] = true;
 		
 		
 		// ====================================================
@@ -142,16 +144,16 @@ class Validator
 	 * @return array(isHook, hook_name, user_name) otherwise return error triplet:
 	 *					array("ok"=>boolean, "msg"=>somemessage, "status"=>HTTP code)
 	 */
-	public function decodeToken($authHeader) {
+	public function decodeToken($token) {
 
 		// get JWT string from header
 		// // this is for testing, remove this and $justToken from params
 		// $this->logger->debug("decoding token from test: ".$justToken);
 		// $token = $justToken;
 		// } else {
-		$token = $this->getTokenFromHeader($authHeader);
-		$this->logger->debug("AuthHeader in decodeToken: ".$authHeader);
-		$this->logger->debug("decoding token: ".$token);
+		// $token = $this->getTokenFromHeader($authHeader);
+		// $this->logger->debug("AuthHeader in decodeToken: ".$authHeader);
+		// $this->logger->debug("decoding token: ".$token);
 		// }
 		
 		if(!$token) {
@@ -192,13 +194,14 @@ class Validator
 			return $result;
 		} else {
 			if($jwt->data->username) {
+				$return = (array) $jwt;
 
-				$return = array("user"=>$jwt->data->username, 
-							    "email"=>$jwt->data->email,
-							    "group"=>$jwt->data->group);
+				// $return = array("user"=>$jwt->data->username, 
+				// 			    "email"=>$jwt->data->email,
+				// 			    "group"=>$jwt->data->group);
 
 				$this->logger->debug("Decoding token for user ".$jwt->data->username.".");
-				return array("ok"=>true, "msg"=>"Successful user token decoded.", "data"=>$return);
+				return array("ok"=>true, "msg"=>"Successful user token decoded.", "data"=>$return["data"]);
 			} else {
 				// should not get down here. make sure of it. still untested (april 17th 2017)
 				return array("ok"=>false,"msg"=>"something went wrong with decode", "data"=>null, "status"=>500);
@@ -274,7 +277,8 @@ class Validator
 				'data'=> [
 						'username' => $userArray['username'],
 						'email' => $userArray['email'],
-						'group' => $userArray['group']
+						'group' => $userArray['group'],
+						'isAdmin' => $userArray['isAdmin']
 					]
 			];
 
