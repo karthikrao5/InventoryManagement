@@ -9,8 +9,8 @@ angular.module("app.controllers").controller("AuthController", ["$http", "$locat
 
 		// var body = {"isHook": true, "hook_name" : "front-endAngular"};
 
-		Auth.authorize(null, successAuth, function() {
-			console.log("Some auth error");
+		Auth.authorize(null, successAuth, function(error) {
+			console.log(error);
 		});
 	}
 ]);

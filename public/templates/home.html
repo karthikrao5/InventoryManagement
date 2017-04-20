@@ -1,11 +1,46 @@
-<h1>Inventory Management</h1>
-<div ui-grid="gridOptions" class="grid"></div>
+<!-- 
+<div class="container" ng-controller="HomeController">
+	<h1>Inventory Management</h1>
+	<h4>Welcome {{ loggedInUser }}!</h4>
 
+	<input ng-model="searchText" ng-change="refreshData()" placeholder="Search...">
 
-<a href="#!/equipments/new">Add Equipment</a>
-<a href="#!/users/new">Add Renter</a>
+	<div ui-grid="gridOptions" class="grid"></div>
 
-<!-- <a href="#!/equipments">All Equipments</a>
-<a href="#!/equipments/new">New Equipment</a> -->
+	
 
-<!-- <button ng-click="logout()">Logout</button> -->
+	<a href="#!/equipments/new">Add Equipment</a>
+	<a href="#!/users/new">Add Renter</a>
+
+	<button ng-click="logout()">Logout</button>
+
+	<!-- <a href="#!/equipments">All Equipments</a>
+	<a href="#!/equipments/new">New Equipment</a> -->
+
+	<!-- <button ng-click="logout()">Logout</button> -->
+<!-- </div> -->
+
+    <div class="container-fluid index-div" ng-controller="HomeController">
+        <h1>Inventory Management</h1>
+        <h4>Welcome {{ loggedInUser }}!</h4>
+
+        <div class="col-sm-12" class="list-view">
+            <input class="search-bar" ng-model="searchText" ng-change="refreshData()" placeholder="Search...">
+
+            <!-- <div class="col-sm-12 action-nav">
+            	<a class="pure-button" href="#!/equipments/new">Add Equipment</a>
+                <a class="pure-button" href="#!/users/new">Add Renter</a>
+            </div>
+ -->                
+
+ 			<div class="pure-menu pure-menu-horizontal">
+ 				<ul class="pure-menu-list">
+ 					<li class="pure-menu-item"><a class="pure-menu-link" href="#!/equipments/new">Add Equipment</a></li>
+ 					<li class="pure-menu-item"><a class="pure-menu-link" href="#!/users/new">Add Renter</a></li>
+ 				</ul>
+ 			</div>
+            <div ui-grid="gridOptions" class="grid"></div>
+
+            
+        </div>
+    </div>
