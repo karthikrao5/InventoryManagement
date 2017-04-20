@@ -35,6 +35,11 @@ class DAO
         $result = $loans->insert($loan);
         $this->addCurrentLLoanToUser($this->getUserId($loan['username']), $loan['_id']);
         
+        foreach($loan['equipments'] as $equipmentId)
+        {
+            $this->updateEquipment($equipmentId, array('loaned_to' => $loan['username'], 'status' => "loaned"));
+        }
+        
         return $this->getLoan(array('_id' => $loan['_id']))[0];
     }
     
@@ -95,7 +100,12 @@ class DAO
         }
         else
         {
-            $equipments = $this->getEquipment(array('_id' => array('$in' => $loan['equipments'])));
+            foreach($loan['equipments'] as $key => $equipmentId)
+            {
+                $loan['equipments'][$key] = new MongoId($equipmentId);
+            }
+            
+            $equipments = $this->getEquipment(array('_id' => array('$in' => $loan['equipments']))); 
             $loan['equipments'] = $equipments;
         }
         
@@ -774,7 +784,7 @@ class DAO
         } 
         else 
         {
-            if(isset($searchCriteria['_id']))
+            if(isset($searchCriteria['_id']) && !is_array($searchCriteria['_id']))
             {
                 if(!($searchCriteria['_id'] instanceof MongoId))
                 {
