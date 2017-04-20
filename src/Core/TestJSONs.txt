@@ -302,51 +302,11 @@ JSON Formats and examples
 
     Update (PUT)
 
-    Delete (DELETE)
-
-    One of the following identifier must be presented.
+    Either "_id" or "username" must be presented.
 
     {
     	"_id" : "idstring",
-    	"username" : "bkang61",
-        "email" : "bkang61@gatech.edu"
-    }
-
-4. Loan
-
-    Create (POST)
-
-    http://server_url/v1/loans
-
-    All fields must be presented.
-
-    {
         "username" : "bkang61",
-        "equipments" : [
-            "equipment id string"
-        ]
-    }
-
-    Read (GET)
-
-    http://server_url/v1/loans?searchField=value
-
-    This API searches for exact match and does not support nested search or conditional search.
-    'searchField' can be "username".
-    More search criteria can be added by using '%' as a separator.
-
-    If query is not given, then API returns all available User documents (search all).
-
-    Update (PUT)
-
-    http://server_url/v1/loans
-
-    Sample request JSON:
-
-    "_id" must be presented.
-
-    {
-    	"_id" : "idstring",
 
     	"edit_user" :
     	{
@@ -368,6 +328,68 @@ JSON Formats and examples
     	"remove_past_loans" : [
     		"loan ids"
     	]
+    }
+
+    Delete (DELETE)
+
+    One of the following identifier must be presented.
+
+    {
+    	"_id" : "idstring",
+    	"username" : "bkang61",
+        "email" : "bkang61@gatech.edu"
+    }
+
+4. Loan
+
+    Create (POST)
+
+    http://server_url/v1/loans
+
+    All fields must be presented.
+
+    {
+    	"username" : "bkang61",
+    	"equipments" : [
+    		"58f66d9e7f8b9a5a26c477ec"
+    	],
+    	"loaned_date" : "2017-01-01 00:00:00",
+    	"due_date" : "2017-05-01 23:59:59"
+    }
+
+    Read (GET)
+
+    http://server_url/v1/loans?searchField=value
+
+    This API searches for exact match and does not support nested search or conditional search.
+    'searchField' can be "username".
+    More search criteria can be added by using '%' as a separator.
+
+    If query is not given, then API returns all available User documents (search all).
+
+    Update (PUT)
+
+    http://server_url/v1/loans
+
+    Sample request JSON:
+
+    "_id" must be presented.
+
+    {
+        "_id" : "loan id string",
+
+        "update_loan" : {
+            "loaned_date" : "2017-01-01 00:00:00",
+            "due_date" : "2017-01-01 00:00:00"
+        },
+
+        "add_equipments" : [
+            "equipment id string"
+        ],
+
+        "remove_equipments" : [
+            "equipment id string"
+        ]
     }
 
     Delete (DELETE)
