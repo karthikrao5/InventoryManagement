@@ -33,7 +33,7 @@ class DAO
         }
         
         $result = $loans->insert($loan);
-        $this->addCurrentLLoanToUser($this->getUserId($loan['username']), $loan['_id']);
+        $this->addCurrentLoanToUser($this->getUserId($loan['username']), $loan['_id']);
         
         foreach($loan['equipments'] as $equipmentId)
         {
@@ -47,7 +47,7 @@ class DAO
     {
         $result = $this->getUser(array('username' => $username));
         
-        return $result['users'][0]['_id'];
+        return $result[0]['_id'];
     }
     
     public function getLoan($searchCriteria=null)
@@ -422,7 +422,7 @@ class DAO
         return $result;
     }
     
-    public function addCurrentLLoanToUser($userId, $loanId)
+    public function addCurrentLoanToUser($userId, $loanId)
     {
         if(!($userId instanceof MongoId))
         {
