@@ -214,7 +214,7 @@ class CoreService
     public function createLoan($requestJson, $username, $isHook, $hookname)
     {
         // Creating loan automatically adds this loan to user's current loans
-        return $this->dao->createLoan($loan);
+        return $this->dao->createLoan($requestJson);
     }
 
     public function getLoan($requestJson, $username, $isHook, $hookname)
