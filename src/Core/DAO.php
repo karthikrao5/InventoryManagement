@@ -23,6 +23,7 @@ class DAO
         
         $loan['loaned_date'] = new MongoDate(strtotime($loan['loaned_date']));
         $loan['due_date'] = new MongoDate(strtotime($loan['due_date']));
+        $loan['logs'] = array();
         
         foreach($loan['equipments'] as $key => $value)
         {
@@ -39,6 +40,15 @@ class DAO
         {
             $this->updateEquipment($equipmentId, array('loaned_to' => $loan['username'], 'status' => "loaned"));
         }
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $loan['_id'];
+        $log['document_type'] = "loan";
+        $log['action_type'] = "create";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        $this->updateLog($log);
+        $this->addLogToLoan($loan['_id'], $log['_id']);
         
         return $this->getLoan(array('_id' => $loan['_id']))[0];
     }
@@ -64,7 +74,7 @@ class DAO
         }
         else
         {
-            if(isset($searchCriteria['_id']))
+            if(isset($searchCriteria['_id']) && !is_array($searchCriteria['_id']))
             {
                 if(!($searchCriteria['_id'] instanceof MongoId))
                 {
@@ -133,7 +143,7 @@ class DAO
         $loan = $loans->findOne(array('_id' => $loanId));
         $mongo->close();
         
-        $log = $this->getLog();
+        $log = $this->createLog();
         $log['reference_id'] = $id;
         $log['document_type'] = "loan";
         $log['action_type'] = "edit";
@@ -251,7 +261,7 @@ class DAO
         $result = $loans->remove(array('_id' => $id));
         $mongo->close();
         
-        $log = $this->getLog();
+        $log = $this->createLog();
         $log['reference_id'] = $id;
         $log['document_type'] = "loan";
         $log['action_type'] = "remove";
@@ -378,13 +388,13 @@ class DAO
         
         $logs = $this->getLog(array('reference_id' => $user['_id']));
         
-        foreach($logs as $key => $log)
-        {
-            $log['timestamp'] = date('Y-m-d H:i:s', $log['timestamp']->sec);
-            $logs[$key] = $log;
-        }
-        
         $user['logs'] = $logs;
+        
+        $currentLoans = $this->getLoan(array('_id' => array('$in' => $user['current_loans'])));
+        $user['current_loans'] = $currentLoans;
+        
+        $pastLoans = $this->getLoan(array('_id' => array('$in' => $user['past_loans'])));
+        $user['past_loans'] = $pastLoans;
         
         return $user;
     }
