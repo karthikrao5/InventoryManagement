@@ -259,6 +259,12 @@ class DAO
         $loans = $mongo->inventorytracking->loans;
         
         $result = $loans->remove(array('_id' => $id));
+        
+        if($result['n'] == 0)
+        {
+            return $result;
+        }
+        
         $mongo->close();
         
         $log = $this->createLog();
@@ -268,6 +274,8 @@ class DAO
         $log['action_by'] = "hardcodedweb";
         $log['action_via'] = "hardcodedweb";
         $this->updateLog($log);
+        
+        return $result;
     }
     
     private function addLogToLoan($loanId, $logId)

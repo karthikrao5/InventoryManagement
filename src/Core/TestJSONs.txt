@@ -337,7 +337,7 @@ JSON Formats and examples
     {
     	"_id" : "idstring",
     	"username" : "bkang61",
-        "email" : "bkang61@gatech.edu"
+      "email" : "bkang61@gatech.edu"
     }
 
 4. Loan
