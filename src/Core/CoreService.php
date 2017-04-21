@@ -195,13 +195,18 @@ class CoreService
             return $validationResult;
         }
         
-        if(isset($json['_id']) && $this->userValidator->isMongoIdString($json['_id']))
+        if(isset($requestJson['_id']) && $this->userValidator->isMongoIdString($requestJson['_id']))
         {
             $daoResult = $this->dao->removeUser($requestJson['_id']);
         }
         else
         {
-            $daoResult = $this->dao->removeUser($requestJson['username']);
+            if(isset($requestJson['username']))
+            {
+                $requestJson['_id'] = $this->dao->findUserIdByUserName($requestJson['username']);
+            }
+            
+            $daoResult = $this->dao->removeUser($requestJson['_id']);
         }
         
         return $daoResult;
@@ -219,7 +224,22 @@ class CoreService
 
     public function getLoan($requestJson, $username, $isHook, $hookname)
     {
-        return $this->dao->getLoan($requestJson);
+        $loans = $this->dao->getLoan($requestJson);
+        
+        if(is_null($loans) || empty($loans))
+        {
+            $result['msg'] = 'Loan not found with given search criteria.';
+            $result['search_criteria'] = $requestJson;
+        }
+        else
+        {
+            $result['ok'] = true;
+            $result['msg'] = "Successfully found loans.";
+            $result['n'] = count($loans);
+            $result['loans'] = $loans;
+        }
+        
+        return $result;
     }
 
     public function updateLoan($requestJson, $username, $isHook, $hookname)

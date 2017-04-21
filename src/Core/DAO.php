@@ -23,6 +23,7 @@ class DAO
         
         $loan['loaned_date'] = new MongoDate(strtotime($loan['loaned_date']));
         $loan['due_date'] = new MongoDate(strtotime($loan['due_date']));
+        $loan['logs'] = array();
         
         foreach($loan['equipments'] as $key => $value)
         {
@@ -33,7 +34,21 @@ class DAO
         }
         
         $result = $loans->insert($loan);
-        $this->addCurrentLLoanToUser($this->getUserId($loan['username']), $loan['_id']);
+        $this->addCurrentLoanToUser($this->getUserId($loan['username']), $loan['_id']);
+        
+        foreach($loan['equipments'] as $equipmentId)
+        {
+            $this->updateEquipment($equipmentId, array('loaned_to' => $loan['username'], 'status' => "loaned"));
+        }
+        
+        $log = $this->createLog();
+        $log['reference_id'] = $loan['_id'];
+        $log['document_type'] = "loan";
+        $log['action_type'] = "create";
+        $log['action_by'] = "hardcodedweb";
+        $log['action_via'] = "hardcodedweb";
+        $this->updateLog($log);
+        $this->addLogToLoan($loan['_id'], $log['_id']);
         
         return $this->getLoan(array('_id' => $loan['_id']))[0];
     }
@@ -42,7 +57,7 @@ class DAO
     {
         $result = $this->getUser(array('username' => $username));
         
-        return $result['users'][0]['_id'];
+        return $result[0]['_id'];
     }
     
     public function getLoan($searchCriteria=null)
@@ -59,7 +74,7 @@ class DAO
         }
         else
         {
-            if(isset($searchCriteria['_id']))
+            if(isset($searchCriteria['_id']) && !is_array($searchCriteria['_id']))
             {
                 if(!($searchCriteria['_id'] instanceof MongoId))
                 {
@@ -95,7 +110,12 @@ class DAO
         }
         else
         {
-            $equipments = $this->getEquipment(array('_id' => array('$in' => $loan['equipments'])));
+            foreach($loan['equipments'] as $key => $equipmentId)
+            {
+                $loan['equipments'][$key] = new MongoId($equipmentId);
+            }
+            
+            $equipments = $this->getEquipment(array('_id' => array('$in' => $loan['equipments']))); 
             $loan['equipments'] = $equipments;
         }
         
@@ -123,7 +143,7 @@ class DAO
         $loan = $loans->findOne(array('_id' => $loanId));
         $mongo->close();
         
-        $log = $this->getLog();
+        $log = $this->createLog();
         $log['reference_id'] = $id;
         $log['document_type'] = "loan";
         $log['action_type'] = "edit";
@@ -239,15 +259,23 @@ class DAO
         $loans = $mongo->inventorytracking->loans;
         
         $result = $loans->remove(array('_id' => $id));
+        
+        if($result['n'] == 0)
+        {
+            return $result;
+        }
+        
         $mongo->close();
         
-        $log = $this->getLog();
+        $log = $this->createLog();
         $log['reference_id'] = $id;
         $log['document_type'] = "loan";
         $log['action_type'] = "remove";
         $log['action_by'] = "hardcodedweb";
         $log['action_via'] = "hardcodedweb";
         $this->updateLog($log);
+        
+        return $result;
     }
     
     private function addLogToLoan($loanId, $logId)
@@ -368,13 +396,13 @@ class DAO
         
         $logs = $this->getLog(array('reference_id' => $user['_id']));
         
-        foreach($logs as $key => $log)
-        {
-            $log['timestamp'] = date('Y-m-d H:i:s', $log['timestamp']->sec);
-            $logs[$key] = $log;
-        }
-        
         $user['logs'] = $logs;
+        
+        $currentLoans = $this->getLoan(array('_id' => array('$in' => $user['current_loans'])));
+        $user['current_loans'] = $currentLoans;
+        
+        $pastLoans = $this->getLoan(array('_id' => array('$in' => $user['past_loans'])));
+        $user['past_loans'] = $pastLoans;
         
         return $user;
     }
@@ -412,7 +440,7 @@ class DAO
         return $result;
     }
     
-    public function addCurrentLLoanToUser($userId, $loanId)
+    public function addCurrentLoanToUser($userId, $loanId)
     {
         if(!($userId instanceof MongoId))
         {
@@ -584,6 +612,11 @@ class DAO
         return $result;
     }
     
+    public function findUserIdByUserName($username)
+    {
+        return $this->getUser(array('username' => $username))[0]['_id'];
+    }
+    
     /*
      * Log related functions.
      */
@@ -617,6 +650,11 @@ class DAO
         if(!is_null($result) && !empty($result))
         {
             $result = array_values($result);
+        }
+        
+        foreach($result as $key => $value)
+        {
+            $result[$key]['timestamp'] = date('Y-m-d H:i:s', $value['timestamp']->sec);
         }
         
         return $result;
@@ -774,7 +812,7 @@ class DAO
         } 
         else 
         {
-            if(isset($searchCriteria['_id']))
+            if(isset($searchCriteria['_id']) && !is_array($searchCriteria['_id']))
             {
                 if(!($searchCriteria['_id'] instanceof MongoId))
                 {
