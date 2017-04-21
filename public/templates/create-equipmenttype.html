@@ -1,0 +1,54 @@
+
+<div class="container-fluid index-div" ng-controller="NewEquipmentTypeController">
+	<h1>{{ title }}</h1>
+	<form ng-submit="submitEquipmentTypeCreation()">
+
+		<div ng-repeat="label in labels">
+			<div class="form-group">
+				<label>{{label}}</label>
+				<input type="text" ng-model="formObj[label]" placeholder="Enter" required>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<h4>Add Attributes</h4>
+			<fieldset ng-repeat="attribute in attrList.equipment_type_attributes track by $index">
+				<fieldset class="pure-control-group">
+					<p>Attr index: {{ $index }}</p>
+					<input type="text" ng-model="attribute.name" placeholder="Name" required>
+					<input type="text" ng-model="attribute.data_type" placeholder="Data Type" required>
+					<input type="text" ng-model="attribute.regex" placeholder="Regex">
+					<input type="text" ng-model="attribute.help_comment" placeholder="Help Comment"> <br>
+					<input value="Remove" type="button" class="remove" ng-show="$index != 0" ng-click="removeAttribute($event, key)"></input>
+					<label>Required</label>
+					<input type="checkbox" ng-init="attribute.required=false" ng-model="attribute.required"> <br>
+
+					<label>Unique</label>
+					<input type="checkbox" ng-init="attribute.unique=false" ng-model="attribute.unique"> <br>
+
+					<label>Enum</label>
+					<input type="checkbox" ng-init="attribute.enum=false" ng-model="attribute.enum">
+					
+				</fieldset>
+				<div class="form-group">
+					<h4>Add enums</h4>
+					<fieldset ng-repeat="enum in attribute.enum_values track by $index">
+						<input type="text" ng-model="attribute.enum_values[$index]" placeholder="Enum Value" required>
+						<input type="button" value="Remove Enum" ng-show="$index != 0" ng-click="deleteEnum($event, key)">
+					</fieldset>
+					<input ng-click="addNewEnum(attribute)" value="Add Enums" type="button"></input>	
+				</div>
+			</fieldset>
+			<input value="Add fields" type="button" class="addfields" ng-click="addNewAttribute($index, key)"></input>
+
+		</div>
+         <button class="pure-button" type="submit">Submit</button>
+	</form>
+
+<a class="pure-button" href="#!/equipmenttypes">Equipment Types</a>
+<a class="pure-button" href="#!/">Home</a>
+
+<p>{{enumVals|json}}</p>
+<p>{{attrList|json}}</p>
+</div>
+

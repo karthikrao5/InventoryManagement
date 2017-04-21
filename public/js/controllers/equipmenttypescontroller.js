@@ -1,7 +1,26 @@
-// angular.module('app.controllers').controller('EquipmentTypesController', ['$scope', '$http', function($scope, $http) {
-// 	var endpoint = 'https://localhost:8080/v1/equipmenttypes';
+angular.module('app.controllers').controller('EquipmentTypesController', ['$scope', 'APIService',
+	function($scope, APIService) {
 
-//     $http.get(endpoint).then(function (response) {
-//         $scope.equipment_types = response.data.equipment_types;
-//     });
-// }]);
+		$scope.title = "Equipment Types";
+
+		function onSuccess(response) {
+			$scope.gridOptions.data = response.data.equipment_types;
+		}
+
+		APIService.query('equipmenttypes', onSuccess, function(error) {
+			console.log(error);
+		});
+
+		$scope.columns = [{field: 'name', enableHiding: false},
+						  {field: 'comments', enableHiding: true},
+						  {field: 'attributes', enableHiding: false}];
+
+		$scope.gridOptions = {
+			enableSorting: true,
+			columnDefs: $scope.columns,
+			enableGridMenu: true
+		};
+
+
+	}
+]);

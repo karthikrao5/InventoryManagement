@@ -1,18 +1,16 @@
-<h1>User create form</h1>
 
-<div class="container" ng-controller="NewUserController as uc">
-	<form class="user-form" ng-submit="uc.submitUserCreation()">
-		<fieldset>
+<div class="container-fluid index-div" ng-controller="NewUserController">
+	<form class="user-form pure-form pure-form-aligned" ng-submit="submitUserCreation()">
+		<h1>{{title}}</h1>
+		<div class="form-group">
 			<input type="text" ng-model="formObj.username" placeholder="Username">
 			<input type="text" ng-model="formObj.email" placeholder="Email">
-		</fieldset>
+		</div>
 
-    	<button type="submit" ng-submit="uc.submitUserCreation()">Submit</button>
+         <button class="pure-button" type="submit">Submit</button>
 	</form>
 
-	{{formObj|json}}
-
-	{{something|json}}
+	<p>{{formObj|json}}</p>
 	
-	<a href="#!/">Home</a>
+	<a class="pure-button" href="#!/">Home</a>
 </div>

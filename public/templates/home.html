@@ -37,8 +37,11 @@
  				<ul class="pure-menu-list">
  					<li class="pure-menu-item"><a class="pure-menu-link" href="#!/equipments/new">Add Equipment</a></li>
  					<li class="pure-menu-item"><a class="pure-menu-link" href="#!/users/new">Add Renter</a></li>
+                    <li class="pure-menu-item"><a class="pure-menu-link" href="#!/equipmenttypes">Equipment Types</a></li>
  				</ul>
  			</div>
+
+            <button id='toggleFiltering' ng-click="toggleFiltering()" class="btn btn-success">Toggle Filtering</button>
             <div ui-grid="gridOptions" class="grid"></div>
 
             

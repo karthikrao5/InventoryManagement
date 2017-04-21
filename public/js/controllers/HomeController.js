@@ -49,6 +49,10 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 	    	enableGridMenu: true
 	    };
 
+	    $scope.toggleFiltering = function() {
+	    	console.log("Filtering tbd...");
+	    };
+
 	    // $scope.logout = function() {
 	    // 	if(Auth.deleteToken()) {
 	    // 		console.log("Logged out!");

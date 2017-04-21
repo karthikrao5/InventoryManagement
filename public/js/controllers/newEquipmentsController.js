@@ -35,7 +35,7 @@ angular.module("app.controllers").controller("NewEquipmentController", ["$scope"
 
 		// });
 
-		$scope.labels = ['department_tag', "gt_tag", "status", "comment", "loaned_to"];
+		$scope.labels = ['department_tag', "gt_tag", "comment"];
 
 		$scope.submitEquipmentCreation = function() {
 			// console.log($scope.attrList.attributes);
@@ -47,8 +47,8 @@ angular.module("app.controllers").controller("NewEquipmentController", ["$scope"
 				console.log(response.data);
 			}
 
-			APIService.post("equipments", returnThis, onSuccess, function() {
-				console.log("error posting...");
+			APIService.post("equipments", returnThis, onSuccess, function(error) {
+				alert(error);
 			});
 			// $http.post('http://localhost:8080/v1/equipments', returnThis).then(function(data, status, headers, config) {
 			// 	alert(data.msg);

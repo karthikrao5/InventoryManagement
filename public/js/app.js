@@ -43,6 +43,14 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "app.s
             controller: 'NewUserController'
             // adminOnly: true
         },
+        '/equipmenttypes' : {
+            templateUrl:'templates/equipmenttypes-list.html',
+            controller: 'EquipmentTypesController'
+        },
+        '/equipmenttypes/new' : {
+            templateUrl: 'templates/create-equipmenttype.html',
+            controller: 'NewEquipmentTypeController'
+        },
         '/auth': {
             templateUrl: 'templates/auth.html',
             controller: 'AuthController'
