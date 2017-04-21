@@ -273,7 +273,7 @@ JSON Formats and examples
 
     {
         "_id" : "58e81cc37f8b9ac4571ef7c6",
-        "department_tag" : "laptop",
+        "department_tag" : "math-1234",
         "gt_tag" : "gttag1234"
     }
 
@@ -336,8 +336,7 @@ JSON Formats and examples
 
     {
     	"_id" : "idstring",
-    	"username" : "bkang61",
-      "email" : "bkang61@gatech.edu"
+    	"username" : "bkang61"
     }
 
 4. Loan

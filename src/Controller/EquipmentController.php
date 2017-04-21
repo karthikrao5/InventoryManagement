@@ -1,17 +1,9 @@
 <?php
 namespace App\Controller;
 
-
-use App\Models\Equipment;
-use App\Models\EquipmentType;
-use App\Models\Log;
-use App\Models\Attribute;
-use App\Models\EquipmentTypeAttribute;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use Interop\Container\ContainerInterface;
-use Doctrine\ODM\MongoDB\DocumentManager;
-
 
 class EquipmentController extends AbstractController{
 
@@ -199,31 +191,19 @@ class EquipmentController extends AbstractController{
             return $response->write("Invalid request.")->withStatus(400);
         }
 
-        // $authHeader = $request->getHeader("Authorization");
-        // $authResult = $this->authValidator->decodeToken($authHeader);
-        
-        // if(!$result["ok"]) {
-        //     // decode messed up. Look into src\Core\Validator.php
-        //     return $response->write($result["msg"])->withStatus($result["status"]);
-        // }
-
-        // $authData = $authResult["data"];
-
-        // if(!$this->authValidator->isAdminOrHook($authData)) {
-        //     return $response->write("Forbidden.")->withStatus(403);
-        // }
-
         if (is_null($request->getParsedBody()))
-		{
+        {
             return $response->write("No body recieved.")->withStatus(400);
         }
 
         $result = $this->core->deleteEquipment($request->getParsedBody());
+        
+        return $response->withJson($result);
 
         if ($result["ok"]) {
-            return $response->withStatus(200)->write("Successfully deleted ".$result['n']." Equipments!");
+            return $response->withStatus(200)->withJson($result);
         } else {
-            return $response->withStatus(404)->write("Something went wrong, Equipments are not deleted.");
+            return $response->withStatus(404)->withJson($result);
         }
     }
 }

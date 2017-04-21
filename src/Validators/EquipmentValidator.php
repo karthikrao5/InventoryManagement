@@ -74,6 +74,9 @@ class EquipmentValidator extends AbstractValidator {
             $result['msg'] = "At least one unique identifier ('_id', 'department_tag', 'gt_tag') must be present in the request JSON.";
             return $result;
         }
+        
+        $result['ok'] = true;
+        return $result;
     }
     
     public function isEquipmentTypeExist($name)

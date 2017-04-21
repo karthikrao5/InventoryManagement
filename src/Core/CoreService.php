@@ -195,13 +195,18 @@ class CoreService
             return $validationResult;
         }
         
-        if(isset($json['_id']) && $this->userValidator->isMongoIdString($json['_id']))
+        if(isset($requestJson['_id']) && $this->userValidator->isMongoIdString($requestJson['_id']))
         {
             $daoResult = $this->dao->removeUser($requestJson['_id']);
         }
         else
         {
-            $daoResult = $this->dao->removeUser($requestJson['username']);
+            if(isset($requestJson['username']))
+            {
+                $requestJson['_id'] = $this->dao->findUserIdByUserName($requestJson['username']);
+            }
+            
+            $daoResult = $this->dao->removeUser($requestJson['_id']);
         }
         
         return $daoResult;

@@ -612,6 +612,11 @@ class DAO
         return $result;
     }
     
+    public function findUserIdByUserName($username)
+    {
+        return $this->getUser(array('username' => $username))[0]['_id'];
+    }
+    
     /*
      * Log related functions.
      */
