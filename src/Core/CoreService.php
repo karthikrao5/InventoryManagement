@@ -260,12 +260,14 @@ class CoreService
     {
         $returnArray = array('ok' => false, 'msg' => null, 'equipment' => null);
         
+        /*
         $validationResult = $this->equipmentValidator->isValidCreateJSON($requestJson);
         
         if(!$validationResult['ok'])
         {
             return $validationResult;
         }
+         */
 
         $result = $this->getEquipmentType(array('name' => $requestJson['equipment_type_name']));
 
