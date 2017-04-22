@@ -1,5 +1,5 @@
-angular.module("app.controllers").controller("HomeController", ["$scope", "$http", "$location", "$window", "Auth","APIService", "uiGridConstants","$filter", 
-	function($scope, $http, $location, $window, Auth, APIService) {
+angular.module("app.controllers").controller("HomeController", ["$scope", "$http", "$location", "$window","APIService", "uiGridConstants","$filter", 
+	function($scope, $http, $location, $window, APIService) {
 		// if(Auth.isExpired()) {
 		// 	console.log("redirecting to auth...");
 		// 	$location.path('/auth');

@@ -2,6 +2,7 @@ angular.module("app.controllers").controller("EditEquipmentController", ["$scope
 	function($scope, APIService, $routeParams, $http) {
 
 		$scope.test = $routeParams.department_tag;
+		console.log($routeParams);
 
 		$scope.item;
 
@@ -21,18 +22,18 @@ angular.module("app.controllers").controller("EditEquipmentController", ["$scope
 		// 	console.log(error.data);
 		// });
 
-		$http({
-			url: 'v1/equipments',
-			method: 'GET',
-			params: $routeParams,
-			paramSerializer: '$httpParamSerializerJQLike'
-		}).then(function(response) {
-			$scope.item = response.data.equipments[0];
-			$scope.formObj.department_tag = $scope.item.department_tag;
-			$scope.formObj.gt_tag = $scope.item.gt_tag;
-		}, function(error) {
-			console.log(error.data);
-		});
+		// $http({
+		// 	url: 'v1/equipments',
+		// 	method: 'GET',
+		// 	params: $routeParams,
+		// 	paramSerializer: '$httpParamSerializerJQLike'
+		// }).then(function(response) {
+		// 	$scope.item = response.data.equipments[0];
+		// 	$scope.formObj.department_tag = $scope.item.department_tag;
+		// 	$scope.formObj.gt_tag = $scope.item.gt_tag;
+		// }, function(error) {
+		// 	console.log(error.data);
+		// });
 
 		
 

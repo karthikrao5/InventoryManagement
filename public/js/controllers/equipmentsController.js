@@ -1,5 +1,5 @@
-angular.module("app.controllers").controller('EquipmentsController', ["$scope", "$http", "$location", "$window", "Auth","APIService", "uiGridConstants",
-	function($scope, $http, $location, $window, Auth, APIService) {
+angular.module("app.controllers").controller('EquipmentsController', ["$scope", "$http", "$location", "$window","APIService", "uiGridConstants",
+	function($scope, $http, $location, $window, APIService) {
 
 		function onSuccess(response) {
 	    	$scope.gridOptions.data = response.data.equipments;
