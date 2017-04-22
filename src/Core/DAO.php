@@ -862,7 +862,7 @@ class DAO
 
         foreach($attrs as $attr)
         {
-                $array[] = $attr;
+            $array[] = $attr;
         }
 
         $equipment['attributes'] = $array;

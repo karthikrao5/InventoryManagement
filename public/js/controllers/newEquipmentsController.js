@@ -1,4 +1,4 @@
-angular.module("app.controllers").controller("NewEquipmentController", ["$scope", "$http", "$location", "APIService", 
+angular.module("app.controllers").controller("NewEquipmentController", ["$scope", "$http", "$location", "APIService",
 	function($scope, $http, $location, APIService) {
 
 		$scope.equipmentTypeList = [];
@@ -23,7 +23,7 @@ angular.module("app.controllers").controller("NewEquipmentController", ["$scope"
 				// create default attribute list to populate keys
 				$scope.defaultEquipmentTypes[item["name"]] = []
 				angular.forEach(item.equipment_type_attributes, function(attr) {
-					$scope.defaultEquipmentTypes[item["name"]].push(attr["name"]);					
+					$scope.defaultEquipmentTypes[item["name"]].push(attr["name"]);
 				});
 
 			});
@@ -58,7 +58,7 @@ angular.module("app.controllers").controller("NewEquipmentController", ["$scope"
 
 
 		};
-		
+
 		// $scope.attrList = {
 		// 	"attributes": [
 		// 		{
@@ -72,11 +72,11 @@ angular.module("app.controllers").controller("NewEquipmentController", ["$scope"
 		$scope.attrList["attributes"] = [];
 
 		$scope.addNewAttribute = function(index) {
-			var newAttr = {"key": "", "value": ""};
+			var newAttr = {"name": "", "value": ""};
 			// if($scope.attrList.attributes.length <= index + 1) {
 				$scope.attrList.attributes.splice(index+1,0,newAttr);
 			// }
-			
+
 		};
 
 		$scope.removeAttribute = function($event, key) {
@@ -97,7 +97,7 @@ angular.module("app.controllers").controller("NewEquipmentController", ["$scope"
 
 			for(var i = 0; i < something.length; i++) {
 				val = {};
-				val["key"] = something[i];
+				val["name"] = something[i];
 				val["value"] = "";
 				$scope.attrList.attributes.push(val);
 			}
