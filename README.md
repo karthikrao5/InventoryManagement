@@ -14,6 +14,7 @@ Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 * Backend access routes are fragile due to unfinished input validation.
 * API key feature is not implemented in this release.
 * Log information is missing username (action_by) and how the route is accessed (action_via).
+* Loan due date expiration is not checked.
 ----
 # Installation Guide
 **Getting started with this project:**
