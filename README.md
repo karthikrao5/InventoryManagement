@@ -1,7 +1,6 @@
 # InventoryManagement
-GT Junior Design Part 2 Spring 2017
-
-Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
+GT Junior Design Part 2 Spring 2017 (CS 3312/LMC 3431 - JIA)
+Team 154 - Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 ----
 # Release Notes
 **New features for this release:**
