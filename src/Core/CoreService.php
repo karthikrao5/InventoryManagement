@@ -229,6 +229,8 @@ class CoreService
 
     public function getLoan($requestJson)
     {
+        $result = array('ok' => false, 'msg' => null, 'loans' => null);
+        
         $loans = $this->dao->getLoan($requestJson);
         
         if(is_null($loans) || empty($loans))
