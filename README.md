@@ -8,11 +8,9 @@ Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 
 **Bug fixes:**
 
-**Known bugs and defects:**
+**Known bugs and defects for Front-end:**
 
-**Frontend**
-
-**Backend**
+**Known bugs and defects for Back-end:**
 * Backend access routes are fragile due to unfinished input validation.
 * API key feature is not implemented in this release.
 * Log information is missing username (action_by) and how the route is accessed (action_via).
