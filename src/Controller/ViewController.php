@@ -3,12 +3,9 @@
 namespace App\Controller;
 
 use Slim\Views\Twig;
-use App\Models\Equipment;
-use App\Models\EquipmentType;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use Interop\Container\ContainerInterface;
-use Doctrine\ODM\MongoDB\DocumentManager;
 
 class ViewController extends AbstractController {
 
@@ -27,15 +24,15 @@ class ViewController extends AbstractController {
 	// GET
 	public function getEquipmentForm($request, $response) {
 		$fields = array("department_tag" => "text",
-					 	"gt_tag" => "text", 
-					 	"equipment_type_name" => "text", 
-					 	"status" => "text", 
+					 	"gt_tag" => "text",
+					 	"equipment_type_name" => "text",
+					 	"status" => "text",
 					 	"comment" => "text"
 					 	);
 		return $this->view->render($response, "addEquipment.twig", array("fields" => $fields));
 	}
 
-	// POST 
+	// POST
 	public function postEquipmentForm($request, $response, $args) {
 		$body = $request->getParsedBody();
 
