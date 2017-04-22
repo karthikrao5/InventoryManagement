@@ -312,12 +312,15 @@ class CoreService
     {
         $result = array("ok" => false, "msg" => null, "updated_equipment" => null);
         
+        /*
         $validationResult = $this->equipmentValidator->isValidUpdateJSON($requestJson);
         
         if(!$validationResult['ok'])
         {
             return $validationResult;
         }
+         * 
+         */
         
         //get id
         if(!isset($requestJson['_id']))
@@ -379,6 +382,7 @@ class CoreService
             }
         }
         
+        $result = array();
         $result['ok'] = true;
         $result['msg'] = "Update success.";
         $result['updated_equipment'] = $this->dao->getEquipment(array('_id' => $requestJson['_id']));
