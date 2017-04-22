@@ -6,7 +6,7 @@ Team 154 - Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 # Release Notes
 **New features for this release:**
 
-**Bug fixes:**
+**Bug fixes:** None - initial release.
 
 **Known bugs and defects for Front-end:**
 
