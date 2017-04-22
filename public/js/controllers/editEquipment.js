@@ -1,49 +1,88 @@
-angular.module("app.controllers").controller("EditEquipmentController", ["$scope", "$http", "$location", "APIService", 
-	function($scope, APIService, $routeParams, $http) {
-
-		$scope.test = $routeParams.department_tag;
-		console.log($routeParams);
-
-		$scope.item;
-
-		$scope.formObj = {};
-
-		$scope.update_equipment = {};
-		$scope.update_equipment_attributes = [];
-		$scope.add_equipment_attributes = [];
-		$scope.remove_equipment_attributes = [];
-
-
-		// APIService.get('equipments', $routeParams, function(response) {
-		// 	$scope.item = response.data.equipments[0];
-		// 	$scope.formObj.department_tag = $scope.item.department_tag;
-		// 	$scope.formObj.gt_tag = $scope.item.gt_tag;
-		// }, function(error) {
-		// 	console.log(error.data);
-		// });
-
-		// $http({
-		// 	url: 'v1/equipments',
-		// 	method: 'GET',
-		// 	params: $routeParams,
-		// 	paramSerializer: '$httpParamSerializerJQLike'
-		// }).then(function(response) {
-		// 	$scope.item = response.data.equipments[0];
-		// 	$scope.formObj.department_tag = $scope.item.department_tag;
-		// 	$scope.formObj.gt_tag = $scope.item.gt_tag;
-		// }, function(error) {
-		// 	console.log(error.data);
-		// });
-
-		
-
+angular.module("app.controllers").controller("EditEquipmentController", ["$scope", "$http", "$location", "APIService", "$httpParamSerializerJQLike",
+	function($scope, $http, $routeParams, APIService, $httpParamSerializerJQLike) {
 
 		$scope.labels = ['department_tag', "gt_tag", "comment"];
+		$scope.buttonToggle = false;
+		$scope.returnObject = {};
+		// // new user to update to
+		// $scope.newUser;
+
+		// current equipment being modified
+		$scope.originalItem;
+
+		// list of all users
+		// $scope.users;
 
 
-		$scope.test = function() {
-			console.log($scope.formObj);
+		// field for PUT
+		// $scope.update_equipment = {};
+		$scope.returnObject["update_equipment"] = {};
+
+		// field for PUT
+		// $scope.add_equipment_attributes = [];
+		$scope.returnObject["add_equipment_attributes"] = [];
+
+		// field for PUT
+		// $scope.update_equipment_attributes = [];
+		$scope.returnObject["update_equipment_attributes"] = [];
+
+		// field for PUT
+		// $scope.remove_equipment_attributes = [];
+		$scope.returnObject["remove_equipment_attributes"] = [];
+
+
+		// $scope.addNewAttributeField = function(index) {
+		// 	var newAttr = {"name": "", "value": ""};
+		// 	// if($scope.attrList.attributes.length <= index + 1) {
+		// 	$scope.returnObject.add_equipment_attributes.splice(index+1,0,newAttr);
+		// 		// console.log($scope.formObj);
+		// 	// }
+		// };
+
+		// $scope.removeNewAttributeField = function($event, key) {
+		// 	var index = $scope.returnObject.add_equipment_attributes.indexOf(key);
+		// 	if($event.which == 1) {
+		// 		$scope.returnObject.add_equipment_attributes.splice(index,1);
+		// 	}
+		// };
+
+		$scope.removeAttribute = function(attrToRemove) {
+			// if not in remove list, add it, otherwise remove it
+			if ($scope.returnObject.remove_equipment_attributes.indexOf(attrToRemove["_id"]) === -1) {
+				$scope.returnObject.remove_equipment_attributes.push(attrToRemove["_id"]);
+			} else {
+				var index = $scope.returnObject.remove_equipment_attributes.indexOf(attrToRemove["_id"]);
+				$scope.returnObject.remove_equipment_attributes.splice(index, 1);
+			}
+			
 		};
+
+		$scope.submitEquipmentEdit = function() {
+			console.log($scope.returnObject.update_equipment);
+			console.log(angular.toJson($scope.returnObject, 1));
+		};
+
+
+		APIService.get('equipments', $routeParams.department_tag, function(response) {
+			$scope.originalItem = response.data.equipments[0];
+			angular.forEach($scope.originalItem.attributes, function(originalAttr) {
+				var temp = {};
+				temp["_id"] = originalAttr["_id"]["$id"];
+				temp["name"] = originalAttr["name"];
+				temp["value"] = originalAttr["value"];
+				$scope.returnObject.update_equipment_attributes.push(temp);
+			});
+			$scope.returnObject.update_equipment.department_tag = $scope.originalItem.department_tag;
+			$scope.returnObject.update_equipment.loaned_to = $scope.originalItem.loaned_to;
+			$scope.returnObject.update_equipment.comments = $scope.originalItem.comments;
+		}, function(error) {
+			console.log(error.data);
+		});
+
+
+		// APIService.query('users', function(response) {
+		// 	$scope.users = response.data.users;
+		// });
 	}
 
 ]);
