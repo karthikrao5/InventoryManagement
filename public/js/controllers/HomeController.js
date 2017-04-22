@@ -40,7 +40,7 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 	    				  {field: "loaned_to", enableHiding: false},
 	    				  {field: "equipment_type_name", enableHiding: false},
 	    				  {field: "created_on", enableHiding: false},
-	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/equipments/DepartmentTag/{{row.entity.department_tag}}\">Edit</a>/<a href=\"\" ng-confirm-click=\"Are you sure you want to delete this item?\"ng-click=\"deleteEquipment(row.entity.department_tag)\">Delete</a>" }
+	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/equipments/DepartmentTag/{{row.entity.department_tag}}\">Edit</a>/<a href=\"\" ng-confirm-click=\"Are you sure you want to delete this item?\" ng-click=\"deleteEquipment(row.entity.department_tag)\">Delete</a>" }
 	    			];
 
 	    $scope.gridOptions = {
@@ -54,7 +54,10 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 	    };
 
 	    $scope.deleteEquipment = function(departmentTag) {
-	    	APIService.delete("equipments", [departmentTag], function(response) {
+	    	console.log(departmentTag);
+	    	var deleteThis = {};
+	    	deleteThis["department_tag"] = departmentTag;
+	    	APIService.delete("equipments", angular.toJson(deleteThis, 1), function(response) {
 	    		alert("Successfully deleted equipment!");
 	    	}, function(error) {
 	    		console.log(error.data);
