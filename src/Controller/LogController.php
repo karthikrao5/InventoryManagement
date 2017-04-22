@@ -25,7 +25,7 @@ class LogController extends AbstractController
 
         $params = $request->getQueryParams();
         if ($params) {
-            $array = $this->core->getLog($params);2
+            $array = $this->core->getLog($params);
         } else {
             $array = $this->core->getLog();
         }
