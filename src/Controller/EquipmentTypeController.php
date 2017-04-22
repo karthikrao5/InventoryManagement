@@ -13,19 +13,18 @@ class EquipmentTypeController extends AbstractController{
     public function __construct(ContainerInterface $c) {
         parent::__construct($c);
 	$this->validator = $this->ci->get('EquipmentTypeValidator');
-        $this->rm = $this->ci->get('rm');
     }
 
     // -----------------------------------------------------------------
     // GET functions
     // -----------------------------------------------------------------
-    public function find($request, $response) 
+    public function find($request, $response)
     {
-        if(is_null($request)) 
+        if(is_null($request))
         {
             return $response->write("Invalid request.")->withStatus(400);
         }
-        
+
         // TESTED THIS CODE, params works don't mess with it.
         $params = $request->getQueryParams();
         if ($params) {

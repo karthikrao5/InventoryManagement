@@ -4,7 +4,7 @@ namespace App\Validators;
 
 use Interop\Container\ContainerInterface;
 
-abstract class AbstractValidator 
+abstract class AbstractValidator
 {
     protected $dm;
 
@@ -16,7 +16,6 @@ abstract class AbstractValidator
 
     public function __construct(ContainerInterface $ci) {
         $this->ci = $ci;
-        $this->dm = $ci->get('dm');
         $this->logger = $ci->get('logger');
     }
 

@@ -41,24 +41,6 @@ $container['validator'] = function ($c) {
 };
 
 // -----------------------------------------------------------------------------
-// Service factories
-// -----------------------------------------------------------------------------
-
-$container['dm'] = function($c) {
-    return App\Helper\Database\DatabaseHelper::getConnection();
-};
-
-/**
- *  This is the repository manager. you can set the repository with
- *  setRepo() and query the collection.
- */
-$container['rm'] = function($c) {
-    return new App\Models\RepositoryManager(App\Helper\Container\ContainerHelper::getContainer());
-};
-
-
-
-// -----------------------------------------------------------------------------
 // Controller factories
 // -----------------------------------------------------------------------------
 // $container[App\Controller\ApiController::class] = function ($c) {
@@ -94,11 +76,6 @@ $container['LoanController'] = function ($c) {
     return new App\Controller\LoanController(App\Helper\Container\ContainerHelper::getContainer());
 };
 
-// $container["DummyController"] = function($c) {
-//     return new \App\Controller\DummyController($c->get('db'));
-// };
-
-
 // -----------------------------------------------------------------------------
 // Validators factories
 // -----------------------------------------------------------------------------
@@ -125,5 +102,3 @@ $container["AuthValidator"] = function($c) {
 $container["core"] = function($c) {
     return new App\Core\CoreService(App\Helper\Container\ContainerHelper::getContainer());
 };
-
-
