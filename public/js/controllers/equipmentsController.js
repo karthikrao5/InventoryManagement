@@ -10,11 +10,11 @@ angular.module("app.controllers").controller('EquipmentsController', ["$scope", 
 	    });
 
 		// if token in localstorage is expired, redirect to auth
-		if (Auth.isExpired()) {
-			$location.path("/auth");
-		}
+		// if (Auth.isExpired()) {
+		// 	$location.path("/auth");
+		// }
 		// var endpoint = 'http://localhost:8080/v1/equipments';
-		
+
 
 	    $scope.columns = [{field: "department_tag", enableHiding: false},
 	    				  {field: "gt_tag", enableHiding: false},
@@ -45,7 +45,7 @@ angular.module("app.controllers").controller('EquipmentsController', ["$scope", 
 	    //     // console.log(angular.toJson(response.data.equipments, true));
 	    // });
 
-	    
+
 
 
 
