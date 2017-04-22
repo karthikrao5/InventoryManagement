@@ -3,8 +3,22 @@ GT Junior Design Part 2 Spring 2017
 
 Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 ----
+# Release Notes
+**New features for this release:**
+
+**Bug fixes:**
+
+**Known bugs and defects:**
+
+**Frontend**
+
+**Backend**
+* Backend access routes are fragile due to unfinished input validation.
+* API key feature is not implemented in this release.
+* Log information is missing username (action_by) and how the route is accessed (action_via).
+----
 # Installation Guide
-**Getting started with this project**
+**Getting started with this project:**
 
 1. Install CentOS 6.8 on the server.
 
@@ -18,7 +32,7 @@ Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 
 Or alternatively, use Vagrant to setup development virtual machine automatically and use it.
 
-**Getting started with Vagrant**
+**Getting started with Vagrant:**
 
 1. Download Vagrant box 'centos-6.8-x86_64.box' from provided private Google Drive link (will be emailed to you).
 
