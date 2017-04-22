@@ -306,7 +306,7 @@ JSON Formats and examples
 
     {
     	"_id" : "idstring",
-        "username" : "bkang61",
+      "username" : "bkang61",
 
     	"edit_user" :
     	{

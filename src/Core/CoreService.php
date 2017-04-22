@@ -183,6 +183,9 @@ class CoreService
             }
         }
         
+        $result['ok'] = true;
+        $result['user'] = $this->dao->getUser(array('_id' => $requestJson['_id']))[0];
+        
         return $result;
     }
 
