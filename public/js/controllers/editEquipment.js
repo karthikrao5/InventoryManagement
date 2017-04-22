@@ -1,5 +1,5 @@
-angular.module("app.controllers").controller("EditEquipmentController", ["$scope", "$http", "$location", "APIService", "$httpParamSerializerJQLike",
-	function($scope, $http, $routeParams, APIService, $httpParamSerializerJQLike) {
+angular.module("app.controllers").controller("EditEquipmentController", ["$scope", "$http", "$location", "$routeParams", "APIService", "$httpParamSerializerJQLike",
+	function($scope, $http,$location,$routeParams, APIService) {
 
 		$scope.labels = ['department_tag', "gt_tag", "comment"];
 		$scope.buttonToggle = false;
@@ -62,8 +62,12 @@ angular.module("app.controllers").controller("EditEquipmentController", ["$scope
 			console.log(angular.toJson($scope.returnObject, 1));
 		};
 
+		console.log($routeParams.departmenttag);
+		$scope.paramsArray = {};
+		$scope.paramsArray["department_tag"] = $routeParams.departmenttag;
+		console.log($scope.paramsArray);
 
-		APIService.get('equipments', $routeParams.department_tag, function(response) {
+		APIService.get('equipments', $scope.paramsArray, function(response) {
 			$scope.originalItem = response.data.equipments[0];
 			angular.forEach($scope.originalItem.attributes, function(originalAttr) {
 				var temp = {};

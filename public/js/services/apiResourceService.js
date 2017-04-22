@@ -1,12 +1,16 @@
-angular.module("app").factory("APIService", ["$http", "$httpParamSerializerJQLike",
-	function($http,$httpParamSerializerJQLike, $routeParams) {
+angular.module("app").factory("APIService", ["$http", "$httpParamSerializer",
+	function($http,$httpParamSerializer, $routeParams) {
 		var apiURL = "v1/";
+
+		var config = {};
 
 		return {
 
 			// search with params
 			get : function(resource, inputParams, success, error) {
-				$http.get(apiURL+resource, {params: $httpParamSerializerJQLike(inputParams)}).then(success).catch(error)
+				console.log({params: $httpParamSerializer(inputParams)});
+				config["params"] = inputParams;
+				$http.get(apiURL+resource+"?", config).then(success).catch(error)
 			},
 
 			post : function(resource, data, success, error) {
