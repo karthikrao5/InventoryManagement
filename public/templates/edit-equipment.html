@@ -1,38 +1,54 @@
 <div class="container-fluid index-div" ng-controller="EditEquipmentController">
-        <h4>Edit Equipment</h4>
-        <h5>{{test}}</h5>
-        <form class="equipment-form pure-form pure-form-aligned" ng-submit="submitEquipmentCreation()">
-            <fieldset>
-                 <div class="pure-control-group">
-                    <label>Select Equipment Type</label>
-                    <select ng-change="updateEqType()" ng-model="formObj.equipment_type_name" ng-options="item.name as item.name for item in equipmentTypeList"></select>
-                 </div>
-                 
+		<h2>Edit Equipment</h4>
+		<form class="equipment-form pure-form pure-form-aligned" ng-submit="submitEquipmentEdit()">
+			<fieldset>
 
-                 <div ng-repeat="label in labels">
-                    <div class="pure-control-group">
-                       <label>{{ label }}</label>
-                       <input type="text" ng-model="formObj[label]" placeholder="Enter" required>
-                    </div>
-                 </div>
+				 <!-- <div class="form-group">
+					<h4>Add Attributes</h4>
+					<fieldset ng-repeat="attribute in returnObject.add_equipment_attributes track by $index">
+						<fieldset class="pure-control-group">
+							<p>Attr index: {{ $index }}</p>
+							<input type="text" ng-model="attribute.name" placeholder="Name" required>
+							<input type="text" ng-model="attribute.value" placeholder="Value" required>
+							<input value="Remove" type="button" class="remove" ng-click="removeNewAttributeField($event, key)"></input>
+						</fieldset>
+					</fieldset>
+					<input value="Add fields" type="button" class="addfields" ng-click="addNewAttributeField($index, key)"></input>
+				</div> -->
+ 
+				<div class="form-group">
+					<h5>Update Equipment</h4>
+						<div class="form-group">
+							<fieldset>
+								<label>Department Tag</label>
+								<input type="text" ng-model="returnObject.update_equipment.department_tag" placeholder="Department Tag" value="originalItem.department_tag">
+							</fieldset>
+							<!-- <fieldset>
+								<label>Laon</label>
+								<select ng-model="returnObject.update_equipment.loaned_to" ng-options="user.username as user.username for user in users"></select>
+							</fieldset> -->
+							<fieldset>
+								<label>Comments</label>
+								<input type="text" ng-model="returnObject.update_equipment.comments" placeholder="comment" value="originalItem.comments">
+							</fieldset>
+							
+						</div>
+				</div>
 
-                 <fieldset ng-repeat="attribute in attrList.attributes track by $index">
-                    <div class="pure-control-group">
-                       <input type="text" ng-model="attrList.attributes[$index].key" placeholder="Key" readonly>
-                       <input type="text" ng-model="attrList.attributes[$index].value" placeholder="Value" required>
-                       <!-- <input value="Remove" type="button" class="remove" ng-show="$index != 0" ng-click="removeAttribute($event, key)"></input> -->
-                    </div>
-                    
-                 </fieldset>
-                <!--  <input value="Add fields" type="button" class="addfields" ng-click="addNewAttribute($index, key)"></input> -->
-                 
-                 <p>{{attrList|json}}</p>
+				<div class="form-group">
+					<h5>Update Equipment Attributes</h4>
+					<fieldset ng-repeat="update_attr in returnObject.update_equipment_attributes">
+						<!-- <input type="text" ng-model="update_attr.name" value="update_attr.name" placeholder="Name" ng-disabled="true"> -->
+						<label>{{update_attr.name}}</label>
+						<input type="text" ng-model="update_attr.value", value="update_attr.value" placeholder="Value" ng-disabled="buttonToggle">
+						<input type="button" ng-click="removeAttribute(update_attr); buttonToggle=!buttonToggle" value="{{buttonToggle && 'Undo' || 'Remove Attribute'}}">
+					</fieldset>
+				</div>
+				 <p>{{returnObject|json}}</p>
 
-
-                 <button class="pure-button" type="submit">Submit</button>
-            </fieldset>
-        </form>
-            <button type="button" ng-click="test()">Test</button>
-    </div>
+				 <button class="pure-button" type="submit">Submit</button>
+			</fieldset>
+		</form>
+	</div>
 
 
