@@ -172,6 +172,8 @@ class CoreService
             foreach($requestJson['remove_current_loans'] as $loanId)
             {
                 $daoResult = $this->dao->removeCurrentLoanFromUser($requestJson['_id'], $loanId);
+                $loan = $this->getLoan(array('_id' => $loanId))['loans'][0];
+                $this->dao->updateEquipment($equipmentId, array('status' => "inventory", 'loaned_to' => null));
             }
         }
         
@@ -245,7 +247,7 @@ class CoreService
         return $result;
     }
 
-    public function updateLoan($requestJson, $username, $isHook, $hookname)
+    public function updateLoan($requestJson)
     {
         $result = array('ok' => false, 'msg' => null, 'loan' => null);
         
@@ -259,6 +261,8 @@ class CoreService
             foreach($requestJson['add_equipments'] as $equipmentId)
             {
                 $this->dao->addEquipmentToLoan($requestJson['_id'], $equipmentId);
+                $loan = $this->getLoan(array('_id' => $requestJson['_id']))['loans'][0];
+                $this->dao->updateEquipment($equipmentId, array('status' => "loaned", 'loaned_to' => $loan['username']));
             }
         }
         
@@ -267,6 +271,8 @@ class CoreService
             foreach($requestJson['remove_equipments'] as $equipmentId)
             {
                 $this->dao->removeEquipmentFromLoan($requestJson['_id'], $equipmentId);
+                $loan = $this->getLoan(array('_id' => $requestJson['_id']))['loans'][0];
+                $this->dao->updateEquipment($equipmentId, array('status' => "inventory", 'loaned_to' => null));
             }
         }
         
