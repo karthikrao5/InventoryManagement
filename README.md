@@ -14,7 +14,7 @@ Getting started with this project
 
 4. Run `./move.sh' in the repository
 
-5. Visit http://localhost/ to use InventoryManagement system.
+5. Visit http://localhost/ (if accessing from the server) or http://server_url/ to use InventoryManagement system.
 
 Or alternatively, use Vagrant to setup development virtual machine automatically and use it.
 
