@@ -1665,6 +1665,16 @@ class DAO
         }
 
         $this->updateLog($log);
+        
+        if(isset($updateValues['name']))
+        {
+            $equipments = $this->getEquipment(array('equipment_type_id' => $id));
+            
+            foreach($equipments as $equipment)
+            {
+                $this->updateEquipment($equipment['_id'], array('equipment_type_name' => $updateValues['name']));
+            }
+        }
 
         return $result;
     }

@@ -521,14 +521,14 @@ class CoreService
         //update equipment type document itself (not its attributes).
         if(isset($requestJson['update_equipment_type']))
         {   
-            $result = $this->dao->updateEquipmentType($requestJson['_id'], $requestJson['update_equipment_type']);
+            $this->dao->updateEquipmentType($requestJson['_id'], $requestJson['update_equipment_type']);
         }
 
         if(isset($requestJson['update_equipment_type_attributes']) && !empty($requestJson['update_equipment_type_attributes']))
         {
             foreach($requestJson['update_equipment_type_attributes'] as $updateTarget)
             {
-                $result = $this->dao->updateEquipmentTypeAttribute($updateTarget['_id'], $updateTarget);
+                $this->dao->updateEquipmentTypeAttribute($updateTarget['_id'], $updateTarget);
             }
         }
 
@@ -536,7 +536,7 @@ class CoreService
         {
             foreach($requestJson['add_equipment_type_attributes'] as $newAttribute)
             {
-                $result = $this->dao->addEquipmentTypeAttribute($requestJson['_id'], $newAttribute);
+                $this->dao->addEquipmentTypeAttribute($requestJson['_id'], $newAttribute);
             }
         }
 
@@ -544,7 +544,7 @@ class CoreService
         {
             foreach($requestJson['remove_equipment_type_attributes'] as $removeTarget)
             {
-                $result = $this->dao->removeEquipmentTypeAttribute($requestJson['_id'], $removeTarget);
+                $this->dao->removeEquipmentTypeAttribute($requestJson['_id'], $removeTarget);
             }
         }
         
