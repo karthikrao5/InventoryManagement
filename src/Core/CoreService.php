@@ -247,7 +247,34 @@ class CoreService
 
     public function updateLoan($requestJson, $username, $isHook, $hookname)
     {
-        return $this->dao->updateLoan($requestJson['_id'], $updateValues);
+        $result = array('ok' => false, 'msg' => null, 'loan' => null);
+        
+        if(isset($requestJson['update_loan']))
+        {
+            $this->dao->updateLoan($requestJson['_id'], $requestJson['update_loan']);
+        }
+        
+        if(isset($requestJson['add_equipments']))
+        {
+            foreach($requestJson['add_equipments'] as $equipmentId)
+            {
+                $this->dao->addEquipmentToLoan($requestJson['_id'], $equipmentId);
+            }
+        }
+        
+        if(isset($requestJson['remove_equipments']))
+        {
+            foreach($requestJson['remove_equipments'] as $equipmentId)
+            {
+                $this->dao->removeEquipmentFromLoan($requestJson['_id'], $equipmentId);
+            }
+        }
+        
+        $result['ok'] = true;
+        $result['msg'] = "Successfully updated loan.";
+        $result['loan'] = $this->getLoan(array('_id' => $requestJson['_id']))['loans'][0];
+        
+        return $result;
     }
 
     public function deleteLoan($requestJson, $username, $isHook, $hookname)

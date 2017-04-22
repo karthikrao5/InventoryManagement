@@ -134,6 +134,16 @@ class DAO
         
         unset($updateValues['_id']);
         
+        if($updateValues['loaned_date'])
+        {
+            $updateValues['loaned_date'] = new MongoDate(strtotime($updateValues['loaned_date']));
+        }
+        
+        if($updateValues['due_date'])
+        {
+            $updateValues['due_date'] = new MongoDate(strtotime($updateValues['due_date']));
+        }
+        
         $mongo = new MongoClient(DAO::$connectionString);
         $loans = $mongo->inventorytracking->loans;
         
