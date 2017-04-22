@@ -1478,6 +1478,17 @@ class DAO
         }
         
         $this->updateLog($log);
+        
+        //if name is changing, update all equipment attributes with this name.
+        if(isset($updateValues['name']))
+        {
+            $equipmentAttributes = $this->getEquipmentAttribute(array('equipment_type_attribute_id' => $id));
+            
+            foreach($equipmentAttributes['equipment_attributes'] as $equipmentAttribute)
+            {
+                $this->updateEquipmentAttriubte($equipmentAttribute['_id'], array('name' => $updateValues['name']));
+            }
+        }
 
         return $result;
     }
