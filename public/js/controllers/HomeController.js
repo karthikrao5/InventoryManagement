@@ -4,7 +4,6 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 		// 	console.log("redirecting to auth...");
 		// 	$location.path('/auth');
 		// }
-		$scope.loggedInUser = Auth.getUser();
 
 		$scope.data;
 
@@ -13,14 +12,15 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 		// }
 
 
+
 		function onSuccess(response) {
+	    	var local = response.data.equipments;
 	    	$scope.gridOptions.data = response.data.equipments;
-	    	$scope.data = response.data.equipments
 	    }
 
 	   // make database call
-	    APIService.query("equipments", onSuccess, function() {
-	    	console.log("Error with getting all equipments");
+	    APIService.query("equipments", onSuccess, function(error) {
+	    	console.log(error);
 	    });
 
 		// if token in localstorage is expired, redirect to auth
@@ -39,8 +39,8 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 	    				  {field: "status", enableHiding: false},
 	    				  {field: "loaned_to", enableHiding: false},
 	    				  {field: "equipment_type_name", enableHiding: false},
-	    				  {field: "attributes"},
-	    				  {field: "created_on", enableHiding: false}
+	    				  {field: "created_on", enableHiding: false},
+	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/equipments/{{row.entity.department_tag}}\">Edit</a>/<a href=\"\" ng-confirm-click=\"Are you sure you want to delete this item?\"ng-click=\"deleteEquipment(row.entity.department_tag)\">Delete</a>" }
 	    			];
 
 	    $scope.gridOptions = {
@@ -53,11 +53,20 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 	    	console.log("Filtering tbd...");
 	    };
 
+	    $scope.deleteEquipment = function(departmentTag) {
+	    	APIService.delete("equipments", [departmentTag], function(response) {
+	    		alert("Successfully deleted equipment!");
+	    	}, function(error) {
+	    		console.log(error.data);
+	    	});
+	    };
+
 	    // $scope.logout = function() {
 	    // 	if(Auth.deleteToken()) {
 	    // 		console.log("Logged out!");
 	    // 		console.log("Token is now: " + $window.localStorage.getItem("jwt"));
 	    // 	}
 	    // };
+
 	}
 ]);

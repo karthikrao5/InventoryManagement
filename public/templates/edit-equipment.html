@@ -1,0 +1,35 @@
+<div class="container-fluid index-div" ng-controller="EditEquipmentController">
+        <h4>Edit Equipment</h4>
+        <h5>{{test}}</h5>
+        <form class="equipment-form pure-form pure-form-aligned" ng-submit="submitEquipmentCreation()">
+            <fieldset>
+                 <div class="pure-control-group">
+                    <label>Select Equipment Type</label>
+                    <select ng-change="updateEqType()" ng-model="formObj.equipment_type_name" ng-options="item.name as item.name for item in equipmentTypeList"></select>
+                 </div>
+                 
+
+                 <div ng-repeat="label in labels">
+                    <div class="pure-control-group">
+                       <label>{{ label }}</label>
+                       <input type="text" ng-model="formObj[label]" placeholder="Enter" required>
+                    </div>
+                 </div>
+
+                 <fieldset ng-repeat="attribute in attrList.attributes track by $index">
+                    <div class="pure-control-group">
+                       <input type="text" ng-model="attrList.attributes[$index].key" placeholder="Key" readonly>
+                       <input type="text" ng-model="attrList.attributes[$index].value" placeholder="Value" required>
+                       <!-- <input value="Remove" type="button" class="remove" ng-show="$index != 0" ng-click="removeAttribute($event, key)"></input> -->
+                    </div>
+                    
+                 </fieldset>
+                <!--  <input value="Add fields" type="button" class="addfields" ng-click="addNewAttribute($index, key)"></input> -->
+                 
+                 <p>{{attrList|json}}</p>
+
+
+                 <button class="pure-button" type="submit">Submit</button>
+            </fieldset>
+        </form>
+    </div>
