@@ -134,6 +134,16 @@ class DAO
         
         unset($updateValues['_id']);
         
+        if($updateValues['loaned_date'])
+        {
+            $updateValues['loaned_date'] = new MongoDate(strtotime($updateValues['loaned_date']));
+        }
+        
+        if($updateValues['due_date'])
+        {
+            $updateValues['due_date'] = new MongoDate(strtotime($updateValues['due_date']));
+        }
+        
         $mongo = new MongoClient(DAO::$connectionString);
         $loans = $mongo->inventorytracking->loans;
         
@@ -462,7 +472,7 @@ class DAO
             array('$addToSet' => array('current_loans' => $loanId)));
         $mongo->close();
         
-        $user['current_loans'][] = $userId;
+        $user['current_loans'][] = $loanId;
         
         $log = $this->createLog();
         $log['reference_id'] = $userId;
@@ -499,7 +509,7 @@ class DAO
             array('$addToSet' => array('past_loans' => $loanId)));
         $mongo->close();
         
-        $user['past_loans'][] = $userId;
+        $user['past_loans'][] = $loanId;
         
         $log = $this->createLog();
         $log['reference_id'] = $userId;
@@ -534,9 +544,10 @@ class DAO
         
         $result = $users->update(array('_id' => $userId),
             array('$pull' => array('current_loans' => $loanId)));
-        $mongo->close();
         
-        $user['current_loans'][] = $userId;
+        $user = $users->findOne(array('_id' => $userId));
+        
+        $mongo->close();
         
         $log = $this->createLog();
         $log['reference_id'] = $userId;
@@ -571,9 +582,9 @@ class DAO
         
         $result = $users->update(array('_id' => $userId),
             array('$pull' => array('past_loans' => $loanId)));
-        $mongo->close();
         
-        $user['past_loans'][] = $userId;
+        $user = $users->findOne(array('_id' => $userId));
+        $mongo->close();
         
         $log = $this->createLog();
         $log['reference_id'] = $userId;
@@ -1478,6 +1489,17 @@ class DAO
         }
         
         $this->updateLog($log);
+        
+        //if name is changing, update all equipment attributes with this name.
+        if(isset($updateValues['name']))
+        {
+            $equipmentAttributes = $this->getEquipmentAttribute(array('equipment_type_attribute_id' => $id));
+            
+            foreach($equipmentAttributes['equipment_attributes'] as $equipmentAttribute)
+            {
+                $this->updateEquipmentAttriubte($equipmentAttribute['_id'], array('name' => $updateValues['name']));
+            }
+        }
 
         return $result;
     }
@@ -1654,6 +1676,16 @@ class DAO
         }
 
         $this->updateLog($log);
+        
+        if(isset($updateValues['name']))
+        {
+            $equipments = $this->getEquipment(array('equipment_type_id' => $id));
+            
+            foreach($equipments as $equipment)
+            {
+                $this->updateEquipment($equipment['_id'], array('equipment_type_name' => $updateValues['name']));
+            }
+        }
 
         return $result;
     }

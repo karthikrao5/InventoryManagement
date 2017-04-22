@@ -270,6 +270,8 @@ class EquipmentValidator extends AbstractValidator {
             }
         }
         
+        $result['ok'] = true;
+        
         return $result;
     }
     
@@ -320,6 +322,8 @@ class EquipmentValidator extends AbstractValidator {
                 return $result;
             }
         }
+        
+        $result['ok'] = true;
         
         return $result;
     }

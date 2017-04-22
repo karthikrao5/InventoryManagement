@@ -33,7 +33,7 @@ class CoreService
      * Log function (CUD operations are not allowed.)
      */
     
-    public function getLog($requestJson, $username, $isHook, $hookname)
+    public function getLog($requestJson)
     {
         $result = array('ok' => false, 'msg' => null, 'n' => 0,'logs' => null);
         
@@ -59,7 +59,7 @@ class CoreService
      * User functions
      */
 
-    public function createUser($requestJson, $username, $isHook, $hookname)
+    public function createUser($requestJson)
     {
         $result = array('ok' => false, 'msg' => null, 'user' => null);
         
@@ -95,7 +95,7 @@ class CoreService
         return $result;
     }
 
-    public function getUser($requestJson, $username, $isHook, $hookname)
+    public function getUser($requestJson)
     {
         $result = array('ok' => false, 'msg' => null, 'users' => null);
         
@@ -130,7 +130,7 @@ class CoreService
         return $result;
     }
 
-    public function updateUser($requestJson, $username, $isHook, $hookname)
+    public function updateUser($requestJson)
     {
         $validationResult = $this->userValidator->isValidUpdateJson($requestJson);
         
@@ -172,6 +172,8 @@ class CoreService
             foreach($requestJson['remove_current_loans'] as $loanId)
             {
                 $daoResult = $this->dao->removeCurrentLoanFromUser($requestJson['_id'], $loanId);
+                $loan = $this->getLoan(array('_id' => $loanId))['loans'][0];
+                $this->dao->updateEquipment($equipmentId, array('status' => "inventory", 'loaned_to' => null));
             }
         }
         
@@ -183,10 +185,13 @@ class CoreService
             }
         }
         
+        $result['ok'] = true;
+        $result['user'] = $this->dao->getUser(array('_id' => $requestJson['_id']))[0];
+        
         return $result;
     }
 
-    public function deleteUser($requestJson, $username, $isHook, $hookname)
+    public function deleteUser($requestJson)
     {
         $validationResult = $this->userValidator->isValidDeleteJson($requestJson);
         
@@ -216,13 +221,13 @@ class CoreService
      * Loan functions
      */
 
-    public function createLoan($requestJson, $username, $isHook, $hookname)
+    public function createLoan($requestJson)
     {
         // Creating loan automatically adds this loan to user's current loans
         return $this->dao->createLoan($requestJson);
     }
 
-    public function getLoan($requestJson, $username, $isHook, $hookname)
+    public function getLoan($requestJson)
     {
         $loans = $this->dao->getLoan($requestJson);
         
@@ -242,12 +247,43 @@ class CoreService
         return $result;
     }
 
-    public function updateLoan($requestJson, $username, $isHook, $hookname)
+    public function updateLoan($requestJson)
     {
-        return $this->dao->updateLoan($requestJson['_id'], $updateValues);
+        $result = array('ok' => false, 'msg' => null, 'loan' => null);
+        
+        if(isset($requestJson['update_loan']))
+        {
+            $this->dao->updateLoan($requestJson['_id'], $requestJson['update_loan']);
+        }
+        
+        if(isset($requestJson['add_equipments']))
+        {
+            foreach($requestJson['add_equipments'] as $equipmentId)
+            {
+                $this->dao->addEquipmentToLoan($requestJson['_id'], $equipmentId);
+                $loan = $this->getLoan(array('_id' => $requestJson['_id']))['loans'][0];
+                $this->dao->updateEquipment($equipmentId, array('status' => "loaned", 'loaned_to' => $loan['username']));
+            }
+        }
+        
+        if(isset($requestJson['remove_equipments']))
+        {
+            foreach($requestJson['remove_equipments'] as $equipmentId)
+            {
+                $this->dao->removeEquipmentFromLoan($requestJson['_id'], $equipmentId);
+                $loan = $this->getLoan(array('_id' => $requestJson['_id']))['loans'][0];
+                $this->dao->updateEquipment($equipmentId, array('status' => "inventory", 'loaned_to' => null));
+            }
+        }
+        
+        $result['ok'] = true;
+        $result['msg'] = "Successfully updated loan.";
+        $result['loan'] = $this->getLoan(array('_id' => $requestJson['_id']))['loans'][0];
+        
+        return $result;
     }
 
-    public function deleteLoan($requestJson, $username, $isHook, $hookname)
+    public function deleteLoan($requestJson)
     {
         return $this->dao->deleteLoan($requestJson['_id']);
     }
@@ -256,16 +292,18 @@ class CoreService
      * Equipment functions
      */
 
-    public function createEquipment($requestJson, $username, $isHook, $hookname)
+    public function createEquipment($requestJson)
     {
         $returnArray = array('ok' => false, 'msg' => null, 'equipment' => null);
         
+        /*
         $validationResult = $this->equipmentValidator->isValidCreateJSON($requestJson);
         
         if(!$validationResult['ok'])
         {
             return $validationResult;
         }
+         */
 
         $result = $this->getEquipmentType(array('name' => $requestJson['equipment_type_name']));
 
@@ -285,7 +323,7 @@ class CoreService
                 'equipment' => $updated);
     }
 
-    public function getEquipment($requestJson=NULL, $username, $isHook, $hookname)
+    public function getEquipment($requestJson=NULL)
     {
         $result = array('ok' => false, 'msg' => null, 'n' => 0, 'equipments' => null);
 
@@ -306,16 +344,19 @@ class CoreService
         }
     }
 
-    public function updateEquipment($requestJson, $auth)
+    public function updateEquipment($requestJson)
     {
         $result = array("ok" => false, "msg" => null, "updated_equipment" => null);
         
+        /*
         $validationResult = $this->equipmentValidator->isValidUpdateJSON($requestJson);
         
         if(!$validationResult['ok'])
         {
             return $validationResult;
         }
+         * 
+         */
         
         //get id
         if(!isset($requestJson['_id']))
@@ -377,6 +418,7 @@ class CoreService
             }
         }
         
+        $result = array();
         $result['ok'] = true;
         $result['msg'] = "Update success.";
         $result['updated_equipment'] = $this->dao->getEquipment(array('_id' => $requestJson['_id']));
@@ -384,7 +426,7 @@ class CoreService
         return $result;
     }
 
-    public function deleteEquipment($requestJson, $auth)
+    public function deleteEquipment($requestJson)
     {
         $result = array("ok" => false, "msg" => null);
 
@@ -445,7 +487,7 @@ class CoreService
      * EquipmentType functions
      */
 
-    public function createEquipmentType($requestJson, $auth)
+    public function createEquipmentType($requestJson)
     {
         $result = array('ok' => false, 'msg' => null);
         
@@ -468,7 +510,7 @@ class CoreService
                 'equipment_type' => $equipmentType);
     }
 
-    public function getEquipmentType($requestJson=NULL, $auth)
+    public function getEquipmentType($requestJson=NULL)
     {
         $result = array('ok' => false, 'msg' => null, 'n' => 0, 'equipment_types' => null);
 
@@ -489,7 +531,7 @@ class CoreService
         }
     }
     
-    public function updateEquipmentType($requestJson, $auth)
+    public function updateEquipmentType($requestJson)
     {
         $result = array("ok" => false, "msg" => null, "updated_equipment_type" => null);
         
@@ -519,14 +561,14 @@ class CoreService
         //update equipment type document itself (not its attributes).
         if(isset($requestJson['update_equipment_type']))
         {   
-            $result = $this->dao->updateEquipmentType($requestJson['_id'], $requestJson['update_equipment_type']);
+            $this->dao->updateEquipmentType($requestJson['_id'], $requestJson['update_equipment_type']);
         }
 
         if(isset($requestJson['update_equipment_type_attributes']) && !empty($requestJson['update_equipment_type_attributes']))
         {
             foreach($requestJson['update_equipment_type_attributes'] as $updateTarget)
             {
-                $result = $this->dao->updateEquipmentTypeAttribute($updateTarget['_id'], $updateTarget);
+                $this->dao->updateEquipmentTypeAttribute($updateTarget['_id'], $updateTarget);
             }
         }
 
@@ -534,7 +576,7 @@ class CoreService
         {
             foreach($requestJson['add_equipment_type_attributes'] as $newAttribute)
             {
-                $result = $this->dao->addEquipmentTypeAttribute($requestJson['_id'], $newAttribute);
+                $this->dao->addEquipmentTypeAttribute($requestJson['_id'], $newAttribute);
             }
         }
 
@@ -542,7 +584,7 @@ class CoreService
         {
             foreach($requestJson['remove_equipment_type_attributes'] as $removeTarget)
             {
-                $result = $this->dao->removeEquipmentTypeAttribute($requestJson['_id'], $removeTarget);
+                $this->dao->removeEquipmentTypeAttribute($requestJson['_id'], $removeTarget);
             }
         }
         
@@ -553,7 +595,7 @@ class CoreService
         return $result;
     }
 
-    public function deleteEquipmentType($requestJson, $auth)
+    public function deleteEquipmentType($requestJson)
     {
         $result = array("ok" => false, "msg" => null);
 
