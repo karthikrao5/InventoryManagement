@@ -36,5 +36,6 @@ Getting started with Vagrant
 
 8. This repository is automatically cloned into the virtual machine in '/home/vagrant/shared/InventoryManagement'.
 
-9. You should be able to connect to 'http://localhost:8080
+9. You should be able to connect to 'http://localhost:8080' to use InventoryManagement system.
 
+Notes: Vagrant maps host port 8080 to virtual machine port 80. Make sure host port 8080 is not in use.
