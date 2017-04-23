@@ -31,9 +31,9 @@ class LogController extends AbstractController
         }
 
         if($array) {
-            return $response->withJson($array);
+            return $response->withJson($array)->withStatus(200);
         } else {
-            return $response->withStatus(404)->write("Something went wrong with the find function in LogController.");
+            return $response->withStatus(404)->withJson($array);
         }
     }
 }
