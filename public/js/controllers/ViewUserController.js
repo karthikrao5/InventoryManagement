@@ -16,6 +16,7 @@ angular.module("app.controllers").controller("ViewUserController", ["$scope", "$
 			// go thru all loans and pull out equipments
 			angular.forEach(response.data.users[0]["current_loans"], function(loan) {
 				angular.forEach(loan.equipments, function(item) {
+					item["loan_id"] = loan["_id"]["$id"];
 					temp.equipments.push(item);
 				});
 				// equipments.push(loan["equipments"])
@@ -39,7 +40,7 @@ angular.module("app.controllers").controller("ViewUserController", ["$scope", "$
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
 	    	$scope.gridApi = gridApi;
 	    	gridApi.selection.on.rowSelectionChanged($scope,function(row){
-	    		$scope.returnObject["_id"] = row.entity["_id"]["$id"];
+	    		$scope.returnObject["_id"] = row.entity["loan_id"];
 	  			$scope.returnObject["update_loan"]["is_return"] = true;
 				// $scope.addToList(row.entity["_id"]["$id"]);
 			});
