@@ -1,0 +1,82 @@
+<div class="container-fluid index-div" ng-controller="EditEquipmentTypeController">
+	<h2>Edit Equipment Type</h4>
+	<form class="equipment-form pure-form pure-form-aligned" ng-submit="submitEquipmentTypeEdit()">
+		<fieldset>
+			<div class="form-group">
+				<h5>Update Equipment Type</h4>
+					<div class="form-group">
+						<fieldset>
+							<label>Name</label>
+							<input type="text" ng-model="returnObject.update_equipment_type.name" placeholder="Department Tag" value="originalItem.name">
+						</fieldset>
+						<!-- <fieldset>
+							<label>Laon</label>
+							<select ng-model="returnObject.update_equipment.loaned_to" ng-options="user.username as user.username for user in users"></select>
+						</fieldset> -->
+						<fieldset>
+							<label>Comments</label>
+							<input type="text" ng-model="returnObject.update_equipment_type.comments" placeholder="comment" value="originalItem.comments">
+						</fieldset>
+						
+					</div>
+			</div>
+
+			<div class="form-group">
+				<h5>Update Equipment Tpye Attributes</h4>
+				<div class="form-group" ng-repeat="update_attr in returnObject.update_equipment_type_attributes track by $index">
+					<label>{{update_attr.name}}</label>
+					<input type="text" ng-model="update_attr.data_type" placeholder="Data Type" value="update_attr.data_type" ng-disabled="buttonToggle">
+					<input type="text" ng-model="update_attr.regex" placeholder="Regex" value="update_attr.regex" ng-disabled="buttonToggle">
+					<input type="text" ng-model="update_attr.help_comment" placeholder="Help Comment" value="update_attr.help_comment" ng-disabled="buttonToggle">
+					<label>Required</label>
+					<input type="checkbox" ng-init="update_attr.required=false" ng-model="update_attr.required" ng-disabled="buttonToggle"> <br>
+
+					<label>Unique</label>
+					<input type="checkbox" ng-init="update_attr.unique=false" ng-model="update_attr.unique" ng-disabled="buttonToggle"> <br>
+
+					<label>Enum</label>
+					<input type="checkbox" ng-init="update_attr.enum=false" ng-model="update_attr.enum" ng-disabled="buttonToggle">
+					<input type="button" ng-click="removeAttribute(update_attr); buttonToggle=!buttonToggle" value="{{buttonToggle && 'Undo' || 'Remove Attribute'}}">
+				</div>
+				<div class="form-group" ng-repeat="new_attr in returnObject.add_equipment_type_attributes">
+					<label>{{new_attr.name}}</label>
+					<input type="text" ng-model="new_attr.name", value="new_attr.name" placeholder="Name">
+					<input type="text" ng-model="new_attr.data_type" placeholder="Data Type" value="new_attr.data_type">
+					<input type="text" ng-model="new_attr.regex" placeholder="Regex" value="new_attr.regex">
+					<input type="text" ng-model="new_attr.help_comment" placeholder="Help Comment" value="new_attr.help_comment">
+					<label>Required</label>
+					<input type="checkbox" ng-init="new_attr.required=false" ng-model="new_attr.required"> <br>
+
+					<label>Unique</label>
+					<input type="checkbox" ng-init="new_attr.unique=false" ng-model="new_attr.unique"> <br>
+
+					<label>Enum</label>
+					<input type="checkbox" ng-init="new_attr.enum=false" ng-model="new_attr.enum" ng-change="initEnumVals(new_attr.enum, new_attr)">
+
+					<div class="form-group" ng-show="new_attr.enum">
+						<h4>Add enums</h4>
+						<fieldset ng-repeat="enum in new_attr.enum_values track by $index">
+							<input type="text" ng-model="new_attr.enum_values[$index]" placeholder="Enum Value" required>
+							<input type="button" value="Remove Enum" ng-show="$index != 0" ng-click="deleteEnum($event, key, $parent.$index)">
+						</fieldset>
+						<input ng-click="addNewEnum(new_attr)" value="Add Enums" type="button"></input>	
+					</div>
+
+					<input type="button" ng-click="removeNewAttributeField($event, key)" value="Remove New Attribute">
+				</div>
+				<input value="Add fields" type="button" class="addfields" ng-click="addNewAttributeField($index)"></input>
+				<!-- <div class="form-group">
+					<h4>Add enums</h4>
+					<fieldset ng-repeat="enum in update_attr.enum_values track by $index">
+						<input type="text" ng-model="update_attr.enum_values[$index]" placeholder="Enum Value" value="update_attr.enum_values[$index]" required>
+						<input type="button" value="Remove Enum" ng-show="$index != 0" ng-click="deleteEnum($event, key)">
+					</fieldset>
+					<input ng-click="addNewEnum(attribute)" value="Add Enums" type="button"></input>
+				</div> -->
+			</div>
+			 <p>{{returnObject|json}}</p>
+			 <button class="pure-button" type="submit">Submit</button>
+		</fieldset>
+	</form>
+</div>
+

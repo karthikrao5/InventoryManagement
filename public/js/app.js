@@ -55,6 +55,10 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "app.s
             templateUrl: 'templates/create-equipmenttype.html',
             controller: 'NewEquipmentTypeController'
         },
+        '/equipmenttypes/name/:name' : {
+            templateUrl: 'templates/edit-equipmenttype.html',
+            controller: 'EditEquipmentTypeController'
+        },
         '/403': {
             templateUrl:'templates/errorPages/403.html'
             // adminOnly: false
