@@ -23,28 +23,46 @@
 
 			<div class="form-group">
 				<h5>Update Equipment Tpye Attributes</h4>
-				<div class="form-group" ng-repeat="update_attr in returnObject.update_equipment_type_attributes track by $index">
-					<label>{{update_attr.name}}</label>
-					<input type="text" ng-model="update_attr.data_type" placeholder="Data Type" value="update_attr.data_type" ng-disabled="buttonToggle">
-					<input type="text" ng-model="update_attr.regex" placeholder="Regex" value="update_attr.regex" ng-disabled="buttonToggle">
-					<input type="text" ng-model="update_attr.help_comment" placeholder="Help Comment" value="update_attr.help_comment" ng-disabled="buttonToggle">
-					<label>Required</label>
-					<input type="checkbox" ng-init="update_attr.required=false" ng-model="update_attr.required" ng-disabled="buttonToggle"> <br>
-
-					<label>Unique</label>
-					<input type="checkbox" ng-init="update_attr.unique=false" ng-model="update_attr.unique" ng-disabled="buttonToggle"> <br>
-
-					<label>Enum</label>
-					<input type="checkbox" ng-init="update_attr.enum=false" ng-model="update_attr.enum" ng-disabled="buttonToggle" ng-change="initEnumValsUpdate(update_attr.enum, update_attr)">
-					<div class="form-group" ng-show="update_attr.enum">
-						<h4>Add enums</h4>
-						<fieldset ng-repeat="enum in update_attr.enum_values track by $index">
-							<input type="text" ng-model="update_attr.enum_values[$index]" placeholder="Enum Value" required>
-							<input type="button" value="Remove Enum" ng-show="$index != 0" ng-click="deleteUpdateEnum($event, key, $parent.$index)">
-						</fieldset>
-						<input ng-click="addUpdateEnum(update_attr)" value="Add Enums" type="button"></input>	
+				<div class="form-group" ng-repeat="orig_attr in originalItem.equipment_type_attributes track by $index">
+					<div class="form-group">
+						<label>{{orig_attr.name}}</label>
+						<input type="text" ng-model="returnObject.update_equipment_type_attributes[$index].name" placeholder="{{orig_attr.name}}" ng-change="addIdToUpdateAttr(returnObject.update_equipment_type_attributes[$index], orig_attr);">
 					</div>
+					
+					<div class="form-group">
+						<label>Data Type</label>
+						<input type="text" ng-model="returnObject.update_equipment_type_attributes[$index].data_type" placeholder="{{orig_attr.data_type}}" value="orig_attr.data_type" ng-change="addIdToUpdateAttr(returnObject.update_equipment_type_attributes[$index], orig_attr)">
+					</div>
+					
+					<div class="form-group">
+						<label>Regex</label>
+						<input type="text" ng-model="returnObject.update_equipment_type_attributes[$index].regex" placeholder="{{orig_attr.regex}}" value="orig_attr.regex" ng-disabled="buttonToggle" ng-change="addIdToUpdateAttr(returnObject.update_equipment_type_attributes[$index], orig_attr)">
+					</div>
+					
+					<div class="form-group">
+						<label>Help Comment</label>
+						<input type="text" ng-model="returnObject.update_equipment_type_attributes[$index].help_comment" placeholder="{{orig_attr.help_comment}}" value="update_attr.help_comment" ng-disabled="buttonToggle" ng-change="addIdToUpdateAttr(returnObject.update_equipment_type_attributes[$index], orig_attr)">
 
+					</div>
+					<div class="form-group">
+						<label>Required</label>
+						<input type="checkbox" ng-init="orig_attr.required" ng-model="returnObject.update_equipment_type_attributes[$index].required" ng-disabled="buttonToggle" ng-change="addIdToUpdateAttr(returnObject.update_equipment_type_attributes[$index], orig_attr)"> <br>
+
+						<label>Unique</label>
+						<input type="checkbox" ng-init="orig_attr.unique" ng-model="returnObject.update_equipment_type_attributes[$index].unique" ng-disabled="buttonToggle" ng-change="addIdToUpdateAttr(returnObject.update_equipment_type_attributes[$index], orig_attr)"> <br>
+
+						<label>Enum</label>
+						<input type="checkbox" ng-init="orig_attr.enum" ng-model="returnObject.update_equipment_type_attributes[$index].enum" ng-disabled="buttonToggle" ng-change="initEnumValsUpdate(returnObject.update_equipment_type_attributes[$index]); addIdToUpdateAttr(returnObject.update_equipment_type_attributes[$index], orig_attr);">
+						<div class="form-group" ng-show="returnObject.update_equipment_type_attributes[$index].enum">
+							<h4>Add enums</h4>
+							<fieldset ng-repeat="enum in returnObject.update_equipment_type_attributes[$index].enum_values track by $index">
+								<input type="text" ng-model="returnObject.update_equipment_type_attributes[$index].enum_values[$index]" placeholder="Enum Value" required>
+								<input type="button" value="Remove Enum" ng-show="$index != 0" ng-click="deleteUpdateEnum($event, key, $parent.$index)">
+							</fieldset>
+							<input ng-click="addUpdateEnum(returnObject.update_equipment_type_attributes[$index])" value="Add Enums" type="button"></input>	
+						</div>
+					</div>
+					
 					<input type="button" ng-click="removeAttribute(update_attr); buttonToggle=!buttonToggle" value="{{buttonToggle && 'Undo' || 'Remove Attribute'}}">
 				</div>
 				<div class="form-group" ng-repeat="new_attr in returnObject.add_equipment_type_attributes">

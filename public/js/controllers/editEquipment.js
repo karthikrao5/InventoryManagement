@@ -46,6 +46,12 @@ angular.module("app.controllers").controller("EditEquipmentController", ["$scope
 		// 	}
 		// };
 
+		$scope.addIdToUpdateAttr = function(update_attr, originalAttr) {
+			if(!update_attr["_id"]) {
+				update_attr["_id"] = originalAttr["_id"]["$id"];
+			}
+		};
+
 		$scope.removeAttribute = function(attrToRemove) {
 			// if not in remove list, add it, otherwise remove it
 			if ($scope.returnObject.remove_equipment_attributes.indexOf(attrToRemove["_id"]) === -1) {
@@ -85,7 +91,7 @@ angular.module("app.controllers").controller("EditEquipmentController", ["$scope
 				temp["_id"] = originalAttr["_id"]["$id"];
 				temp["name"] = originalAttr["name"];
 				temp["value"] = originalAttr["value"];
-				$scope.returnObject.update_equipment_attributes.push(temp);
+				// $scope.returnObject.update_equipment_attributes.push(temp);
 			});
 			$scope.returnObject.update_equipment.department_tag = $scope.originalItem.department_tag;
 			$scope.returnObject.update_equipment.loaned_to = $scope.originalItem.loaned_to;

@@ -1,5 +1,5 @@
-angular.module("app.controllers").controller("EditEquipmentTypeController", ["$scope", "$routeParams","APIService",
-	function($scope, $routeParams, APIService) {
+angular.module("app.controllers").controller("EditEquipmentTypeController", ["$scope", "$routeParams","$location", "APIService",
+	function($scope, $routeParams, $location, APIService) {
 
 		$scope.buttonToggle = false;
 		$scope.returnObject = {};
@@ -20,7 +20,7 @@ angular.module("app.controllers").controller("EditEquipmentTypeController", ["$s
 			APIService.put("equipmenttypes", jsonBody, function(response){
 				console.log(response.data);
 				alert(response.data);
-				$location('/equipmenttypes');
+				$location.path('/equipmenttypes');
 			}, function(error) {
 				console.log(error.data);
 				alert(error.data);
@@ -88,11 +88,12 @@ angular.module("app.controllers").controller("EditEquipmentTypeController", ["$s
 				newAttr.enum_values = [];
 				// $scope.returnObject.add_equipment_type_attributes[index].enum_values = [];
 			}
-		}
+		};
 
-		$scope.initEnumValsUpdate = function(enumVal, attr) {
+		$scope.initEnumValsUpdate = function(attr) {
 			// var index = $scope.returnObject.update_equipment_attributes.indexOf(newAttr);
 			// if checked, initialize enumvals with ""
+			var enumVal = attr.enum;
 			if(enumVal) {
 				attr.enum_values = [""];
 				// $scope.returnObject.update_equipment_attributes[index].enum_values = [""];
@@ -100,7 +101,13 @@ angular.module("app.controllers").controller("EditEquipmentTypeController", ["$s
 				attr.enum_values = [];
 				// $scope.returnObject.update_equipment_attributes[index].enum_values = [];
 			}
-		}
+		};
+
+		$scope.addIdToUpdateAttr = function(update_attr, originalAttr) {
+			if(!update_attr["_id"]) {
+				update_attr["_id"] = originalAttr["_id"]["$id"];
+			}
+		};
 
 
 
@@ -115,7 +122,7 @@ angular.module("app.controllers").controller("EditEquipmentTypeController", ["$s
 				var temp = {};
 				temp["_id"] = originalAttr["_id"]["$id"];
 				temp["name"] = originalAttr["name"];
-				$scope.returnObject.update_equipment_type_attributes.push(temp);
+				// $scope.returnObject.update_equipment_type_attributes.push(temp);
 			});
 
 			$scope.returnObject.update_equipment_type.name = $scope.originalItem.name;
