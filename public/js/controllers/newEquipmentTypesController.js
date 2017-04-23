@@ -1,5 +1,5 @@
-angular.module("app.controllers").controller('NewEquipmentTypeController', ["$scope","APIService", "uiGridConstants",
-	function($scope, APIService) {
+angular.module("app.controllers").controller('NewEquipmentTypeController', ["$scope", "$location", "APIService", "uiGridConstants",
+	function($scope, $location, APIService) {
 
 		$scope.returnObject = {};
 
