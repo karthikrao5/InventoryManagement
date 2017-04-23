@@ -22,7 +22,7 @@ angular.module("app.controllers").controller("UsersController", ["$scope", "$htt
 
 	    $scope.columns = [{field: "username", enableHiding: false},
 	    				  {field: "email", enableHiding: false},
-	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/loans/{{row.entity.username}}\">Loan</a>" }
+	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/loans/{{row.entity.username}}\">Loan</a>/<a href=\"#!/users/{{row.entity.username}}\">Return Items</a>" }
 	    			];
 
 	    $scope.gridOptions = {

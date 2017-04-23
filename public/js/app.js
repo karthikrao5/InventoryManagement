@@ -15,40 +15,38 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.gr
             controller: 'NewEquipmentController'
             // adminOnly: true
         },
-        // '/equipments/DepartmentTag/:departmenttag': {
-        //     templateUrl: 'templates/edit-equipment.html',
-        //     controller: 'EditEquipmentController'
-        // },
+        '/equipments/:departmenttag' : {
+            templateUrl: 'templates/edit-equipment.html',
+            controller: 'EditEquipmentController'
+        },
         '/users/new': {
             templateUrl: 'templates/create-user.html',
             controller: 'NewUserController'
             // adminOnly: true
         },
+        '/users' : {
+            templateUrl: 'templates/users.html',
+            controller: 'UsersController'
+        },
+        '/users/:username' : {
+            templateUrl: 'templates/view-user.html',
+            controller: 'ViewUserController'
+        },
         '/equipmenttypes' : {
             templateUrl:'templates/equipmenttypes-list.html',
             controller: 'EquipmentTypesController'
+        },
+        '/equipmenttypes/name/:name' : {
+            templateUrl: 'templates/edit-equipmenttype.html',
+            controller: 'EditEquipmentTypeController'
         },
         '/equipmenttypes/new' : {
             templateUrl: 'templates/create-equipmenttype.html',
             controller: 'NewEquipmentTypeController'
         },
-
-        '/equipments/:departmenttag' : {
-            templateUrl: 'templates/edit-equipment.html',
-            controller: 'EditEquipmentController'
-        },
         '/loans/:username' : {
             templateUrl: 'templates/loans.html',
             controller: 'LoanController'
-        },
-        '/users' : {
-            templateUrl: 'templates/users.html',
-            controller: 'UsersController'
-        },
-        '/equipmenttypes/name/:name' : {
-            templateUrl: 'templates/edit-equipmenttype.html',
-            controller: 'EditEquipmentTypeController'
-
         },
         '/403': {
             templateUrl:'templates/errorPages/403.html'

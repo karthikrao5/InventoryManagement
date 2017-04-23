@@ -1,0 +1,9 @@
+    <div class="container-fluid index-div" ng-controller="ViewUserController">
+        <h1>{{username}}</h1>
+
+        <div class="col-sm-12" class="list-view">
+	        <button type="button" ng-click="returnSelectedItems()">Return Selected Items</button>
+            <div ui-grid="gridOptions" ui-grid-selection class="grid">{{returnObject|json}}</div>
+        </div>
+
+    </div>
