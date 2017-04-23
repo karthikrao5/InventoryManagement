@@ -1,0 +1,27 @@
+
+    <div class="container-fluid index-div" ng-controller="UsersController">
+        <h1>Users</h1>
+
+        <div class="col-sm-12" class="list-view">
+            <input class="search-bar" ng-model="searchText" ng-change="refreshData()" placeholder="Search...">
+
+
+            <button id='toggleFiltering' ng-click="toggleFiltering()" class="btn btn-success">Toggle Filtering</button>
+
+
+            <div class="pure-menu pure-menu-horizontal">
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item"><a class="pure-menu-link" href="#!/equipments/new">Add Equipment</a></li>
+                    <li class="pure-menu-item"><a class="pure-menu-link" href="#!/users/new">Add Renter</a></li>
+                    <li class="pure-menu-item"><a class="pure-menu-link" href="#!/equipmenttypes">Equipment Types</a></li>
+                    <li class="pure-menu-item"><a class="pure-menu-link" href="#!/users">Users</a></li>
+                </ul>
+            </div>
+
+
+
+            <div ui-grid="gridOptions" class="grid"></div>
+        </div>
+    </div>
+
+    {{cleanAttr}}

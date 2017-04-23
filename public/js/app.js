@@ -1,4 +1,4 @@
-var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "app.services"])
+var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.grid.selection", "app.services"])
 .config(function($routeProvider, $httpProvider){
 
     // $routeProvider
@@ -38,10 +38,10 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "app.s
             controller: 'NewEquipmentController'
             // adminOnly: true
         },
-        '/equipments/DepartmentTag/:departmenttag': {
-            templateUrl: 'templates/edit-equipment.html',
-            controller: 'EditEquipmentController'
-        },
+        // '/equipments/DepartmentTag/:departmenttag': {
+        //     templateUrl: 'templates/edit-equipment.html',
+        //     controller: 'EditEquipmentController'
+        // },
         '/users/new': {
             templateUrl: 'templates/create-user.html',
             controller: 'NewUserController'
@@ -55,9 +55,23 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "app.s
             templateUrl: 'templates/create-equipmenttype.html',
             controller: 'NewEquipmentTypeController'
         },
+
+        '/equipments/:departmenttag' : {
+            templateUrl: 'templates/edit-equipment.html',
+            controller: 'EditEquipmentController'
+        },
+        '/loans/:username' : {
+            templateUrl: 'templates/loans.html',
+            controller: 'LoanController'
+        },
+        '/users' : {
+            templateUrl: 'templates/users.html',
+            controller: 'UsersController'
+        },
         '/equipmenttypes/name/:name' : {
             templateUrl: 'templates/edit-equipmenttype.html',
             controller: 'EditEquipmentTypeController'
+
         },
         '/403': {
             templateUrl:'templates/errorPages/403.html'
