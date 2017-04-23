@@ -1,8 +1,10 @@
 angular.module("app.controllers").controller("ViewUserController", ["$scope", "$routeParams", "$location", "APIService", "uiGridConstants", 
 	function($scope, $routeParams, $location, APIService) {
 		$scope.returnObject = {};
-		$scope.returnObject["username"] = $routeParams.username;
-		$scope.returnObject["equipments"] = [];
+
+		$scope.returnObject["update_loan"] = {};
+
+
 		$scope.username = $routeParams.username;
 
 		var params = {};
@@ -37,7 +39,9 @@ angular.module("app.controllers").controller("ViewUserController", ["$scope", "$
 		$scope.gridOptions.onRegisterApi = function(gridApi) {
 	    	$scope.gridApi = gridApi;
 	    	gridApi.selection.on.rowSelectionChanged($scope,function(row){
-				$scope.addToList(row.entity["_id"]["$id"]);
+	    		$scope.returnObject["_id"] = row.entity["_id"]["$id"];
+	  			$scope.returnObject["update_loan"]["is_return"] = true;
+				// $scope.addToList(row.entity["_id"]["$id"]);
 			});
 			// gridApi.selection.on.rowSelectionChangedBatch($scope,function(rows){
 			// 	var msg = 'rows changed ' + rows.department_tag;
@@ -45,24 +49,26 @@ angular.module("app.controllers").controller("ViewUserController", ["$scope", "$
 			// });
   		};
 
-  		$scope.addToList = function(id) {
-  			console.log("addToList: " + id);
-  			var index = $scope.returnObject.equipments.indexOf(id);
-  			// not in the list
-  			if (index === -1){
-  				$scope.returnObject["equipments"].push(id);
-  				console.log($scope.returnObject.equipments);
-  			} else {
-  				$scope.returnObject["equipments"].splice(index, 1);
-  				console.log($scope.returnObject.equipments);
-  			}
-  		};
+  		// $scope.addToList = function(id) {
+  		// 	console.log("addToList: " + id);
+  		// 	var index = $scope.returnObject.equipments.indexOf(id);
+  		// 	// not in the list
+  		// 	if (index === -1){
+  		// 		$scope.returnObject["equipments"].push(id);
+  		// 		console.log($scope.returnObject.equipments);
+  		// 	} else {
+  		// 		$scope.returnObject["equipments"].splice(index, 1);
+  		// 		console.log($scope.returnObject.equipments);
+  		// 	}
+  		// };
 
   		$scope.returnSelectedItems = function() {
-  			$scope.returnObject["is_return"] = true;
+  			if($scope.returnObject["_id"]) {
+  				alert("You must select an item to return.");
+  			}
   			console.log($scope.returnObject);
   			var jsonBody = angular.toJson($scope.returnObject, 1);
-  			APIService.post("loans", jsonBody, function(response) {
+  			APIService.put("loans", jsonBody, function(response) {
   				console.log(response.data);
   				alert(response.data);
   				$location.path("/uesrs");
@@ -73,3 +79,22 @@ angular.module("app.controllers").controller("ViewUserController", ["$scope", "$
   		};
 	}
 ]);
+
+
+// {
+//     "_id" : "58fbbbf07f8b9ac357b09638",
+
+//     "update_loan" : {
+//         "loaned_date" : "2017-01-01 00:00:00",
+//         "due_date" : "2017-01-01 00:00:00",
+//         "is_returned" : true
+//     },
+
+//     "add_equipments" : [
+//         "58fbbbf07f8b9ac357b09638"
+//     ],
+
+//     "remove_equipments" : [
+//         "58fbbbf07f8b9ac357b09638"
+//     ]
+// }

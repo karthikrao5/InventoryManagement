@@ -54,7 +54,7 @@ angular.module("app.controllers").controller("LoanController", ["$scope", "$rout
 	    	enableSorting: true,
 	    	columnDefs: $scope.columns,
 	    	enableGridMenu: true,
-	    	multiSelect: true,
+	    	multiSelect: false,
 	    	enableFiltering: true
 	    };
 
@@ -81,17 +81,26 @@ angular.module("app.controllers").controller("LoanController", ["$scope", "$rout
   			console.log("addToList: " + id);
   			var index = $scope.postBody.equipments.indexOf(id);
 
-  			// not in the list
-  			if (index === -1){
-  				console.log("id: " + id+  " not in the list.");
+  			if ($scope.postBody.equipments.length < 1) {
+  				// remove item
   				$scope.postBody["equipments"].push(id);
-  				console.log($scope.postBody.equipments);
   			} else {
-  				console.log("id: " + id + " is in index: " + index +".");
-
-  				$scope.postBody["equipments"].splice(index, 1);
-  				console.log($scope.postBody.equipments);
+  				// remove the only item, and replace with new item
+  				$scope.postBody["equipments"].splice(0, 1);
+  				$scope.postBody["equipments"].push(id);
   			}
+
+  			// not in the list
+  			// if (index === -1){
+  			// 	console.log("id: " + id+  " not in the list.");
+  			// 	$scope.postBody["equipments"].push(id);
+  			// 	console.log($scope.postBody.equipments);
+  			// } else {
+  			// 	console.log("id: " + id + " is in index: " + index +".");
+
+  			// 	$scope.postBody["equipments"].splice(index, 1);
+  			// 	console.log($scope.postBody.equipments);
+  			// }
   		};
 
 	    $scope.submitLoan = function() {

@@ -23,7 +23,7 @@ class DAO
         
         $loan['loaned_date'] = new MongoDate();
         $loan['due_date'] = new MongoDate(strtotime($loan['due_date']));
-        $loan['is_returned'] = false;
+        $loan['is_return'] = false;
         $loan['logs'] = array();
         
         foreach($loan['equipments'] as $key => $value)
@@ -149,7 +149,7 @@ class DAO
         $loans = $mongo->inventorytracking->loans;
         
         // if is_returned = true, change status and loaned_to values of equipments in this loan.
-        if(isset($updateValues['is_returned']) && $updateValues['is_returned'])
+        if(isset($updateValues['is_return']) && $updateValues['is_return'])
         {
             $loan = $loans->findOne(array('_id' => $loanId));
             
