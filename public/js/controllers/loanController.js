@@ -1,7 +1,8 @@
 angular.module("app.controllers").controller("LoanController", ["$scope", "$routeParams", "$location", "APIService", "uiGridConstants", 
 	function($scope, $routeParams, $location, APIService,uiGridConstants) {
 
-		this.dueDate = new Date();
+		$scope.dueDate = new Date();
+
 		$scope.postBody = {};
 		$scope.postBody["username"] = $routeParams.username;
 		$scope.postBody["equipments"] = [];
@@ -25,8 +26,20 @@ angular.module("app.controllers").controller("LoanController", ["$scope", "$rout
 		// 	$scope.gridOptions.data = $filter('filter')($scope.data, $scope.searchText);
 		// };
 
+		Number.prototype.padLeft = function(base,chr){
+			var  len = (String(base || 10).length - String(this).length)+1;
+			return len > 0? new Array(len).join(chr || '0')+this : this;
+		}
+
 		$scope.dueDateCtrl = function() {
-			console.log(this.dueDate);
+		    var dformat = [($scope.dueDate.getMonth()+1).padLeft(),
+		               $scope.dueDate.getDate().padLeft(),
+		               $scope.dueDate.getFullYear()].join('-') +' ' +
+		              [$scope.dueDate.getHours().padLeft(),
+		               $scope.dueDate.getMinutes().padLeft(),
+		               $scope.dueDate.getSeconds().padLeft()].join(':');
+
+			$scope.dueDate = dformat;
 		};
 		
 
@@ -83,6 +96,7 @@ angular.module("app.controllers").controller("LoanController", ["$scope", "$rout
 
 	    $scope.submitLoan = function() {
 	    	$scope.postBody["is_return"] = false;
+	    	$scope.postBody["due_date"] = $scope.dueDate;
 	    	var jsonBody = angular.toJson($scope.postBody, 1);
 	    	console.log(jsonBody);
 	    	APIService.post("loans", jsonBody, function(response) {
