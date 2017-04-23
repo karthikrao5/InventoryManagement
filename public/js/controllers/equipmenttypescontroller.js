@@ -13,7 +13,7 @@ angular.module('app.controllers').controller('EquipmentTypesController', ['$scop
 
 		$scope.columns = [{field: 'name', enableHiding: false},
 						  {field: 'comments', enableHiding: true},
-						  {name: 'Actions', enableHiding: false, cellTemplate:"<a href=\"#!/equipmenttypes/name/{{row.entity.name}}\">Edit</a>/<button ng-click=\"grid.appScope.deleteEquipmentType(row)\">Delete</button>" }
+						  {name: 'Actions', enableHiding: false, cellTemplate:"<a href=\"#!/equipmenttypes/name/{{row.entity.name}}\">Edit</a>/<a href=\"\" confirmed-click=\"grid.appScope.deleteEquipmentType(row)\" ng-confirm-click=\"Are you sure you want to delete this Equipment Type?\">Delete</a>" }
 					];
 
 		$scope.gridOptions = {

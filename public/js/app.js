@@ -124,6 +124,21 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.gr
     
 });
 
+app.directive('ngConfirmClick', [
+    function() {
+        return {
+            link: function (scope, element, attr) {
+                var msg = attr.ngConfirmClick || "Are you sure?";
+                var clickAction = attr.confirmedClick;
+                element.bind('click', function (event) {
+                    if (window.confirm(msg)) {
+                        scope.$eval(clickAction)
+                    }
+                });
+            }
+        };
+}]);
+
 // .run(["$rootScope", "Auth", "$location" ,function($rootScope, Auth, $location) {
 //     $rootScope.$on("$locationChangeStart", function(event,next,current) {
 //         for(var i in window.routes) {

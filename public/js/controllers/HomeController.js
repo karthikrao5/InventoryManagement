@@ -24,7 +24,7 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 	    				  {field: "loaned_to", enableHiding: false},
 	    				  {field: "equipment_type_name", enableHiding: false},
 	    				  {field: "created_on", enableHiding: false},
-	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/equipments/{{row.entity.department_tag}}\">Edit</a>/<a href=\"\" ng-confirm-click=\"Are you sure you want to delete this item?\"ng-click=\"deleteEquipment(row.entity.department_tag)\">Delete</a>" }
+	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/equipments/{{row.entity.department_tag}}\">Edit</a>/<a href=\"\" confirmed-click=\"grid.appScope.deleteEquipment(row)\" ng-confirm-click=\"Are you sure you want to delete this Equipment?\">Delete</a>" }
 	    			];
 
 	    $scope.gridOptions = {
@@ -37,7 +37,10 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 	    	console.log("Filtering tbd...");
 	    };
 
+
 	    $scope.deleteEquipment = function(row) {
+
+	    	// alert("clicked!");
 
 	    	var deleteThis = {};
 	    	deleteThis["department_tag"] = row.entity.department_tag;
