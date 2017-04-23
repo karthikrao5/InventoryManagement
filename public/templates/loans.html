@@ -1,12 +1,16 @@
     <div class="container-fluid index-div" ng-controller="LoanController">
         <h1>Loan to {{postBody.username}}</h1>
-        <div class="col-sm-12" class="list-view">
+		
+    	<div class="col-sm-6 form-group">
 
-            <!-- <input class="search-bar" ng-model="searchText" ng-change="refreshData()" placeholder="Search..."> -->
-<!--             <button id='toggleFiltering' ng-click="toggleFiltering()" class="btn btn-success">Toggle Filtering</button>
- -->            <button ng-click="submitLoan()" class="btn btn-success">Submit</button>
-            <div ui-grid="gridOptions" ui-grid-selection class="grid">{{postBody|json}}</div>
-        </div>
+    		<h3>Select a due date</h3>
+    		<md-datepicker ng-model="dueDate" ng-change="dueDateCtrl(dueDate)" md-placeholder="Enter date" md-open-on-focus></md-datepicker>
+    	</div>
+    	<div class="col-sm-6 form-group">
+    		<button id='toggleFiltering' ng-click="toggleFiltering()" class="btn btn-success">Toggle Filtering</button>
+    	</div>
+        <div ui-grid="gridOptions" ui-grid-selection class="grid">{{postBody|json}}</div>
+        <button ng-click="submitLoan()" class="btn btn-success">Submit</button>
     </div>
 
 

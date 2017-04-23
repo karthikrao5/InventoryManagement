@@ -1,5 +1,5 @@
 angular.module("app.controllers").controller("HomeController", ["$scope", "$http", "$location", "$window","APIService", "uiGridConstants","$filter", 
-	function($scope, $http, $location, $window, APIService) {
+	function($scope, $http, $location, $window, APIService, uiGridConstants) {
 
 		$scope.data;
 
@@ -18,19 +18,23 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 		};
 		
 
-	    $scope.columns = [{field: "department_tag", enableHiding: false},
-	    				  {field: "gt_tag", enableHiding: false},
-	    				  {field: "status", enableHiding: false},
+	    $scope.columns = [{field: "department_tag", enableHiding: false, headerCellClass: $scope.highlightFilteredHeader},
+	    				  {field: "gt_tag", enableHiding: false, headerCellClass: $scope.highlightFilteredHeader},
+	    				  {field: "status", enableHiding: false,filter: {
+							          type: uiGridConstants.filter.SELECT,
+							          selectOptions: [ {value: 'inventory', label: 'inventory'}, { value: 'loaned', label: 'loaned'} ]
+				      			}},
 	    				  {field: "loaned_to", enableHiding: false},
-	    				  {field: "equipment_type_name", enableHiding: false},
+	    				  {field: "equipment_type_name", enableHiding: false, headerCellClass: $scope.highlightFilteredHeader},
 	    				  {field: "created_on", enableHiding: false},
-	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/equipments/{{row.entity.department_tag}}\">Edit</a>/<a href=\"\" confirmed-click=\"grid.appScope.deleteEquipment(row)\" ng-confirm-click=\"Are you sure you want to delete this Equipment?\">Delete</a>" }
+	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/equipments/{{row.entity.department_tag}}\">Edit</a>/<a href=\"\" confirmed-click=\"grid.appScope.deleteEquipment(row)\" ng-confirm-click=\"Are you sure you want to delete this Equipment?\">Delete</a>", enableFiltering: false }
 	    			];
 
 	    $scope.gridOptions = {
 	    	enableSorting: true,
 	    	columnDefs: $scope.columns,
-	    	enableGridMenu: true
+	    	enableGridMenu: true,
+	    	enableFiltering: true
 	    };
 
 	    $scope.toggleFiltering = function() {

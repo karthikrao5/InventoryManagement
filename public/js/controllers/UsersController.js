@@ -1,8 +1,9 @@
 angular.module("app.controllers").controller("UsersController", ["$scope", "$http", "$location", "$window","APIService", "uiGridConstants","$filter", 
-	function($scope, $http, $location, $window, APIService) {
+	function($scope, $http, $location, $window, APIService, uiGridConstants) {
 
 
 		$scope.data;
+		$scope.gridApi;
 
 		function onSuccess(response) {
 	    	var local = response.data.equipments;
@@ -20,20 +21,25 @@ angular.module("app.controllers").controller("UsersController", ["$scope", "$htt
 		};
 		
 
-	    $scope.columns = [{field: "username", enableHiding: false},
-	    				  {field: "email", enableHiding: false},
-	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/loans/{{row.entity.username}}\">Loan</a>/<a href=\"#!/users/{{row.entity.username}}\">Return Items</a>" }
+	    $scope.columns = [{field: "username", enableHiding: false, headerCellClass: $scope.highlightFilteredHeader},
+	    				  {field: "email", enableHiding: false, headerCellClass: $scope.highlightFilteredHeader},
+	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/loans/{{row.entity.username}}\">Loan</a>/<a href=\"#!/users/{{row.entity.username}}\">Return Items</a>", enableFiltering: false }
 	    			];
 
 	    $scope.gridOptions = {
 	    	enableSorting: true,
 	    	columnDefs: $scope.columns,
-	    	enableGridMenu: true
+	    	enableGridMenu: true,
+	    	enableFiltering: true,
+	    	onRegisterApi: function(gridApi) {
+	    		$scope.gridApi = gridApi;
+	    	}
 	    };
 
-	    $scope.toggleFiltering = function() {
-	    	console.log("Filtering tbd...");
-	    };
+	    $scope.toggleFiltering = function(gridApi){
+			$scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+			$scope.gridApi.core.notifyDataChange( uiGridConstants.dataChange.COLUMN );
+		};
 
 	    $scope.deleteEquipment = function(row) {
 

@@ -1,6 +1,7 @@
 angular.module("app.controllers").controller("LoanController", ["$scope", "$routeParams", "$location", "APIService", "uiGridConstants", 
-	function($scope, $routeParams, $location, APIService) {
+	function($scope, $routeParams, $location, APIService,uiGridConstants) {
 
+		this.dueDate = new Date();
 		$scope.postBody = {};
 		$scope.postBody["username"] = $routeParams.username;
 		$scope.postBody["equipments"] = [];
@@ -23,21 +24,30 @@ angular.module("app.controllers").controller("LoanController", ["$scope", "$rout
 		// $scope.refreshData = function() {
 		// 	$scope.gridOptions.data = $filter('filter')($scope.data, $scope.searchText);
 		// };
+
+		$scope.dueDateCtrl = function() {
+			console.log(this.dueDate);
+		};
 		
 
-	    $scope.columns = [{field: "department_tag", enableHiding: false},
-	    				  {field: "gt_tag", enableHiding: false},
-	    				  {field: "status", enableHiding: false},
-	    				  {field: "loaned_to", enableHiding: false},
-	    				  {field: "equipment_type_name", enableHiding: false},
-	    				  {field: "created_on", enableHiding: false}];
+	    $scope.columns = [{field: "department_tag", enableHiding: false, headerCellClass: $scope.highlightFilteredHeader},
+	    				  {field: "gt_tag", enableHiding: false, headerCellClass: $scope.highlightFilteredHeader},
+	    				  {field: "status", enableHiding: false, enableFiltering: false},
+	    				  {field: "equipment_type_name", enableHiding: false, headerCellClass: $scope.highlightFilteredHeader},
+	    				  {field: "created_on", enableHiding: false, headerCellClass: $scope.highlightFilteredHeader}];
 
 	   
 	    $scope.gridOptions = {
 	    	enableSorting: true,
 	    	columnDefs: $scope.columns,
 	    	enableGridMenu: true,
-	    	multiSelect: true
+	    	multiSelect: true,
+	    	enableFiltering: true
+	    };
+
+	    $scope.toggleFiltering = function() {
+	    	$scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+			$scope.gridApi.core.notifyDataChange( uiGridConstants.dataChange.COLUMN );
 	    };
 
 	    $scope.gridOptions.onRegisterApi = function(gridApi) {

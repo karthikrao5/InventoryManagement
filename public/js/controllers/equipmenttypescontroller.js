@@ -11,15 +11,16 @@ angular.module('app.controllers').controller('EquipmentTypesController', ['$scop
 			console.log(error);
 		});
 
-		$scope.columns = [{field: 'name', enableHiding: false},
-						  {field: 'comments', enableHiding: true},
-						  {name: 'Actions', enableHiding: false, cellTemplate:"<a href=\"#!/equipmenttypes/name/{{row.entity.name}}\">Edit</a>/<a href=\"\" confirmed-click=\"grid.appScope.deleteEquipmentType(row)\" ng-confirm-click=\"Are you sure you want to delete this Equipment Type?\">Delete</a>" }
+		$scope.columns = [{field: 'name', enableHiding: false, headerCellClass: $scope.highlightFilteredHeader},
+						  {field: 'comments', enableHiding: true, headerCellClass: $scope.highlightFilteredHeader},
+						  {name: 'Actions', enableHiding: false, cellTemplate:"<a href=\"#!/equipmenttypes/name/{{row.entity.name}}\">Edit</a>/<a href=\"\" confirmed-click=\"grid.appScope.deleteEquipmentType(row)\" ng-confirm-click=\"Are you sure you want to delete this Equipment Type?\">Delete</a>", enableFiltering: false }
 					];
 
 		$scope.gridOptions = {
 			enableSorting: true,
 			columnDefs: $scope.columns,
-			enableGridMenu: true
+			enableGridMenu: true,
+			enableFiltering: true
 		};
 
 		$scope.deleteEquipmentType = function(row) {

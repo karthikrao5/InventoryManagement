@@ -1,4 +1,4 @@
-var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.grid.selection", "app.services"])
+var app = angular.module("app", ["ngRoute","ngAnimate", "ngMaterial", "ngAria", "app.controllers", "ui.grid", "ui.grid.selection", "app.services"])
 .config(function($routeProvider, $httpProvider){
 
     window.routes = 
