@@ -34,9 +34,9 @@ class EquipmentTypeController extends AbstractController{
         }
 
         if($array) {
-            return $response->withJson($array);
+            return $response->withJson($array)->withStatus(200);
         } else {
-            return $response->withStatus(404)->write("Something went wrong with the find function in EquipmentTypeController.");
+            return $response->withStatus(404)->withJson($array);
         }
     }
 
@@ -58,9 +58,9 @@ class EquipmentTypeController extends AbstractController{
         $result = $this->core->createEquipmentType($request->getParsedBody());
 
         if ($result["ok"]) {
-            return $response->withStatus(200)->withJson($result);
+            return $response->withStatus(201)->withJson($result);
         } else {
-            return $response->withStatus(400)->withJson($result);
+            return $response->withStatus(409)->withJson($result);
         }
     }
 
@@ -72,7 +72,11 @@ class EquipmentTypeController extends AbstractController{
     public function updateOne($request, $response) {
         $result = $this->core->updateEquipmentType($request->getParsedBody());
 
-        return $response->withJson($result);
+        if ($result["ok"]) {
+            return $response->withStatus(200)->withJson($result);
+        } else {
+            return $response->withStatus(409)->withJson($result);
+        }
     }
 
 
@@ -96,7 +100,7 @@ class EquipmentTypeController extends AbstractController{
         if ($result["ok"]) {
             return $response->withStatus(200)->withJson($result);
         } else {
-            return $response->withStatus(400)->withJson($result);
+            return $response->withStatus(409)->withJson($result);
         }
     }
 }
