@@ -15,7 +15,16 @@ angular.module("app.controllers").controller("EditEquipmentTypeController", ["$s
 		$scope.returnObject["remove_equipment_type_attributes"] = [];
 
 		$scope.submitEquipmentTypeEdit = function() {
-			console.log($scope.returnObject);
+			var jsonBody = angular.toJson($scope.returnObject, 1);
+			console.log(jsonBody);
+			APIService.put("equipmenttypes", jsonBody, function(response){
+				console.log(response.data);
+				alert(response.data);
+				$location('/equipmenttypes');
+			}, function(error) {
+				console.log(error.data);
+				alert(error.data);
+			});
 		};
 
 		$scope.addNewAttributeField = function(index) {
@@ -100,7 +109,8 @@ angular.module("app.controllers").controller("EditEquipmentTypeController", ["$s
 		$scope.paramsArray["name"] = $routeParams.name;
 		APIService.get("equipmenttypes", $scope.paramsArray, function(response) {
 			$scope.originalItem = response.data.equipment_types[0];
-
+			$scope.returnObject["_id"] = $scope.originalItem["_id"]["$id"];
+			$scope.returnObject["name"] = $scope.originalItem["name"];
 			angular.forEach($scope.originalItem.equipment_type_attributes, function(originalAttr) {
 				var temp = {};
 				temp["_id"] = originalAttr["_id"]["$id"];

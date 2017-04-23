@@ -9,6 +9,7 @@ angular.module("app.controllers").controller("NewUserController", ["$scope", "$h
 
 			function onSuccess(response) {
 				console.log(response.data);
+				$location.path('/users');
 			}
 
 			APIService.post("users", returnThis, onSuccess, function(error) {

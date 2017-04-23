@@ -57,9 +57,18 @@ angular.module("app.controllers").controller("EditEquipmentController", ["$scope
 			
 		};
 
-		$scope.submitEquipmentTypeEdit = function() {
+		$scope.submitEquipmentEdit = function() {
+			var jsonBody = angular.toJson($scope.returnObject, 1);
 			console.log($scope.returnObject.update_equipment);
-			console.log(angular.toJson($scope.returnObject, 1));
+			console.log(jsonBody);
+			APIService.put("equipments", jsonBody, function(response) {
+				console.log(response.data);
+				alert("Successfully edited equipment!");
+				$location.path("/");
+			}, function(error) {
+				console.log(error.data);
+				alert(error.data);
+			});
 		};
 
 		console.log($routeParams.departmenttag);
@@ -69,6 +78,8 @@ angular.module("app.controllers").controller("EditEquipmentController", ["$scope
 
 		APIService.get('equipments', $scope.paramsArray, function(response) {
 			$scope.originalItem = response.data.equipments[0];
+			$scope.returnObject["_id"] = $scope.originalItem["_id"]["$id"];
+			$scope.returnObject["name"] = $scope.originalItem["name"];
 			angular.forEach($scope.originalItem.attributes, function(originalAttr) {
 				var temp = {};
 				temp["_id"] = originalAttr["_id"]["$id"];

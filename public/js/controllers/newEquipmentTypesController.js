@@ -55,8 +55,10 @@ angular.module("app.controllers").controller('NewEquipmentTypeController', ["$sc
 			console.log(postMe);
 			APIService.post("equipmenttypes", postMe, function(response) {
 				alert("Successfully created equipment type!");
+				console.log(response.data);
+				$location.path('/equipmenttypes');
 			}, function(error) {
-				alert(error[data]);
+				alert(error.data);
 			});
 		};
 	}

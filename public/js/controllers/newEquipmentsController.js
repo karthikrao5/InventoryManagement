@@ -46,6 +46,7 @@ angular.module("app.controllers").controller("NewEquipmentController", ["$scope"
 			function onSuccess(response) {
 				alert("Successfully created Equipment!");
 				console.log(response.data);
+				$location.path('/');
 			}
 
 			APIService.post("equipments", returnThis, onSuccess, function(error) {
