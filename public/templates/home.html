@@ -20,7 +20,7 @@
 	<!-- <button ng-click="logout()">Logout</button> -->
 <!-- </div> -->
 
-    <div class="container-fluid index-div" ng-controller="HomeController">
+    <div class="container-fluid index-div" ng-controller="HomeController as hc">
         <h1>Inventory Management</h1>
         <h4>Welcome {{ loggedInUser }}!</h4>
 
@@ -41,6 +41,7 @@
  				</ul>
  			</div>
 
+
             <button id='toggleFiltering' ng-click="toggleFiltering()" class="btn btn-success">Toggle Filtering</button>
             <div ui-grid="gridOptions" class="grid"></div>
         </div>
@@ -48,3 +49,4 @@
 
     {{cleanAttr}}
 
+<!-- <button ng-click=\"hc.deleteEquipment(row)\">Delete</button> -->
