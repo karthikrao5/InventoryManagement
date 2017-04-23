@@ -1,8 +1,12 @@
-angular.module("app.controllers").controller("LoanController", ["$scope", "$http", "$location", "$window","APIService", "uiGridConstants","$filter", 
-	function($scope, $http, $location, $window, APIService) {
+angular.module("app.controllers").controller("LoanController", ["$scope", "$http", "$location", "$routeParams", "$window", "APIService", "uiGridConstants","$filter",
+	function($scope, $http, $location, $routeParams, $window, APIService) {
 
-		$scope.data;
+		// $scope.originalItem;
 
+		console.log($routeParams.username);
+		$scope.paramsArray = {};
+		$scope.paramsArray["username"] = $routeParams.username;
+		console.log($scope.paramsArray);
 
 		function onSuccess(response) {
 	    	var local = response.data.equipments;
@@ -38,14 +42,6 @@ angular.module("app.controllers").controller("LoanController", ["$scope", "$http
 
 	    $scope.toggleFiltering = function() {
 	    	console.log("Filtering tbd...");
-	    };
-
-	    $scope.deleteEquipment = function(departmentTag) {
-	    	APIService.delete("equipments", [departmentTag], function(response) {
-	    		alert("Successfully deleted equipment!");
-	    	}, function(error) {
-	    		console.log(error.data);
-	    	});
 	    };
 	}
 ]);

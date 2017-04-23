@@ -38,10 +38,10 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.gr
             controller: 'NewEquipmentController'
             // adminOnly: true
         },
-        '/equipments/DepartmentTag/:departmenttag': {
-            templateUrl: 'templates/edit-equipment.html',
-            controller: 'EditEquipmentController'
-        },
+        // '/equipments/DepartmentTag/:departmenttag': {
+        //     templateUrl: 'templates/edit-equipment.html',
+        //     controller: 'EditEquipmentController'
+        // },
         '/users/new': {
             templateUrl: 'templates/create-user.html',
             controller: 'NewUserController'
@@ -54,6 +54,10 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.gr
         '/equipmenttypes/new' : {
             templateUrl: 'templates/create-equipmenttype.html',
             controller: 'NewEquipmentTypeController'
+        },
+        '/equipments/:departmenttag' : {
+            templateUrl: 'templates/edit-equipment.html',
+            controller: 'EditEquipmentController'
         },
         '/loans/:username' : {
             templateUrl: 'templates/loans.html',
