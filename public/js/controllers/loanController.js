@@ -2,12 +2,11 @@ angular.module("app.controllers").controller("LoanController", ["$scope", "$http
 	function($scope, $http, $location, $routeParams, $window, APIService) {
 
 		// $scope.originalItem;
-		$scope.equipmentList = {};
-		$scope.equipmentList["equipments"] = [];
-		console.log($routeParams.username);
 		$scope.paramsArray = {};
 		$scope.equipmentList["username"] = $routeParams.username;
-		console.log($scope.paramsArray);
+		$scope.equipmentList = {};
+		$scope.equipmentList["equipments"] = [];
+		
 
 		// $scope.gridOptions.onRegisterApi = function(gridApi) {
 		//    $scope.myGridApi = gridApi;
