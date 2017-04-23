@@ -38,7 +38,7 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.gr
             controller: 'NewEquipmentController'
             // adminOnly: true
         },
-        '/equipments/:department_tag': {
+        '/equipments/DepartmentTag/:departmenttag': {
             templateUrl: 'templates/edit-equipment.html',
             controller: 'EditEquipmentController'
         },

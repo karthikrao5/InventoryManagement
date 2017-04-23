@@ -1,84 +1,54 @@
 # InventoryManagement
-GT Junior Design Part 2 Spring 2017
+GT Junior Design Part 2 Spring 2017 (CS 3312/LMC 3431 - JIA)
 
-Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
+Team 154 - Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 ----
-Getting started with this project
+# Release Notes
+**New features for this release:**
 
-1. Install CentOS 6.8 on VirtualBox.
+**Bug fixes:** None - initial release.
 
-2. Clone this repo on the Desktop directory or anywhere you like.
+**Known bugs and defects for Front-end:**
 
-3. Run `./setup.sh` in scripts/centos/ directory. Make sure that the script has execute permission `chmod 777 setup.sh`.
+**Known bugs and defects for Back-end:**
+* Backend access routes are fragile due to unfinished input validation.
+* API key feature is not implemented in this release.
+* Log information is missing username (action_by) and how the route is accessed (action_via).
+* Loan due date expiration is not checked.
+----
+# Installation Guide
+**Getting started with this project:**
 
-4. Reboot the virtual machine.
+1. Install CentOS 6.8 on the server.
 
-5. Install VirtualBox Guest Additions for better development environment.
+2. Clone this repository.
 
-6. Run `./move.sh' in the repo to copy files to /var/www/html
+3. Run './setup.sh' in scripts/centos/ directory. Make sure that the script has execute permission `chmod 777 setup.sh`.
 
-To upgrade git version to 2.5.3 (required to push to repo)
+4. Run `./move.sh' in the repository
 
-```
-sudo yum remove -y git
-cd /usr/src
-sudo wget https://www.kernel.org/pub/software/scm/git-2.5.3.tar.gz
-sudo tar xzf git-2.5.3.tar.gz
-cd git-2.5.3
-sudo make prefix=/usr/local/git all
-sudo make prefix=/usr/local/git install
-sudo echo "export PATH=$PATH:/usr/local/git/bin" >> /etc/bashrc
-sudo source /etc/bashrc
-sudo -s # to switch to root (required)
-source /etc/bashrc
-```
+5. Visit http://localhost/ (if accessing from the server) or http://server_url/ to use InventoryManagement system.
 
 Or alternatively, use Vagrant to setup development virtual machine automatically and use it.
-=======
-API routes:
 
-Two creation routes:
-1. Equipment creation POST /v1/equipments with body as:
-{
-  "equipment_type": "laptop",
-  "department_tag": "Some department specific serial number here",
-  "gt_tag": null,
-  "status": "loaned",
-  "loaned_to": "krao34",
-  "comment": "laptop has a bad battery",
-  "attributes": {
-  	"cpu": "Intel Q6600",
-  	"gpu": "NVIDIA GTX 1080",
-  	"RAM": "16",
-  	"screen_size": "15"
-  },
-  "logs": {
-  	"action_by": "Justin Filosetta"
-  }
-}
+**Getting started with Vagrant:**
 
-2. EquipmentType creation POST /v1/equipmenttypes with body as
-{
-	"name": "laptop",
-	"attributes": 
-	[
-		{
-			"name":"something",
-			"required": 0,
-			"unique": 1,
-			"data_type": "string",
-			"regex": "adfsasdf",
-			"help_comment": "something" 
-		},
-		{
-			"name":"something else",
-			"required": 1,
-			"unique": 1,
-			"data_type": "boolean",
-			"regex": "some regex",
-			"help_comment": "HELP ME"
-		}
-	]
-}
+1. Download Vagrant box 'centos-6.8-x86_64.box' from provided private Google Drive link (will be emailed to you).
 
-Note: EquipmentType must be created first since an Equipment maps to a single EquipmentType
+2. Install Vagrant. https://www.vagrantup.com/docs/installation/
+
+3. Open terminal and change directory to where 'centos-6.8-x86_64.box' is located.
+
+4. Run 'vagrant box add centos-6.8-x86_64 centos-6.8-x86_64.box' from terminal to add the custom Vagrant box.
+
+5. Clone this repository to host (not in Vagrant virtual machine) and move into 'vagrant' directory. You should have 'Vagrantfile' file (without extension).
+
+6. Run 'vagrant up' to create new virtual machine. You may see warning as virtual machine is being created and provisioned. Depending on your network speed and computer horsepower, this step can take up to 15 minutes.
+
+7. Once 'vagrant up' is done, you can run 'vagrant ssh' to ssh into the virtual machine. It shouldn't ask you for username and password. If for some reason, vagrant ssh or any sudo commands asks you for password, use 'vagrant' as password for both 'root' and 'vagrant'.
+
+8. This repository is automatically cloned into the virtual machine in '/home/vagrant/shared/InventoryManagement'.
+
+9. You should be able to connect to 'http://localhost:8080' to use InventoryManagement system.
+
+Notes: Vagrant maps host port 8080 to virtual machine port 80. Make sure host port 8080 is not in use.

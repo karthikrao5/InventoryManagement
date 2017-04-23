@@ -53,9 +53,19 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 	    	console.log("Filtering tbd...");
 	    };
 
-	    $scope.deleteEquipment = function(departmentTag) {
-	    	APIService.delete("equipments", [departmentTag], function(response) {
+	    $scope.deleteEquipment = function(row) {
+
+	    	var deleteThis = {};
+	    	deleteThis["department_tag"] = row.entity.department_tag;
+
+	    	var jsonBody = angular.toJson(deleteThis, 1);
+	    	console.log(jsonBody);
+
+	    	APIService.delete("equipments", jsonBody, function(response) {
+	    		var index = $scope.gridOptions.data.indexOf(row.entity);
+	    		$scope.gridOptions.data.splice(index, 1);
 	    		alert("Successfully deleted equipment!");
+
 	    	}, function(error) {
 	    		console.log(error.data);
 	    	});

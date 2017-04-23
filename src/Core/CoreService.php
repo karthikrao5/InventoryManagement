@@ -193,6 +193,8 @@ class CoreService
 
     public function deleteUser($requestJson)
     {
+        $result = array('ok' => false, 'msg' => null);
+        
         $validationResult = $this->userValidator->isValidDeleteJson($requestJson);
         
         if(!$validationResult['ok'])
@@ -214,7 +216,16 @@ class CoreService
             $daoResult = $this->dao->removeUser($requestJson['_id']);
         }
         
-        return $daoResult;
+        if($daoResult['n'] == 0)
+        {
+            $result['msg'] = "User not found.";
+            return $result;
+        }
+        
+        $result['ok'] = true;
+        $result['msg'] = "Successfully deleted user.";
+        
+        return $result;
     }
 
     /*
@@ -223,8 +234,15 @@ class CoreService
 
     public function createLoan($requestJson)
     {
+        $result = array('ok' => false, 'msg' => null, 'loan' => null);
+        
         // Creating loan automatically adds this loan to user's current loans
-        return $this->dao->createLoan($requestJson);
+        $result['loan'] = $this->dao->createLoan($requestJson);
+        
+        $result['ok'] = true;
+        $result['msg'] = "Successfully created loan.";
+        
+        return $result;
     }
 
     public function getLoan($requestJson)
@@ -287,7 +305,14 @@ class CoreService
 
     public function deleteLoan($requestJson)
     {
-        return $this->dao->deleteLoan($requestJson['_id']);
+        $result = array('ok' => false, 'msg' => null);
+        
+        $daoResult = $this->dao->deleteLoan($requestJson['_id']);
+        
+        $result['ok'] = true;
+        $result['msg'] = "Successfully deleted loan.";
+        
+        return $result;
     }
     
     /*

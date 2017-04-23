@@ -21,8 +21,9 @@ class DAO
         $mongo = new MongoClient(DAO::$connectionString);
         $loans = $mongo->inventorytracking->loans;
         
-        $loan['loaned_date'] = new MongoDate(strtotime($loan['loaned_date']));
+        $loan['loaned_date'] = new MongoDate();
         $loan['due_date'] = new MongoDate(strtotime($loan['due_date']));
+        $loan['is_returned'] = false;
         $loan['logs'] = array();
         
         foreach($loan['equipments'] as $key => $value)
@@ -146,6 +147,17 @@ class DAO
         
         $mongo = new MongoClient(DAO::$connectionString);
         $loans = $mongo->inventorytracking->loans;
+        
+        // if is_returned = true, change status and loaned_to values of equipments in this loan.
+        if(isset($updateValues['is_returned']) && $updateValues['is_returned'])
+        {
+            $loan = $loans->findOne(array('_id' => $loanId));
+            
+            foreach($loan['equipments'] as $equipmentId)
+            {
+                $this->updateEquipment($equipmentId, array('status' => 'inventory', 'loaned_to' => null));
+            }
+        }
         
         $result = $loans->update(array('_id' => $loanId),
             array('$set' => $updateValues));
@@ -862,7 +874,7 @@ class DAO
 
         foreach($attrs as $attr)
         {
-                $array[] = $attr;
+            $array[] = $attr;
         }
 
         $equipment['attributes'] = $array;
