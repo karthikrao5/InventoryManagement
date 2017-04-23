@@ -13,7 +13,7 @@
          <div ng-repeat="label in labels">
             <div class="form-group">
                <label>{{ label }}</label>
-               <input class="form-control" type="text" ng-model="formObj[label]" placeholder="Enter" required>
+               <input class="form-control" type="text" ng-model="formObj[label]" placeholder="Enter">
             </div>
          </div>
 
@@ -27,8 +27,6 @@
 
          </fieldset>
         <!--  <input value="Add fields" type="button" class="addfields" ng-click="addNewAttribute($index, key)"></input> -->
-
-         <p>{{attrList|json}}</p>
 
 
          <button class="btn btn-default" type="submit">Submit</button>

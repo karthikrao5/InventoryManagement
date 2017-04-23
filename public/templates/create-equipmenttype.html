@@ -1,26 +1,29 @@
 
-<div class="container-fluid index-div" ng-controller="NewEquipmentTypeController">
-	<h1>{{ title }}</h1>
-	<form ng-submit="submitEquipmentTypeCreation()">
-		<div class="col-lg-2"></div>
-		<fieldset class="col-lg-8 col-md-12">
+<div class="container index-div" ng-controller="NewEquipmentTypeController">
+	<div class="row">
+	<div class="col-lg-2"></div>
+	<div class="col-lg-8 col-md-12">
+		<h1>{{ title }}</h1>
+
+	<form  ng-submit="submitEquipmentTypeCreation()">
+		<fieldset>
 			<div ng-repeat="label in labels">
 				<div class="form-group">
 					<label>{{label}}</label>
-					<input type="text" ng-model="returnObject[label]" placeholder="Enter" required>
+					<input class="form-control" type="text" ng-model="returnObject[label]" placeholder="Enter">
 				</div>
 			</div>
-			
-			<div class="form-group">
+							
+
+				<fieldset  ng-repeat="attribute in returnObject.equipment_type_attributes track by $index">
 				<h4>Add Attributes</h4>
-				<fieldset ng-repeat="attribute in returnObject.equipment_type_attributes track by $index">
-					<fieldset class="pure-control-group">
-						<p>Attr index: {{ $index }}</p>
-						<input type="text" ng-model="attribute.name" placeholder="Name" required>
-						<input type="text" ng-model="attribute.data_type" placeholder="Data Type" required>
-						<input type="text" ng-model="attribute.regex" placeholder="Regex">
-						<input type="text" ng-model="attribute.help_comment" placeholder="Help Comment"> <br>
-						<input value="Remove" type="button" class="remove" ng-show="$index != 0" ng-click="removeAttribute($event, key)"></input>
+					<fieldset class="">
+						<input class="form-control" type="text" ng-model="attribute.name" placeholder="Name" required>
+						<input class="form-control" type="text" ng-model="attribute.data_type" placeholder="Data Type" required>
+						<input class="form-control" type="text" ng-model="attribute.regex" placeholder="Regex">
+						<input class="form-control" type="text" ng-model="attribute.help_comment" placeholder="Help Comment"> <br>
+						<input class="form-control" value="Remove" type="button" class="remove" ng-show="$index != 0" ng-click="removeAttribute($event, $index)"></input>
+						<div>
 						<label>Required</label>
 						<input type="checkbox" ng-init="attribute.required=false" ng-model="attribute.required"> <br>
 
@@ -29,7 +32,7 @@
 
 						<label>Enum</label>
 						<input type="checkbox" ng-init="attribute.enum=false" ng-model="attribute.enum" ng-change="initEnumVals(attribute.enum, attribute)">
-						
+						</div>
 
 						<div class="form-group" ng-show="attribute.enum">
 							<h4>Add enums</h4>
@@ -43,16 +46,17 @@
 
 					</fieldset>
 				</fieldset>
-				<input value="Add fields" type="button" class="addfields" ng-click="addNewAttribute($index)"></input>
+				<input value="Add fields" type="button" class="addfields btn btn-default" ng-click="addNewAttribute($index)"></input>
 
-			</div>
-     <button class="pure-button" type="submit">Submit</button>
+
+     <button class="btn btn-default" type="submit">Submit</button>
+
 		</fieldset>
-		<div class="col-lg-2"></div>
 	</form>
+	</div>
+			<div class="col-lg-2"></div>
+			</div>
 
-<a class="pure-button" href="#!/equipmenttypes">Equipment Types</a>
-<a class="pure-button" href="#!/">Home</a>
-{{returnObject|json}}
+
 </div>
 
