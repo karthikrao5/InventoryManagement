@@ -1,10 +1,23 @@
 # InventoryManagement
-GT Junior Design Part 2 Spring 2017
+GT Junior Design Part 2 Spring 2017 (CS 3312/LMC 3431 - JIA)
 
-Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
+Team 154 - Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
+----
+# Release Notes
+**New features for this release:**
+
+**Bug fixes:** None - initial release.
+
+**Known bugs and defects for Front-end:**
+
+**Known bugs and defects for Back-end:**
+* Backend access routes are fragile due to unfinished input validation.
+* API key feature is not implemented in this release.
+* Log information is missing username (action_by) and how the route is accessed (action_via).
+* Loan due date expiration is not checked.
 ----
 # Installation Guide
-Getting started with this project
+**Getting started with this project:**
 
 1. Install CentOS 6.8 on the server.
 
@@ -14,11 +27,11 @@ Getting started with this project
 
 4. Run `./move.sh' in the repository
 
-5. Visit http://localhost/ to use InventoryManagement system.
+5. Visit http://localhost/ (if accessing from the server) or http://server_url/ to use InventoryManagement system.
 
 Or alternatively, use Vagrant to setup development virtual machine automatically and use it.
 
-Getting started with Vagrant
+**Getting started with Vagrant:**
 
 1. Download Vagrant box 'centos-6.8-x86_64.box' from provided private Google Drive link (will be emailed to you).
 
@@ -36,5 +49,6 @@ Getting started with Vagrant
 
 8. This repository is automatically cloned into the virtual machine in '/home/vagrant/shared/InventoryManagement'.
 
-9. You should be able to connect to 'http://localhost:8080
+9. You should be able to connect to 'http://localhost:8080' to use InventoryManagement system.
 
+Notes: Vagrant maps host port 8080 to virtual machine port 80. Make sure host port 8080 is not in use.
