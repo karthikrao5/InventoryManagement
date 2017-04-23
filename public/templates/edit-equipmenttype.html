@@ -35,7 +35,16 @@
 					<input type="checkbox" ng-init="update_attr.unique=false" ng-model="update_attr.unique" ng-disabled="buttonToggle"> <br>
 
 					<label>Enum</label>
-					<input type="checkbox" ng-init="update_attr.enum=false" ng-model="update_attr.enum" ng-disabled="buttonToggle">
+					<input type="checkbox" ng-init="update_attr.enum=false" ng-model="update_attr.enum" ng-disabled="buttonToggle" ng-change="initEnumValsUpdate(update_attr.enum, update_attr)">
+					<div class="form-group" ng-show="update_attr.enum">
+						<h4>Add enums</h4>
+						<fieldset ng-repeat="enum in update_attr.enum_values track by $index">
+							<input type="text" ng-model="update_attr.enum_values[$index]" placeholder="Enum Value" required>
+							<input type="button" value="Remove Enum" ng-show="$index != 0" ng-click="deleteUpdateEnum($event, key, $parent.$index)">
+						</fieldset>
+						<input ng-click="addUpdateEnum(update_attr)" value="Add Enums" type="button"></input>	
+					</div>
+
 					<input type="button" ng-click="removeAttribute(update_attr); buttonToggle=!buttonToggle" value="{{buttonToggle && 'Undo' || 'Remove Attribute'}}">
 				</div>
 				<div class="form-group" ng-repeat="new_attr in returnObject.add_equipment_type_attributes">
@@ -65,14 +74,6 @@
 					<input type="button" ng-click="removeNewAttributeField($event, key)" value="Remove New Attribute">
 				</div>
 				<input value="Add fields" type="button" class="addfields" ng-click="addNewAttributeField($index)"></input>
-				<!-- <div class="form-group">
-					<h4>Add enums</h4>
-					<fieldset ng-repeat="enum in update_attr.enum_values track by $index">
-						<input type="text" ng-model="update_attr.enum_values[$index]" placeholder="Enum Value" value="update_attr.enum_values[$index]" required>
-						<input type="button" value="Remove Enum" ng-show="$index != 0" ng-click="deleteEnum($event, key)">
-					</fieldset>
-					<input ng-click="addNewEnum(attribute)" value="Add Enums" type="button"></input>
-				</div> -->
 			</div>
 			 <p>{{returnObject|json}}</p>
 			 <button class="pure-button" type="submit">Submit</button>

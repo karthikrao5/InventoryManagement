@@ -104,7 +104,7 @@ class UserController extends AbstractController
         if ($result["ok"]) {
             return $response->withStatus(200)->withJson($result);
         } else {
-            return $response->withStatus(409)->withJson($result);
+            return $response->withStatus(404)->withJson($result);
         }
     }
     
@@ -125,7 +125,7 @@ class UserController extends AbstractController
         if ($result["ok"]) {
             return $response->withStatus(200)->withJson($result);
         } else {
-            return $response->withStatus(409)->withJson($result);
+            return $response->withStatus(404)->withJson($result);
         }
     }
 }

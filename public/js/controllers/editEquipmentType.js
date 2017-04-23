@@ -33,6 +33,19 @@ angular.module("app.controllers").controller("EditEquipmentTypeController", ["$s
 			}
 		};
 
+		$scope.addUpdateEnum = function(attribute) {
+			var attributeIndex = $scope.returnObject.update_equipment_attributes.indexOf(attribute);
+			console.log(attributeIndex);
+			$scope.returnObject.update_equipment_attributes[attributeIndex].enum_values.push("");
+		};
+
+		$scope.deleteUpdateEnum = function($event, key, index) {
+			var value = $scope.returnObject.update_equipment_attributes[index].enum_values.indexOf(key);
+			if($event.which == 1) {
+				$scope.returnObject.update_equipment_attributes[index].enum_values.splice(value,1);
+			}
+		};
+
 		$scope.addNewEnum = function(attribute) {
 			var attributeIndex = $scope.returnObject.add_equipment_type_attributes.indexOf(attribute);
 			console.log(attributeIndex);
@@ -57,15 +70,28 @@ angular.module("app.controllers").controller("EditEquipmentTypeController", ["$s
 		};
 
 		$scope.initEnumVals = function(enumVal, newAttr) {
-			var index = $scope.returnObject.add_equipment_type_attributes.indexOf(newAttr);
+			// var index = $scope.returnObject.add_equipment_type_attributes.indexOf(newAttr);
 			// if checked, initialize enumvals with ""
 			if(enumVal) {
-				$scope.returnObject.add_equipment_type_attributes[index].enum_values = [""];
+				newAttr.enum_values = [""];
+				// $scope.returnObject.add_equipment_type_attributes[index].enum_values = [""];
 			} else {
-				$scope.returnObject.add_equipment_type_attributes[index].enum_values = [];
+				newAttr.enum_values = [];
+				// $scope.returnObject.add_equipment_type_attributes[index].enum_values = [];
 			}
 		}
 
+		$scope.initEnumValsUpdate = function(enumVal, attr) {
+			// var index = $scope.returnObject.update_equipment_attributes.indexOf(newAttr);
+			// if checked, initialize enumvals with ""
+			if(enumVal) {
+				attr.enum_values = [""];
+				// $scope.returnObject.update_equipment_attributes[index].enum_values = [""];
+			} else {
+				attr.enum_values = [];
+				// $scope.returnObject.update_equipment_attributes[index].enum_values = [];
+			}
+		}
 
 
 
