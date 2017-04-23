@@ -44,6 +44,7 @@ angular.module("app.controllers").controller("NewEquipmentController", ["$scope"
 			console.log(angular.toJson(returnThis, true));
 
 			function onSuccess(response) {
+				alert("Successfully created Equipment!");
 				console.log(response.data);
 			}
 

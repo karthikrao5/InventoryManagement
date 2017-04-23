@@ -40,7 +40,7 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 	    				  {field: "loaned_to", enableHiding: false},
 	    				  {field: "equipment_type_name", enableHiding: false},
 	    				  {field: "created_on", enableHiding: false},
-	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/equipments/DepartmentTag/{{row.entity.department_tag}}\">Edit</a>/<a href=\"\" ng-confirm-click=\"Are you sure you want to delete this item?\"ng-click=\"deleteEquipment(row.entity.department_tag)\">Delete</a>" }
+	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/equipments/DepartmentTag/{{row.entity.department_tag}}\">Edit</a>/<button ng-click=\"grid.appScope.deleteEquipment(row)\">Delete</button>" }
 	    			];
 
 	    $scope.gridOptions = {
@@ -53,9 +53,19 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 	    	console.log("Filtering tbd...");
 	    };
 
-	    $scope.deleteEquipment = function(departmentTag) {
-	    	APIService.delete("equipments", [departmentTag], function(response) {
+	    $scope.deleteEquipment = function(row) {
+
+	    	var deleteThis = {};
+	    	deleteThis["department_tag"] = row.entity.department_tag;
+
+	    	var jsonBody = angular.toJson(deleteThis, 1);
+	    	console.log(jsonBody);
+
+	    	APIService.delete("equipments", jsonBody, function(response) {
+	    		var index = $scope.gridOptions.data.indexOf(row.entity);
+	    		$scope.gridOptions.data.splice(index, 1);
 	    		alert("Successfully deleted equipment!");
+
 	    	}, function(error) {
 	    		console.log(error.data);
 	    	});

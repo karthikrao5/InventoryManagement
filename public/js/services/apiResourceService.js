@@ -24,12 +24,24 @@ angular.module("app").factory("APIService", ["$http", "$httpParamSerializer",
 				$http.get(apiURL + resource).then(success).catch(error)
 			},
 
-			delete : function(resource, params, success, error) {
-				$http.delete(apiURL+resource, params).then(success).catch(error)
+			delete : function(resource, inputData, success, error) {
+				console.log(apiURL+resource);
+				$http({
+					method: "DELETE",
+					url: apiURL+resource,
+					data: inputData,
+					headers: {
+						"Content-type": "application/json"
+					}
+				}).then(success, error)
+				// console.log(data);
+				// $http.delete(apiURL+resource, {"data": inputData}).then(success).catch(error)
 			},
 
-			put : function(resource, data, params, success, error) {
-				$http.put(apiURL+resource).then(success).catch(error)
+			put : function(resource, inputData, success, error) {
+				
+
+				$http.put(apiURL+resource, inputData).then(success).catch(error)
 			}
 		};
 	}
