@@ -352,7 +352,6 @@ JSON Formats and examples
     	"equipments" : [
     		"58f66d9e7f8b9a5a26c477ec"
     	],
-    	"loaned_date" : "2017-01-01 00:00:00",
     	"due_date" : "2017-05-01 23:59:59"
     }
 
@@ -373,13 +372,15 @@ JSON Formats and examples
     Sample request JSON:
 
     "_id" must be presented.
+    In "update_loan", setting "is_returned" to true update equipments' status and loaned_to fields.
 
     {
         "_id" : "loan id string",
 
         "update_loan" : {
             "loaned_date" : "2017-01-01 00:00:00",
-            "due_date" : "2017-01-01 00:00:00"
+            "due_date" : "2017-01-01 00:00:00",
+            "is_returned" : true
         },
 
         "add_equipments" : [
