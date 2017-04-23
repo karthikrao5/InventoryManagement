@@ -55,9 +55,13 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.gr
             templateUrl: 'templates/create-equipmenttype.html',
             controller: 'NewEquipmentTypeController'
         },
-        '/loans/:department_tag' : {
+        '/loans/:username' : {
             templateUrl: 'templates/loans.html',
             controller: 'LoanController'
+        },
+        '/users' : {
+            templateUrl: 'templates/users.html',
+            controller: 'UsersController'
         },
         '/403': {
             templateUrl:'templates/errorPages/403.html'

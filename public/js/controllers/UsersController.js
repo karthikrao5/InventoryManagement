@@ -1,30 +1,28 @@
-angular.module("app.controllers").controller("HomeController", ["$scope", "$http", "$location", "$window","APIService", "uiGridConstants","$filter", 
+angular.module("app.controllers").controller("UsersController", ["$scope", "$http", "$location", "$window","APIService", "uiGridConstants","$filter", 
 	function($scope, $http, $location, $window, APIService) {
+
 
 		$scope.data;
 
 		function onSuccess(response) {
 	    	var local = response.data.equipments;
-	    	$scope.gridOptions.data = response.data.equipments;
+	    	$scope.gridOptions.data = response.data.users;
 	    }
 
 	   // make database call
-	    APIService.query("equipments", onSuccess, function(error) {
+	    APIService.query("users", onSuccess, function(error) {
 	    	console.log(error);
 	    });
+
 
 		$scope.refreshData = function() {
 			$scope.gridOptions.data = $filter('filter')($scope.data, $scope.searchText);
 		};
 		
 
-	    $scope.columns = [{field: "department_tag", enableHiding: false},
-	    				  {field: "gt_tag", enableHiding: false},
-	    				  {field: "status", enableHiding: false},
-	    				  {field: "loaned_to", enableHiding: false},
-	    				  {field: "equipment_type_name", enableHiding: false},
-	    				  {field: "created_on", enableHiding: false},
-	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/equipments/{{row.entity.department_tag}}\">Edit</a>/<a href=\"\" ng-confirm-click=\"Are you sure you want to delete this item?\"ng-click=\"deleteEquipment(row.entity.department_tag)\">Delete</a>" }
+	    $scope.columns = [{field: "username", enableHiding: false},
+	    				  {field: "email", enableHiding: false},
+	    				  {name: "Actions", enableHiding: false, cellTemplate:"<a href=\"#!/loans/{{row.entity.username}}\">Loan</a>" }
 	    			];
 
 	    $scope.gridOptions = {
@@ -54,13 +52,6 @@ angular.module("app.controllers").controller("HomeController", ["$scope", "$http
 	    		console.log(error.data);
 	    	});
 	    };
-
-	    // $scope.logout = function() {
-	    // 	if(Auth.deleteToken()) {
-	    // 		console.log("Logged out!");
-	    // 		console.log("Token is now: " + $window.localStorage.getItem("jwt"));
-	    // 	}
-	    // };
 
 	}
 ]);
