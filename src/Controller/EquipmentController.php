@@ -79,9 +79,9 @@ class EquipmentController extends AbstractController{
             }
 
             if($array) {
-                return $response->withJson($array);
+                return $response->withJson($array)->withStatus(200);
             } else {
-                return $response->withStatus(404)->write("Something went wrong with the find function in EquipmentController.");
+                return $response->withStatus(404)->withJson($array);
             }
         // }
         return $response->write("Something went wrong in fetching equipments.")->withJson(404);
@@ -102,7 +102,7 @@ class EquipmentController extends AbstractController{
         }
 
         if (is_null($request->getParsedBody())) {
-            return $response->write("No body recieved.")->withStatus(200);
+            return $response->write("No body recieved.")->withStatus(400);
         }
 
         // $authHeader = $request->getHeader("Authorization");
@@ -141,10 +141,8 @@ class EquipmentController extends AbstractController{
         if ($result["ok"]) {
             return $response->withStatus(201)->withJson($result);
         } else {
-            return $response->withStatus(404)->withJson($result);
+            return $response->withStatus(409)->withJson($result);
         }
-
-        return $response->write("Something went wrong.")->withStatus(404);
     }
     
 // -----------------------------------------------------------------
@@ -172,12 +170,19 @@ class EquipmentController extends AbstractController{
         // }
 
         if (is_null($request->getParsedBody())) {
-            return $response->write("No body recieved.")->withStatus(200);
+            return $response->write("No body recieved.")->withStatus(400);
         }
 
         $result = $this->core->updateEquipment($request->getParsedBody());
         
-        return $response->withJson($result);
+        if($result['ok'])
+        {
+            return $response->withJson($result)->withStatus(200);
+        }
+        else
+        {
+            return $response->withJson($result)->withStatus(409);
+        }
     }
 
 // -----------------------------------------------------------------
@@ -200,10 +205,13 @@ class EquipmentController extends AbstractController{
         
         return $response->withJson($result);
 
-        if ($result["ok"]) {
-            return $response->withStatus(200)->withJson($result);
-        } else {
-            return $response->withStatus(404)->withJson($result);
+        if($result['ok'])
+        {
+            return $response->withJson($result)->withStatus(200);
+        }
+        else
+        {
+            return $response->withJson($result)->withStatus(409);
         }
     }
 }
