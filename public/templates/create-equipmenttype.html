@@ -6,13 +6,13 @@
 		<div ng-repeat="label in labels">
 			<div class="form-group">
 				<label>{{label}}</label>
-				<input type="text" ng-model="formObj[label]" placeholder="Enter" required>
+				<input type="text" ng-model="returnObject[label]" placeholder="Enter" required>
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<h4>Add Attributes</h4>
-			<fieldset ng-repeat="attribute in attrList.equipment_type_attributes track by $index">
+			<fieldset ng-repeat="attribute in returnObject.equipment_type_attributes track by $index">
 				<fieldset class="pure-control-group">
 					<p>Attr index: {{ $index }}</p>
 					<input type="text" ng-model="attribute.name" placeholder="Name" required>
@@ -27,19 +27,18 @@
 					<input type="checkbox" ng-init="attribute.unique=false" ng-model="attribute.unique"> <br>
 
 					<label>Enum</label>
-					<input type="checkbox" ng-init="attribute.enum=false" ng-model="attribute.enum">
-					
+					<input type="checkbox" ng-init="attribute.enum=false" ng-model="attribute.enum" ng-change="initEnumVals(attribute.enum, attribute)">
+					<div class="form-group" ng-show="attribute.enum">
+						<h4>Add enums</h4>
+						<fieldset ng-repeat="enum in attribute.enum_values track by $index">
+							<input type="text" ng-model="attribute.enum_values[$index]" placeholder="Enum Value" required>
+							<input type="button" value="Remove Enum" ng-show="$index != 0" ng-click="deleteEnum($event, key, $parent.$index)">
+						</fieldset>
+						<input ng-click="addNewEnum(attribute)" value="Add Enums" type="button"></input>	
+					</div>
 				</fieldset>
-				<div class="form-group">
-					<h4>Add enums</h4>
-					<fieldset ng-repeat="enum in attribute.enum_values track by $index">
-						<input type="text" ng-model="attribute.enum_values[$index]" placeholder="Enum Value" required>
-						<input type="button" value="Remove Enum" ng-show="$index != 0" ng-click="deleteEnum($event, key)">
-					</fieldset>
-					<input ng-click="addNewEnum(attribute)" value="Add Enums" type="button"></input>	
-				</div>
 			</fieldset>
-			<input value="Add fields" type="button" class="addfields" ng-click="addNewAttribute($index, key)"></input>
+			<input value="Add fields" type="button" class="addfields" ng-click="addNewAttribute($index)"></input>
 
 		</div>
          <button class="pure-button" type="submit">Submit</button>
@@ -47,8 +46,6 @@
 
 <a class="pure-button" href="#!/equipmenttypes">Equipment Types</a>
 <a class="pure-button" href="#!/">Home</a>
-
-<p>{{enumVals|json}}</p>
-<p>{{attrList|json}}</p>
+{{returnObject|json}}
 </div>
 

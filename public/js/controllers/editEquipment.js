@@ -57,7 +57,7 @@ angular.module("app.controllers").controller("EditEquipmentController", ["$scope
 			
 		};
 
-		$scope.submitEquipmentEdit = function() {
+		$scope.submitEquipmentTypeEdit = function() {
 			console.log($scope.returnObject.update_equipment);
 			console.log(angular.toJson($scope.returnObject, 1));
 		};

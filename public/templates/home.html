@@ -1,12 +1,24 @@
 
-    <div class="container-fluid index-div" ng-controller="HomeController as hc">
-        <h1>Inventory Management</h1>
-        <h4>Welcome {{ loggedInUser }}!</h4>
 
-        <div class="col-sm-12" class="list-view">
-            <input class="search-bar" ng-model="searchText" ng-change="refreshData()" placeholder="Search...">
+
+    <div class="container index-div"  ng-controller="HomeController">
+       
+                <h4 class="text-center">Welcome {{ loggedInUser }}!</h4>
+
+
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4 ">
+
+                <input class="search-bar form-control center-block" id="search" ng-model="searchText" ng-change="refreshData()" placeholder="Search...">
+            </div>
+            <div class="col-sm-4"></div>
+        </div>
+
+        <div class="list-view">
 
         
+
 
  			<div class="pure-menu pure-menu-horizontal">
  				<ul class="pure-menu-list">
@@ -14,15 +26,19 @@
  					<li class="pure-menu-item"><a class="pure-menu-link" href="#!/users/new">Add Renter</a></li>
                     <li class="pure-menu-item"><a class="pure-menu-link" href="#!/equipmenttypes">Equipment Types</a></li>
                     <li class="pure-menu-item"><a class="pure-menu-link" href="#!/users">Users</a></li>
-                    <li class="pure-menu-item"><a class="pure-menu-link" href="#!/users">Users</a></li>
+
 
  				</ul>
  			</div>
+
+ 			
+
 
 
             <button id='toggleFiltering' ng-click="toggleFiltering()" class="btn btn-success">Toggle Filtering</button>
             <div ui-grid="gridOptions" class="grid"></div>
         </div>
+        
     </div>
 
     {{cleanAttr}}

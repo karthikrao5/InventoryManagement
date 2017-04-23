@@ -1,16 +1,27 @@
 
-<div class="container-fluid index-div" ng-controller="NewUserController">
-	<form class="user-form pure-form pure-form-aligned" ng-submit="submitUserCreation()">
-		<h1>{{title}}</h1>
-		<div class="form-group">
-			<input type="text" ng-model="formObj.username" placeholder="Username">
-			<input type="text" ng-model="formObj.email" placeholder="Email">
-		</div>
+<div class="container index-div" ng-controller="NewUserController">
+<div class="row">
+	<div class="col-lg-2"></div>
+	<div class="col-lg-8 col-md-12">
 
-         <button class="pure-button" type="submit">Submit</button>
-	</form>
+		<form class="user-form" ng-submit="submitUserCreation()">
+			<h1>{{title}}</h1>
+			<div class="form-group">
+				<input class="form-control" type="text" ng-model="formObj.username" placeholder="Username">
+			</div>
+			<div class="form-group">
+				<input class="form-control" type="text" ng-model="formObj.email" placeholder="Email">
+			</div>
 
-	<p>{{formObj|json}}</p>
+	         <button class="btn btn-default" type="submit">Submit</button>
+	         <p>{{formObj|json}}</p>
+		</form>
+	</div>
+	      <div class="col-lg-2"></div>
+</div>
+
+
 	
-	<a class="pure-button" href="#!/">Home</a>
+	
+	<!-- <a class="pure-button" href="#!/">Home</a> -->
 </div>

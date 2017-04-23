@@ -55,6 +55,7 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.gr
             templateUrl: 'templates/create-equipmenttype.html',
             controller: 'NewEquipmentTypeController'
         },
+
         '/equipments/:departmenttag' : {
             templateUrl: 'templates/edit-equipment.html',
             controller: 'EditEquipmentController'
@@ -66,6 +67,11 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.gr
         '/users' : {
             templateUrl: 'templates/users.html',
             controller: 'UsersController'
+        },
+        '/equipmenttypes/name/:name' : {
+            templateUrl: 'templates/edit-equipmenttype.html',
+            controller: 'EditEquipmentTypeController'
+
         },
         '/403': {
             templateUrl:'templates/errorPages/403.html'
