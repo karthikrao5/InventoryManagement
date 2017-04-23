@@ -181,7 +181,7 @@ class EquipmentController extends AbstractController{
         }
         else
         {
-            return $response->withJson($result)->withStatus(409);
+            return $response->withJson($result)->withStatus(404);
         }
     }
 
@@ -211,7 +211,7 @@ class EquipmentController extends AbstractController{
         }
         else
         {
-            return $response->withJson($result)->withStatus(409);
+            return $response->withJson($result)->withStatus(404);
         }
     }
 }

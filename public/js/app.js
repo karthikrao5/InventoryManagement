@@ -1,29 +1,6 @@
 var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.grid.selection", "app.services"])
 .config(function($routeProvider, $httpProvider){
 
-    // $routeProvider
-    //     .when('/equipments', {
-    //         templateUrl: 'templates/equipments-list.html',
-    //         controller: 'EquipmentsController'
-    //     })
-    //     .when('/equipments/new', {
-    //         templateUrl: 'templates/create-equipment.html',
-    //         controller: 'NewEquipmentController'
-    //     })
-    //     .when('/equipments/:id', {
-    //         templateUrl: 'templates/edit-equipment.html',
-    //         controller: 'EditEquipmentController'
-    //     })
-    //     .when('/', {
-    //         templateUrl: 'templates/home.html',
-    //         controller: "HomeController"
-    //     })
-    //     .when('/auth', {
-    //         templateUrl: 'templates/auth.html',
-    //         controller: "AuthController"
-    //     })
-    //     .otherwise({redirectTo: '/'});
-
     window.routes = 
     {
         '/' : {
@@ -92,34 +69,6 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.gr
     }
     $routeProvider.otherwise({redirectTo: '/'});
 
-    // $routeProvider
-    //     .when('/', {
-    //         // main page with all items viewed.
-    //         // admin will have options to add, user will just view their items
-    //         templateUrl: 'templates/home.html',
-    //         controller: 'HomeController'
-    //     })
-    //     .when('/equipments/new', {
-    //         templateUrl: 'templates/create-equipment.html',
-    //         controller: 'NewEquipmentController',
-    //         adminOnly: true
-    //     })
-    //     // .when('equipmenttypes/new' {
-    //     //     templateUrl: 'templates/create-equipmenttype.html',
-    //     //     controller: 'NewEquipmentTypeController'
-    //     // })
-    //     .when('/users/new', {
-    //         templateUrl: 'templates/create-user.html',
-    //         controller: 'NewUserController',
-    //         adminOnly: true
-    //     })
-    //     .otherwise({redirectTo: '/'});
-
-    // .when('/equipmenttypes', {
-    // 	templateUrl: 'templates/equipmenttypes-list.html',
-    // 	controller: 'EquipmentTypesController'
-    // });
-
     // $httpProvider.interceptors.push("authInterceptor");
     
 });
@@ -138,6 +87,10 @@ app.directive('ngConfirmClick', [
             }
         };
 }]);
+
+
+// TODO: use this to check if authenticated between pages. if not authenticated, redirect to
+// auth page
 
 // .run(["$rootScope", "Auth", "$location" ,function($rootScope, Auth, $location) {
 //     $rootScope.$on("$locationChangeStart", function(event,next,current) {
