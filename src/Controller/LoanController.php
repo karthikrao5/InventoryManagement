@@ -32,9 +32,9 @@ class LoanController extends AbstractController
         $result = $this->core->createLoan($request->getParsedBody());
         
         if ($result["ok"]) {
-            return $response->withStatus(200)->withJson($result);
+            return $response->withStatus(201)->withJson($result);
         } else {
-            return $response->withStatus(400)->withJson($result);
+            return $response->withStatus(409)->withJson($result);
         }
     }
     
@@ -55,7 +55,7 @@ class LoanController extends AbstractController
         if ($result["ok"]) {
             return $response->withStatus(200)->withJson($result);
         } else {
-            return $response->withStatus(400)->withJson($result);
+            return $response->withStatus(409)->withJson($result);
         }
     }
     
@@ -80,7 +80,7 @@ class LoanController extends AbstractController
         if($result['ok']) {
             return $response->withJson($result)->withStatus(200);
         } else {
-            return $response->withStatus(400)->withJson($result);
+            return $response->withStatus(404)->withJson($result);
         }
     }
     
@@ -101,7 +101,7 @@ class LoanController extends AbstractController
         if ($result["ok"]) {
             return $response->withStatus(200)->withJson($result);
         } else {
-            return $response->withStatus(400)->withJson($result);
+            return $response->withStatus(409)->withJson($result);
         }
     }
 }
