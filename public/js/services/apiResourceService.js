@@ -25,7 +25,7 @@ angular.module("app").factory("APIService", ["$http", "$httpParamSerializer",
 				$http({
 					method: 'POST',
 					url: apiURL+resource,
-					data: inputParams,
+					data: data,
 					headers: {
 						"Content-type": "application/json"
 					}
