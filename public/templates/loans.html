@@ -1,0 +1,46 @@
+<!-- 
+<div class="container" ng-controller="HomeController">
+    <h1>Inventory Management</h1>
+    <h4>Welcome {{ loggedInUser }}!</h4>
+
+    <input ng-model="searchText" ng-change="refreshData()" placeholder="Search...">
+
+    <div ui-grid="gridOptions" class="grid"></div>
+
+    
+
+    <a href="#!/equipments/new">Add Equipment</a>
+    <a href="#!/users/new">Add Renter</a>
+
+    <button ng-click="logout()">Logout</button>
+
+    <!-- <a href="#!/equipments">All Equipments</a>
+    <a href="#!/equipments/new">New Equipment</a> -->
+
+    <!-- <button ng-click="logout()">Logout</button> -->
+<!-- </div> -->
+
+    <div class="container-fluid index-div" ng-controller="LoanController">
+        <h1>Inventory Management</h1>
+        <h4>Welcome {{ loggedInUser }}!</h4>
+
+        <div class="col-sm-12" class="list-view">
+            <input class="search-bar" ng-model="searchText" ng-change="refreshData()" placeholder="Search...">
+
+            <!-- <div class="col-sm-12 action-nav">
+                <a class="pure-button" href="#!/equipments/new">Add Equipment</a>
+                <a class="pure-button" href="#!/users/new">Add Renter</a>
+            </div>
+ -->                
+
+            
+
+            <button id='toggleFiltering' ng-click="toggleFiltering()" class="btn btn-success">Toggle Filtering</button>
+            <!-- <button type="button" class="btn btn-success" ng-click="toggleRowSelection()">Toggle rowSelection</button>  <strong>rowSelection:</strong> <span ng-bind="gridApi.grid.options.enableRowSelection"></span> -->
+            <div ui-grid="gridOptions" ui-grid-selection class="grid"></div>
+        </div>
+    </div>
+
+
+    {{cleanAttr}}
+

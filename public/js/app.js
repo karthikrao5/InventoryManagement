@@ -1,4 +1,4 @@
-var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "app.services"])
+var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "ui.grid.selection", "app.services"])
 .config(function($routeProvider, $httpProvider){
 
     // $routeProvider
@@ -54,6 +54,10 @@ var app = angular.module("app", ["ngRoute", "app.controllers", "ui.grid", "app.s
         '/equipmenttypes/new' : {
             templateUrl: 'templates/create-equipmenttype.html',
             controller: 'NewEquipmentTypeController'
+        },
+        '/loans/:department_tag' : {
+            templateUrl: 'templates/loans.html',
+            controller: 'LoanController'
         },
         '/403': {
             templateUrl:'templates/errorPages/403.html'
