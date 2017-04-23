@@ -1,17 +1,19 @@
-<div class="container-fluid index-div" ng-controller="EquipmentsController">
-   <h1>Create Equipment</h1>
-   <form class="equipment-form pure-form pure-form-aligned" ng-submit="submitEquipmentCreation()">
-      <fieldset>
-         <div class="pure-control-group">
+<div class="container index-div" ng-controller="EquipmentsController">
+   <form class="equipment-form row" ng-submit="submitEquipmentCreation()">
+      <div class="col-lg-2"></div>
+      <fieldset class="col-lg-8 col-md-12">
+         <h1>Create Equipment</h1>
+
+         <div class="form-group">
             <label>Select Equipment Type</label>
-            <select ng-change="updateEqType()" ng-model="formObj.equipment_type_name" ng-options="item.name as item.name for item in equipmentTypeList"></select>
+            <select class="form-control" ng-change="updateEqType()" ng-model="formObj.equipment_type_name" ng-options="item.name as item.name for item in equipmentTypeList"></select>
          </div>
 
 
          <div ng-repeat="label in labels">
-            <div class="pure-control-group">
+            <div class="form-group">
                <label>{{ label }}</label>
-               <input type="text" ng-model="formObj[label]" placeholder="Enter" required>
+               <input class="form-control" type="text" ng-model="formObj[label]" placeholder="Enter" required>
             </div>
          </div>
 
@@ -28,10 +30,12 @@
          <p>{{attrList|json}}</p>
 
 
-         <button class="pure-button" type="submit">Submit</button>
+         <button class="btn btn-default" type="submit">Submit</button>
       </fieldset>
+      <div class="col-lg-2"></div>
+
    </form>
 
-<a class="pure-button" href="#!/">Home</a>
+<!-- <a class="pure-button" href="#!/">Home</a> -->
 
 </div>

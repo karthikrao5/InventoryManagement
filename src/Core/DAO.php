@@ -157,6 +157,11 @@ class DAO
             {
                 $this->updateEquipment($equipmentId, array('status' => 'inventory', 'loaned_to' => null));
             }
+            
+            $userId = $this->getUserId($loan['username']);
+            
+            $this->removeCurrentLoanFromUser($userId, $loan['_id']);
+            $this->addPastLoanToUser($userId, $loan['_id']);
         }
         
         $result = $loans->update(array('_id' => $loanId),
@@ -166,7 +171,7 @@ class DAO
         $mongo->close();
         
         $log = $this->createLog();
-        $log['reference_id'] = $id;
+        $log['reference_id'] = $loanId;
         $log['document_type'] = "loan";
         $log['action_type'] = "edit";
         $log['action_by'] = "hardcodedweb";
@@ -174,7 +179,7 @@ class DAO
         
         foreach($updateValues as $key => $value)
         {
-            $log['changes'][] = (object)array("field_name" => $key, "old_value" =>$loan[$key] , "new_value" => $value);
+            $log['changes'][] = (object)array("field_name" => $key, "old_value" => $loan[$key] , "new_value" => $value);
         }
         
         $result = $this->updateLog($log);
@@ -519,6 +524,7 @@ class DAO
         
         $result = $users->update(array('_id' => $userId),
             array('$addToSet' => array('past_loans' => $loanId)));
+        $user = $users->findOne(array('_id' => $userId));
         $mongo->close();
         
         $user['past_loans'][] = $loanId;
@@ -529,7 +535,7 @@ class DAO
         $log['action_type'] = "edit";
         $log['action_by'] = "hardcodedweb";
         $log['action_via'] = "hardcodedweb";
-        $log['changes'][] = (object)array('field_name' => 'past_loans', 'old_value' => $pastLoanPrev, 'new_value' => $user['current_loans']);
+        $log['changes'][] = (object)array('field_name' => 'past_loans', 'old_value' => $pastLoanPrev, 'new_value' => $user['past_loans']);
         $this->updateLog($log);
         $this->addLogToUser($userId, $log['_id']);
         

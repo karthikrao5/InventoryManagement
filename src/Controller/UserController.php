@@ -46,13 +46,15 @@ class UserController extends AbstractController
         //     // query matches authorized user, return data
         //     if($params["username"] == $authResult["data"]["username"]) {
         $result = $this->core->getUser($params);
-        return $response->withJson($result);
-            // } else {
-
-            //     // renter is trying to query someone else's username, return forbidden
-            //     return $response->write("Forbidden.")->withStatus(403);
-            // }
-        // }
+        
+        if($result['ok'])
+        {
+            return $response->withJson($result)->withStatus(200);
+        }
+        else
+        {
+            return $response->withJson($result)->withStatus(404);
+        }
     }
     
     public function create($request, $response) {
@@ -79,9 +81,9 @@ class UserController extends AbstractController
         $result = $this->core->createUser($request->getParsedBody());
 
         if ($result["ok"]) {
-            return $response->withStatus(200)->withJson($result);
+            return $response->withStatus(201)->withJson($result);
         } else {
-            return $response->withStatus(400)->withJson($result);
+            return $response->withStatus(409)->withJson($result);
         }
     }
     
@@ -102,7 +104,7 @@ class UserController extends AbstractController
         if ($result["ok"]) {
             return $response->withStatus(200)->withJson($result);
         } else {
-            return $response->withStatus(400)->withJson($result);
+            return $response->withStatus(409)->withJson($result);
         }
     }
     
@@ -123,7 +125,7 @@ class UserController extends AbstractController
         if ($result["ok"]) {
             return $response->withStatus(200)->withJson($result);
         } else {
-            return $response->withStatus(400)->withJson($result);
+            return $response->withStatus(409)->withJson($result);
         }
     }
 }
