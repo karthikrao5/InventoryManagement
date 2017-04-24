@@ -13,10 +13,10 @@ angular.module("app.controllers").controller('NewEquipmentTypeController', ["$sc
 		$scope.addNewAttribute = function(index) {
 			var newAttr = {"name": "", "data_type": "", "regex": null, "help_comment": "", "required": false, "unique": false, "enum": false, "enum_values": []};
 			// if($scope.attrList.attributes.length <= index + 1) {
-			$scope.returnObject.equipment_type_attributes.splice(index+1,0,newAttr);
+			// $scope.returnObject.equipment_type_attributes.splice(index+1,0,newAttr);
 				// console.log($scope.formObj);
 			// }
-			
+			$scope.returnObject.equipment_type_attributes.push(newAttr);		
 		};
 
 		$scope.removeAttribute = function($event, key) {

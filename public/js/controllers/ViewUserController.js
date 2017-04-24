@@ -64,15 +64,15 @@ angular.module("app.controllers").controller("ViewUserController", ["$scope", "$
   		// };
 
   		$scope.returnSelectedItems = function() {
-  			if($scope.returnObject["_id"]) {
-  				alert("You must select an item to return.");
-  			}
+  			// if($scope.returnObject["_id"]) {
+  			// 	alert("You must select an item to return.");
+  			// }
   			console.log($scope.returnObject);
   			var jsonBody = angular.toJson($scope.returnObject, 1);
   			APIService.put("loans", jsonBody, function(response) {
   				console.log(response.data);
-  				alert(response.data);
-  				$location.path("/uesrs");
+  				alert(response.data.msg);
+  				$location.path("/users");
   			}, function(error) {
   				console.log(error.data);
   				alert(error.data);
