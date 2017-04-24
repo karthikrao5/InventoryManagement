@@ -34,7 +34,8 @@ Team 154 - Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 in scripts/centos/ directory. Make sure that the script has execute permission `chmod 777 setup.sh`.
 
 4. Run 
-```./move.sh 
+```
+./move.sh 
 ```
 in the repository
 
