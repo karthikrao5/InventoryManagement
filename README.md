@@ -33,7 +33,10 @@ Team 154 - Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 ```
 in scripts/centos/ directory. Make sure that the script has execute permission `chmod 777 setup.sh`.
 
-4. Run `./move.sh' in the repository
+4. Run 
+```./move.sh 
+```
+in the repository
 
 5. Visit http://localhost/ (if accessing from the server) or http://server_url/ to use InventoryManagement system.
 
