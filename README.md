@@ -15,7 +15,7 @@ Team 154 - Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 * Loans page for a user does not have an option to select a due date.
 
 **Known bugs and defects for Back-end:**
-* Backend access routes are fragile due to unfinished input validation.
+* Backend access routes are fragile due to lack of input validation.
 * API key feature is not implemented in this release.
 * Log information is missing username (action_by) and how the route is accessed (action_via).
 * Loan due date expiration is not checked.
