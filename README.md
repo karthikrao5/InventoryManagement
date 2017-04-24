@@ -27,7 +27,11 @@ Team 154 - Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 
 2. Clone this repository.
 
-3. Run './setup.sh' in scripts/centos/ directory. Make sure that the script has execute permission `chmod 777 setup.sh`.
+3. Run 
+```
+./setup.sh
+```
+in scripts/centos/ directory. Make sure that the script has execute permission `chmod 777 setup.sh`.
 
 4. Run `./move.sh' in the repository
 
