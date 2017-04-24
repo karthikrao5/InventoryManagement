@@ -8,6 +8,8 @@ Team 154 - Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 
 **Bug fixes:** None - initial release.
 
+[**Documentation**](https://github.com/karthikrao5/InventoryManagement/wiki)
+
 **Known bugs and defects for Front-end:**
 * Equipment Type and Equipment Edit fields are not removed from updated items array if they are edited and set back to empty. In other words, if you were to type a new updated comment in the form and you didn't want to save the update, there will be an empty string for that key in the updated items array so when submit is hit, it will set the comment to an empty string in the database (ie. "").
 * Loans page for a user does not have an option to select a due date.
