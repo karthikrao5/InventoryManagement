@@ -3,7 +3,7 @@ GT Junior Design Part 2 Spring 2017 (CS 3312/LMC 3431 - JIA)
 
 Team 154 - Karthik Rao, Will Christian, Joe Sadler, Andres Littig, Byung Kang
 ----
-# Release Notes
+# Release Notes v1.0.0
 **New features for this release:**
 
 **Bug fixes:** None - initial release.
